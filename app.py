@@ -6,7 +6,7 @@ import os
 app = Flask(__name__)
 CORS(app)
 
-openai.api_key = os.getenv("OPENAI_API_KEY")
+openai.api_key = os.getenv("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")
 if not openai.api_key:
     print("Warning: OPENAI_API_KEY environment variable not set!")
 
