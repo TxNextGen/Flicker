@@ -117,6 +117,8 @@ h3 {
 }
 
 
+
+
 #chat {
     width: 100%;
     max-width: 650px;
@@ -162,7 +164,7 @@ h3 {
 }
 
 .user {
-    background-color: #91919128;
+    background-color: #9191914d;
     color: #fff;
     margin-left: auto;
     text-align: left;
@@ -176,9 +178,13 @@ h3 {
 .bot {
     background-color: #ffffff00;
     color: #ffffff;
-    margin-right: auto;
     text-align: left;
+    max-width: fit-content;
+    margin-right: auto;
+    display: block;
 }
+
+
 
 .bot:hover {
     background-color: #f5f5f500;
@@ -328,5 +334,28 @@ h3 {
     width: auto;
     margin-left: 1rem;
     outline: none;
+}
+
+#placeholder-message {
+    position: absolute;
+    top: 20px; 
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    padding: 12px;
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.7);
+    background: rgba(50, 50, 50, 0.3);
+    border-radius: 12px;
+    text-align: center;
+    pointer-events: none; 
+    transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+
+#chat {
+    position: relative; 
+    height: 300px; 
+    overflow-y: auto;
 }
 
