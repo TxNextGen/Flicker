@@ -38,14 +38,57 @@
   <h3 id="subtitle"><b><u>#1 School Chatbot</u></b></h3>
   <h3>Your Personal Genius for Every Quiz &amp; Question.</h3>
 
-  <div id="chat" role="log" aria-live="polite" aria-relevant="additions">
-    <div id="placeholder-message">💡 Try asking about homework help, math problems, or fun facts!</div>
+  <!-- Updated Placeholder Layout -->
+  <div id="placeholder-container">
+    <div class="placeholder-left">
+      <div class="placeholder-box small-box">
+        <div class="box-content">
+          <h4 class="box-title">AI Math Solving</h4>
+          <p class="box-subtitle">Step-by-step calculations</p>
+          <img src="https://media.discordapp.net/attachments/1374849978140459101/1377683599582695526/algebra.png?ex=6839db56&is=683889d6&hm=e985be48a2511b12a2047551fec096e2ef31f77d1cfb7784911c8e0f7a09c733&=&format=webp&quality=lossless" alt="Math Icon" class="box-icon">
+        </div>
+      </div>
+
+      <div class="placeholder-box small-box">
+        <div class="box-content">
+          <h4 class="box-title">AI Writing</h4>
+          <p class="box-subtitle">Refine and improve writing</p>
+          <img src="https://media.discordapp.net/attachments/1374849978140459101/1377686094346453054/pen-tool.png?ex=6839dda9&is=68388c29&hm=b7439c22f31d9bacea2adc546ca67d46904da7b46444db47d0cc3f464d45379f&=&format=webp&quality=lossless" alt="Essay Icon" class="box-icon">
+        </div>
+      </div>
+
+      <div class="placeholder-box small-box">
+        <div class="box-content">
+          <h4 class="box-title">AI Translating</h4>
+          <p class="box-subtitle">Learn new words & phrases</p>
+          <img src="https://media.discordapp.net/attachments/1374849978140459101/1377686413763547277/translate.png?ex=6839ddf5&is=68388c75&hm=4954c0115ca2d12f6466c381dbdbff37890c2a846d825037b4df0bf1c3d738b6&=&format=webp&quality=lossless" alt="Language Icon" class="box-icon">
+        </div>
+      </div>
+    </div>
+
+     <div class="placeholder-box large-box">
+<div class="large-box">
+    <div class="inner-box">
+        <div class="box-text">
+            <h4 class="box-title">Multiple Workspaces </h4>
+            <p class="box-subtitle">Solve everything here with Flicker</p>
+        </div>
+        <img src="https://media.discordapp.net/attachments/1374849978140459101/1377700171219075092/open-book.png?ex=6839eac5&is=68389945&hm=33f9ec9299f0c465518795e0a274350b0e24a3b845268428bfb8ed52ca75a033&=&format=webp&quality=lossless" alt="Icon" class="box-icon">
+    </div>
+</div>
+
+</div>
+
+   </div>
+
   </div>
+
+  <div id="chat" role="log" aria-live="polite" aria-relevant="additions"></div>
 
   <div id="input-area">
     <textarea
       id="input"
-      placeholder="Enter a question here to get answers"
+      placeholder="Enter a question here"
       autocomplete="off"
       rows="2"
       aria-label="Enter your question"
@@ -86,67 +129,76 @@
     </div>
   </footer>
 
-  <script>
+ <script>
+document.addEventListener("DOMContentLoaded", () => {
     const input = document.getElementById("input");
     const sendBtn = document.getElementById("send");
     const chat = document.getElementById("chat");
-    const placeholder = document.getElementById("placeholder-message");
+    const placeholderContainer = document.getElementById("placeholder-container");
 
     function addMessage(text, sender) {
-      const div = document.createElement("div");
-      div.className = `message ${sender}`;
-      div.textContent = text;
-      chat.appendChild(div);
-      chat.scrollTop = chat.scrollHeight;
-      if (placeholder) {
-        placeholder.style.display = "none";
-      }
+        const div = document.createElement("div");
+        div.className = `message ${sender}`;
+        div.textContent = text;
+        chat.appendChild(div);
+        chat.scrollTop = chat.scrollHeight;
+
+        if (placeholderContainer) {
+            placeholderContainer.style.display = "none"; // Hide when message is sent
+        }
     }
 
     async function sendMessage() {
-      const message = input.value.trim();
-      if (!message) return;
+        const message = input.value.trim();
+        if (!message) return;
 
-      addMessage(message, "user");
-      input.value = "";
-      input.disabled = true;
-      sendBtn.disabled = true;
-
-      try {
-        const response = await fetch("https://flicker-i6x7.onrender.com/", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message }),
-        });
-
-        if (!response.ok) {
-          throw new Error(`Server error: ${response.status}`);
+        if (placeholderContainer) {
+            placeholderContainer.style.display = "none"; // Hide instantly when Enter is pressed
         }
 
-        const data = await response.json();
+        addMessage(message, "user");
+        input.value = "";
+        input.disabled = true;
+        sendBtn.disabled = true;
 
-        if (data.reply) {
-          addMessage(data.reply, "bot");
-        } else {
-          addMessage("Error: No reply from AI", "bot");
+        try {
+            const response = await fetch("https://flicker-i6x7.onrender.com/", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message }),
+            });
+
+            if (!response.ok) {
+                throw new Error(`Server error: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            if (data.reply) {
+                addMessage(data.reply, "bot");
+            } else {
+                addMessage("Error: No reply from AI", "bot");
+            }
+        } catch (err) {
+            addMessage("Network error: " + err.message, "bot");
+        } finally {
+            input.disabled = false;
+            sendBtn.disabled = false;
+            input.focus();
         }
-      } catch (err) {
-        addMessage("Network error: " + err.message, "bot");
-      } finally {
-        input.disabled = false;
-        sendBtn.disabled = false;
-        input.focus();
-      }
     }
 
     sendBtn.addEventListener("click", sendMessage);
 
     input.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" && !e.shiftKey) {
-        e.preventDefault();
-        sendMessage();
-      }
+        if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+        }
     });
+});
+
   </script>
+
 </body>
 </html>
