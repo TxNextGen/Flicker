@@ -1,21 +1,116 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;400;500;600;700;900&display=swap" rel="stylesheet">
-  <link rel="icon" href="images/flicker.png" type="image/x-icon" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@100;300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <link rel="icon" href="https://media.discordapp.net/attachments/1374849978140459101/1376976147958730864/image_2025-05-27_123122205-removebg-preview.png?ex=68374878&is=6835f6f8&hm=0bb803da19504a2de032e3f21e4df6ea483f6e3b8262d6a62f1dc826e5527e61&=&format=webp&quality=lossless" type="image/x-icon" />
 </head>
 <body>
-  <h1>Flicker Ai</h1>
-  <div id="chat"></div>
-  <div id="input-area">
-    <input id="input" placeholder="Ask something..." autocomplete="off" />
-    <button id="send">Send</button>
-  </div>
 
-<script src="chat.js"></script>
+<div id="navbar">
+    
+    <div class="nav-links">
+        <button class="nav-button">Home</button>
+        <button class="nav-button">Features</button>
+        <button class="nav-button">Settings</button>
+        <button class="nav-button">Contact</button>
+    </div>
+
+</div>
+
+
+<h1>
+    <img src="https://media.discordapp.net/attachments/1374849978140459101/1376975493836046386/Untitled_design__78_-removebg-preview.png?ex=683747dc&is=6835f65c&hm=093f0184adc136049a36272cb7470de0eeb1f7fa50aa99c3ee717365d7a7dbe6&=&format=webp&quality=lossless" alt="F" id="title-logo">
+    licker AI
+</h1>
+<h3 id="subtitle"><b><u>#1 School Chatbot</u></b></h3>
+<h3>Your Personal Genius for Every Quiz & Question.</h3>
+
+    <div id="chat">
+    <div id="placeholder-message">💡 Try asking about homework help, math problems, or fun facts!</div>
+    </div>
+
+    <div id="input-area">
+        <textarea id="input" placeholder="Enter a question here to get answers" autocomplete="off"></textarea> 
+    <button id="send">
+        <img src="https://media.discordapp.net/attachments/1374849978140459101/1377120779480731718/up-arrow.png?ex=6837cf2b&is=68367dab&hm=baf61a1a341f90919ed1b73af31a5a9085186b90f9675c351d7142442c9bff02&=&format=webp&quality=lossless" alt="Send Arrow">
+    </button>
+    </div>
+
+<script>
+    const input = document.getElementById("input");
+const sendBtn = document.getElementById("sendBtn");
+const chat = document.getElementById("chat");
+
+function addMessage(text, sender) {
+  const div = document.createElement("div");
+  div.className = `message ${sender}`;
+  div.textContent = text;
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+async function sendMessage() {
+  const message = input.value.trim();
+  if (!message) return;
+
+  addMessage(message, "user");
+  input.value = "";
+  input.disabled = true;
+  sendBtn.disabled = true;
+
+  try {
+    const response = await fetch("https://flicker-i6x7.onrender.com/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Server error: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    if (data.reply) {
+      addMessage(data.reply, "bot");
+    } else {
+      addMessage("Error: No reply from AI", "bot");
+    }
+  } catch (err) {
+    addMessage("Network error: " + err.message, "bot");
+  } finally {
+    input.disabled = false;
+    sendBtn.disabled = false;
+    input.focus();
+  }
+}
+
+sendBtn.addEventListener("click", sendMessage);
+input.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") sendMessage();
+});
+</script>
+<footer id="footer">
+    <div id="footer-line"></div>
+    <div id="footer-content">
+        <p id="copyright"> © Flicker Artificial, All rights reserved.</p>
+<div id="footer-images">
+    <a href="https://www.youtube.com/@txvander" target="_blank">
+    <img src="https://media.discordapp.net/attachments/1374849978140459101/1376999536710521022/youtube_2.png?ex=68375e40&is=68360cc0&hm=d5fde6fd65790b9f50a31167bb6adf730b58cd3d1791cf14ba042625740bcaa1&=&format=webp&quality=lossless" alt="Image 1">
+        </a>
+    <a href="https://www.tiktok.com/" target="_blank">
+    <img src="https://media.discordapp.net/attachments/1374849978140459101/1376999915456036935/tik-tok.png?ex=68375e9b&is=68360d1b&hm=803fca58b35aad8bff5d6012925b82cf39df0a6cc644db4e785f1049873869a7&=&format=webp&quality=lossless" alt="Image 2">
+    </a>
+    <a href="https://discord.gg/TxXXtdSC" target="_blank">
+    <img src="https://media.discordapp.net/attachments/1374849978140459101/1376974578504695938/discord_1.png?ex=68374702&is=6835f582&hm=b58787d310ef609ac0d47017b752bcb08445c8d777beae24cde068900a16c2b0&=&format=webp&quality=lossless" alt="Image 3">
+    </a>
+</div>
+
+    </div>
+</footer>
+
 </body>
 </html>
