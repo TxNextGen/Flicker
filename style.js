@@ -113,3 +113,12 @@ boxes.forEach(box => {
     }
   });
 });
+
+const sidebar = document.getElementById('sidebar');
+const toggleBtn = document.getElementById('toggle-btn');
+
+function toggleSidebar() {
+  sidebar.classList.toggle('close');
+  toggleBtn.classList.toggle('rotated');
+}
+

@@ -5,21 +5,163 @@
 }
 
 
-body {
-    font-family: 'Raleway', sans-serif;
-    background: linear-gradient(to bottom, #000000ee, #1d1d1d);
-    position: relative;
-    overflow: hidden;
+main {
+
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-between;
-    height: 100vh;
-    padding: 2rem;
-    height: 100vh;
-    color: #fff;
+    justify-content: center;
+    width: 100%;
+    overflow: hidden;
 }
 
+body {
+    font-family: 'Raleway', sans-serif;
+    background: linear-gradient(to bottom, #000000ee, #1d1d1d);
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    grid-template-rows: 1fr;
+    height: 100vh;
+    min-height: 100vh;
+    color: #fff;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+}
+
+
+#sidebar{
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    height: 100vh;
+    width: 250px;
+    padding: 5px 1em;
+    background-color: rgb(28, 29, 36);
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    position: sticky;
+    top: 0;
+    align-self: start;
+    transition: 300ms ease-in-out;
+    overflow: hidden;
+    text-wrap: nowrap;
+}
+#sidebar.close{
+    padding: 5px;
+    width: 60px;
+}
+#sidebar ul{
+    list-style: none;
+}
+#sidebar ul li:first-child{
+    font-size: 1.4rem;
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 18px;
+    .logo{
+        font-weight:  00;
+    }
+}
+#sidebar ul li.active a{
+    color: #ffffff;
+    svg{
+        fill: #ffffff;
+    }
+}
+
+#sidebar a, #sidebar dropdown-btn, #sidebar .logo{
+    border-radius: .5em;
+    padding: .85em;
+    padding-bottom: 1.3rem;
+    padding-top: 1.3rem;
+    text-decoration: none;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.dropdown-btn {
+    cursor: pointer;
+    width: 100%;
+    background: none;
+    text-align: left;
+    border: none;
+    font: inherit;
+}
+
+#sidebar svg{
+    flex-shrink: 0;
+    fill: #ffffff;
+}
+
+#sidebar a span {
+   flex-grow: 1;
+}
+
+#sidebar a:hover{
+    background-color: #222533;
+}
+
+#toggle-btn{
+    margin-left: auto;
+    padding: 1em;
+    border: none;
+    background: none;
+    cursor: pointer;
+    border-radius: .5em;
+}
+#toggle-btn svg {
+    transition: transform 150ms ease;
+}
+
+#toggle-btn.rotated svg {
+    transform: rotate(180deg);
+}
+#toggle-btn:hover{
+    background-color: #222533;
+}
+
+#sidebar-footer {
+    margin-top: auto;
+    padding: 1.2rem 0 0.8rem 0;
+    width: 100%;
+    text-align: center;
+    position: relative;
+}
+
+.sidebar-footer-line {
+    width: 90%;
+    height: 1.5px;
+    background: rgba(255,255,255,0.12);
+    margin: 0 auto 0.8rem auto;
+    border-radius: 1px;
+}
+
+.sidebar-footer-text {
+    color: #ccc;
+    font-size: 0.95rem;
+    padding: 0 1rem;
+    word-break: break-word;
+    white-space: normal;
+    line-height: 1.4;
+    display: block;
+}
+
+.sidebar-footer-copyright {
+    color: #ccc;
+    font-size: 1.1rem;
+    display: none;
+    margin-top: 0.5rem;
+}
+
+
+#sidebar.close .sidebar-footer-text {
+    display: none;
+}
+#sidebar.close .sidebar-footer-copyright {
+    display: block;
+}
 
 #placeholder-container {
     display: flex;
