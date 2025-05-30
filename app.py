@@ -1,15 +1,22 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import openai
+import google.generativeai as genai
 import os
 
+# Load configuration
+import config
+
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "*"}})  
+CORS(app, resources={r"/*": {"origins": "*"}})
 
-openai.api_key = os.getenv("OPENAI_API_KEY")
+# Configure Gemini API
+genai.configure(api_key=config.API_KEY)
 
-if not openai.api_key:
-    print("⚠️ Warning: OPENAI_API_KEY environment variable not set!")
+# Initialize model
+model = genai.GenerativeModel(
+    model_name=config.MODEL_NAME,
+    generation_config=config.GENERATION_CONFIG
+)
 
 @app.route("/", methods=["POST"])
 def chat():
@@ -20,24 +27,19 @@ def chat():
         if not message:
             return jsonify({"error": "No message provided"}), 400
 
-    
-        response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=[{"role": "user", "content": message}],
-            timeout=15
-        )
+        # Start a new chat
+        convo = model.start_chat(history=[])
+        response = convo.send_message(message)
 
-        reply = response.choices[0].message.content.strip()
+        reply = response.text.strip()
         return jsonify({"reply": reply})
 
-    except openai.error.OpenAIError as e:
-        return jsonify({"error": f"OpenAI API error: {str(e)}"}), 500
     except Exception as e:
         return jsonify({"error": f"Server error: {str(e)}"}), 500
 
 @app.route("/", methods=["GET"])
 def hello():
-    return "✅ Flask API is running. Use POST to send messages.", 200
+    return "✅ Flask API is running (Gemini 2.5). Use POST to send messages.", 200
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
