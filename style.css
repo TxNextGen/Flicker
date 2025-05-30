@@ -37,8 +37,8 @@ body {
     height: 100vh;
     width: 250px;
     padding: 5px 1em;
-    background-color: rgb(28, 29, 36);
-    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    background-color: rgba(20, 20, 20, 0.506);
+    border-right: 1px solid rgba(255, 255, 255, 0.373);
     position: sticky;
     top: 0;
     align-self: start;
@@ -87,7 +87,7 @@ body {
     background: none;
     text-align: left;
     border: none;
-    font: inherit;
+    font-family: 'Raleway', sans-serif;
 }
 
 #sidebar svg{
@@ -100,7 +100,10 @@ body {
 }
 
 #sidebar a:hover{
-    background-color: #222533;
+    background-color: #414040;
+    transform: translateY(-3px); /* ✅ Subtle upward movement */
+    transition: transform 0.3s ease-in-out, background 0.3s ease-in-out; /* ✅ Smooth effect */
+    box-shadow: 0px 5px 15px rgba(255, 255, 255, 0.393); /* ✅ Slight glow */
 }
 
 #toggle-btn{
@@ -198,7 +201,6 @@ body {
     display: block;
     height: 70px;
     margin-bottom: -5px;
-    margin-top: 1rem;
     margin-right: 1rem;
 }
 
@@ -237,7 +239,7 @@ body {
     height: auto;
     position: absolute;
     right: 10px;
-    top: 50%;              
+    top: 35%;              
     transform: translateY(-50%);  
 }
 
@@ -250,7 +252,6 @@ body {
     width: 300px;
     height: 230px;
     border-radius: 16px;
-    top: 10px;
     display: flex;
     flex-direction: column;
     justify-content: flex-end; 
@@ -667,4 +668,3 @@ h3 {
     height: 200px; 
     overflow-y: auto;
 }
-
