@@ -101,7 +101,7 @@ body {
 
 #sidebar a:hover{
     background-color: #414040;
-    transform: translateY(-3px); /* ✅ Subtle upward movement */
+    transform: translateY(-3px); 
     transition: transform 0.3s ease-in-out, background 0.3s ease-in-out; /* ✅ Smooth effect */
     box-shadow: 0px 5px 15px rgba(255, 255, 255, 0.393); /* ✅ Slight glow */
 }
@@ -578,6 +578,27 @@ h3 {
 }
 
 
+#auth-box {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+#signin-btn {
+  background-color: #1a1a1a;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  font-family: 'Raleway', sans-serif;
+}
+
+#signin-btn:hover {
+  background-color: #333;
+}
 
 
 

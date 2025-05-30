@@ -1,0 +1,93 @@
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: #121212;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+ font-family: 'Raleway', sans-serif;
+}
+
+.form-container {
+  background: #1e1e1e;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+  width: 100%;
+  max-width: 400px;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.auth-form h2 {
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.auth-form input {
+  padding: 12px;
+  border-radius: 6px;
+  border: none;
+  background: #2c2c2c;
+  color: white;
+  font-size: 16px;
+}
+
+
+
+
+.auth-form input:focus {
+  background: #333;
+}
+
+.submit-btn {
+  background: #2c2c2c;
+  border: none;
+  padding: 12px;
+  border-radius: 6px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+
+.submit-btn:hover{
+  background-color: #3b3b3b;
+}
+
+.google-btn {
+  background: #2c2c2c;
+  color: #ffffff;
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.google-btn:hover {
+  background: #3b3b3b;
+}
+
+.divider {
+  text-align: center;
+  color: #aaa;
+}
+
+.bottom-text {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.bottom-text a {
+  color: #3b82f6;
+  text-decoration: none;
+}

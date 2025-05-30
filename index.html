@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="icon" href="images/flicker.png" type="image/x-icon" />
+
   <link
     href="https://fonts.googleapis.com/css2?family=Raleway:wght@100;300;400;500;600;700;900&display=swap"
     rel="stylesheet"
@@ -16,6 +18,15 @@
   <title>Flicker AI - School Chatbot</title>
 </head>
 <body>
+    
+<div id="auth-box">
+  <button id="signin-btn">Sign In</button>
+</div>
+<script>
+  document.getElementById('signin-btn').addEventListener('click', () => {
+    window.location.href = 'signin.html';
+  });
+</script>
 
     <nav id="sidebar">
         <ul>
