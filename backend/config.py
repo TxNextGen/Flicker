@@ -12,3 +12,4 @@ GENERATION_CONFIG = { #Currently has 0 filters, i still need to change it. PLS K
     ],
 }
 # ^^^ remove this. the default settings for safety are good enough - xpki
+# ^^^ The safety settings are currently bugged for 2.5. Ill change them when google fixed them -Ben
