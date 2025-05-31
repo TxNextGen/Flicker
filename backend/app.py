@@ -15,7 +15,6 @@ genai.configure(api_key=config.API_KEY)
 # Initialize model
 model = genai.GenerativeModel(
     model_name=config.MODEL_NAME,
-    generation_config=config.GENERATION_CONFIG
 )
 
 @app.route("/", methods=["POST"])
