@@ -3,34 +3,39 @@ document.addEventListener("DOMContentLoaded", () => {
     const chat = document.getElementById("chat");
     const sendBtn = document.getElementById("send");
 
-    const lineHeight = parseInt(window.getComputedStyle(textarea).lineHeight, 10);
-    const maxLines = 8;
-    const maxHeight = lineHeight * maxLines;
+    // Auto-grow up to 8 lines
+    textarea.addEventListener("input", function () {
+        this.style.height = "auto";
+        const lineHeight = parseFloat(getComputedStyle(this).lineHeight);
+        const maxHeight = lineHeight * 8;
 
-    textarea.addEventListener('input', () => {
-      textarea.style.height = 'auto';
-      textarea.style.overflowY = 'hidden';
-
-      const newHeight = textarea.scrollHeight;
-      if (newHeight <= maxHeight) {
-        textarea.style.height = newHeight + 'px';
-      } else {
-        textarea.style.height = maxHeight + 'px';
-        textarea.style.overflowY = 'auto';
-      }
+        if (this.scrollHeight <= maxHeight) {
+            this.style.overflowY = "hidden";
+            this.style.height = this.scrollHeight + "px";
+        } else {
+            this.style.overflowY = "auto";
+            this.style.height = maxHeight + "px";
+        }
     });
 
-    textarea.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        sendBtn.click();
-      }
+    // Enter to send, Shift+Enter for newline
+    textarea.addEventListener("keydown", function(e) {
+        if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+            sendBtn.click();
+        }
     });
 
-    // Send message
+    // Send message handler
     sendBtn.addEventListener("click", async () => {
         const userMessage = textarea.value.trim();
         if (!userMessage) return;
+
+        // Hide placeholders on first message
+        const placeholder = document.getElementById("placeholder-container");
+        if (placeholder) {
+            placeholder.style.display = "none";
+        }
 
         // Show user message
         const userDiv = document.createElement("div");
@@ -39,7 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
         chat.appendChild(userDiv);
 
         textarea.value = "";
-        textarea.style.height = "auto"; // reset height
+        textarea.style.height = "auto";
         textarea.disabled = true;
 
         // Send to backend
@@ -51,6 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             const data = await res.json();
+
             const aiDiv = document.createElement("div");
             aiDiv.className = "message ai";
             aiDiv.textContent = data.reply || data.error || "No response";
