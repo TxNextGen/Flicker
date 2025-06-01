@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const chat = document.getElementById("chat");
     const sendBtn = document.getElementById("send");
 
-    // Auto-grow up to 8 lines
+
     textarea.addEventListener("input", function () {
         this.style.height = "auto";
         const lineHeight = parseFloat(getComputedStyle(this).lineHeight);
@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // Enter to send, Shift+Enter for newline
+    
     textarea.addEventListener("keydown", function(e) {
         if (e.key === "Enter" && !e.shiftKey) {
             e.preventDefault();
@@ -26,17 +26,16 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // Scroll chat to bottom helper
+
     function scrollChatToBottom() {
         chat.scrollTo({ top: chat.scrollHeight, behavior: 'smooth' });
     }
 
-    // Send message handler
     sendBtn.addEventListener("click", async () => {
         const userMessage = textarea.value.trim();
         if (!userMessage) return;
 
-        // Hide placeholders on first message
+
         const placeholder = document.getElementById("placeholder-container");
         if (placeholder) {
             placeholder.style.display = "none";
@@ -46,7 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (headerContainer) {
             headerContainer.style.display = 'none';
         } else {
-            // fallback if you haven't wrapped headers in a container
+
             const h1 = document.querySelector('main h1');
             const subtitle = document.getElementById('subtitle');
             const h3s = document.querySelectorAll('main > h3');
