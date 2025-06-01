@@ -1,3 +1,4 @@
+<script>
 document.addEventListener("DOMContentLoaded", () => {
     const textarea = document.getElementById("input");
     const chat = document.getElementById("chat");
@@ -46,7 +47,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (headerContainer) {
             headerContainer.style.display = 'none';
         } else {
-            // fallback if you haven't wrapped headers in a container
             const h1 = document.querySelector('main h1');
             const subtitle = document.getElementById('subtitle');
             const h3s = document.querySelectorAll('main > h3');
@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
         userDiv.textContent = userMessage;
         chat.appendChild(userDiv);
 
-        scrollChatToBottom();  // scroll after user message
+        scrollChatToBottom();
 
         textarea.value = "";
         textarea.style.height = "auto";
@@ -79,17 +79,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const aiDiv = document.createElement("div");
             aiDiv.className = "message ai";
-            aiDiv.innerHTML = marked.parse(data.reply || data.error || "No response");
+
+            const reply = typeof data.reply === "string" ? data.reply :
+                         typeof data.error === "string" ? data.error :
+                         "No response";
+
+            // Parse and sanitize markdown
+            aiDiv.innerHTML = DOMPurify.sanitize(marked.parse(reply));
             chat.appendChild(aiDiv);
 
-            scrollChatToBottom();  // scroll after AI message
+            scrollChatToBottom();
         } catch (err) {
             const errorDiv = document.createElement("div");
             errorDiv.className = "message error";
             errorDiv.textContent = "Error talking to AI.";
             chat.appendChild(errorDiv);
 
-            scrollChatToBottom();  // scroll after error message
+            scrollChatToBottom();
             console.error(err);
         }
 
@@ -97,3 +103,4 @@ document.addEventListener("DOMContentLoaded", () => {
         textarea.focus();
     });
 });
+</script>
