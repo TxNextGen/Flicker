@@ -21,7 +21,7 @@
 
 <nav id="sidebar">
   <ul>
-    <li>
+    <li class="logo-row">
       <span class="logo">Flicker</span>
       <button onclick="toggleSidebar()" id="toggle-btn">
         <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3">
@@ -29,6 +29,18 @@
         </svg>
       </button>
     </li>
+
+    <!-- 🆕 Add Chat Button -->
+    <li>
+      <button id="add-chat-btn">➕ Add Chat</button>
+    </li>
+
+    <!-- 🆕 Chat List Container -->
+    <li>
+      <ul id="chat-list"></ul>
+    </li>
+
+    <!-- Existing Navigation Items -->
     <li class="active">
       <a href="flicker.html">
         <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3">
@@ -62,6 +74,10 @@
       </a>
     </li>
   </ul>
+
+
+
+
   <div id="sidebar-footer">
     <div class="sidebar-footer-line"></div>
     <div class="sidebar-footer-text">
@@ -128,6 +144,29 @@
 <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.5/dist/purify.min.js" defer></script>
 <script src="style.js" defer></script>
 <script src="backend/backend.js" defer></script>
+
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const chatList = document.getElementById("chat-list");
+    const addChatBtn = document.getElementById("add-chat-btn");
+    let chatCount = 1;
+
+    addChatBtn.addEventListener("click", () => {
+      const chatName = `Chat ${chatCount++}`;
+      const chatItem = document.createElement("li");
+      chatItem.className = "chat-item";
+      chatItem.textContent = chatName;
+
+      chatItem.addEventListener("click", () => {
+        alert(`Switched to ${chatName}`);
+      });
+
+      chatList.appendChild(chatItem);
+    });
+  });
+</script>
+
 
 </body>
 </html>
