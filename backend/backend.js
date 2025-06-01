@@ -1,3 +1,4 @@
+
 document.addEventListener("DOMContentLoaded", () => {
     const textarea = document.getElementById("input");
     const chat = document.getElementById("chat");
@@ -102,3 +103,4 @@ document.addEventListener("DOMContentLoaded", () => {
         textarea.focus();
     });
 });
+
