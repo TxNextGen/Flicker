@@ -13,11 +13,6 @@
 <div id="auth-box">
   <button id="signin-btn">Sign In</button>
 </div>
-<script>
-  document.getElementById('signin-btn').addEventListener('click', () => {
-    window.location.href = 'signin.html';
-  });
-</script>
 
 <nav id="sidebar">
   <ul>
@@ -30,12 +25,12 @@
       </button>
     </li>
 
-    <!-- 🆕 Add Chat Button -->
+    <!-- Add Chat Button -->
     <li>
-      <button id="add-chat-btn">➕ Add Chat</button>
+      <button id="add-chat-btn">➕ New Chat</button>
     </li>
 
-    <!-- 🆕 Chat List Container -->
+    <!-- Chat List Container -->
     <li>
       <ul id="chat-list"></ul>
     </li>
@@ -75,9 +70,6 @@
     </li>
   </ul>
 
-
-
-
   <div id="sidebar-footer">
     <div class="sidebar-footer-line"></div>
     <div class="sidebar-footer-text">
@@ -88,9 +80,11 @@
 </nav>
 
 <main>
-  <h1><img src="images/logo.png" alt="F" id="title-logo" aria-hidden="true" />licker AI</h1>
-  <h3 id="subtitle"><b><u>#1 School Chatbot</u></b></h3>
-  <h3>Your Personal Genius for Every Quiz &amp; Question.</h3>
+  <div id="header-container">
+    <h1><img src="images/logo.png" alt="F" id="title-logo" aria-hidden="true" />licker AI</h1>
+    <h3 id="subtitle"><b><u>#1 School Chatbot</u></b></h3>
+    <h3>Your Personal Genius for Every Quiz &amp; Question.</h3>
+  </div>
 
   <div id="placeholder-container">
     <div class="placeholder-left">
@@ -142,31 +136,8 @@
 
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.5/dist/purify.min.js" defer></script>
-<script src="style.js" defer></script>
-<script src="backend/backend.js" defer></script>
-
-
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const chatList = document.getElementById("chat-list");
-    const addChatBtn = document.getElementById("add-chat-btn");
-    let chatCount = 1;
-
-    addChatBtn.addEventListener("click", () => {
-      const chatName = `Chat ${chatCount++}`;
-      const chatItem = document.createElement("li");
-      chatItem.className = "chat-item";
-      chatItem.textContent = chatName;
-
-      chatItem.addEventListener("click", () => {
-        alert(`Switched to ${chatName}`);
-      });
-
-      chatList.appendChild(chatItem);
-    });
-  });
-</script>
-
+<script src="backend/backend.js"></script>
+<script src="style.js"></script>
 
 </body>
 </html>
