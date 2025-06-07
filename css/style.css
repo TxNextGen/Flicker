@@ -353,7 +353,7 @@ h3 {
     width: auto;
     vertical-align: middle;
     display: inline-block;
-    margin-right: -25px;
+    margin-right: -8px; /* Alright i fixed the logo Vander so dont cry no more */
     position: relative;
     top: -7px;
 

@@ -1,4 +1,4 @@
-// The memory does not work right so vander dont cry about the memory sucking right now //
+// The chats saves Now Vander now no need to Cry No more 
 
 document.getElementById('signin-btn').addEventListener('click', () => {
 window.location.href = 'signin.html';
@@ -13,19 +13,40 @@ const addChatBtn = document.getElementById("add-chat-btn");
 const chatList = document.getElementById("chat-list");
 
 const CHATS_STORAGE_KEY = "flicker_all_chats";
+const CURRENT_CHAT_KEY = "flicker_current_chat";
 let currentChatId = null;
 let allChats = {};
 
 
 function loadAllChats() {
+try {
+const stored = localStorage.getItem(CHATS_STORAGE_KEY);
+if (stored) {
+allChats = JSON.parse(stored);
+}
 
+const lastChatId = localStorage.getItem(CURRENT_CHAT_KEY);
+if (lastChatId && allChats[lastChatId]) {
+currentChatId = lastChatId;
+switchToChat(lastChatId);
+}
+} catch (error) {
+console.error('Error loading chats:', error);
 allChats = {};
+}
 }
 
 
 function saveAllChats() {
-
-console.log('Chats saved to memory:', allChats);
+try {
+localStorage.setItem(CHATS_STORAGE_KEY, JSON.stringify(allChats));
+if (currentChatId) {
+localStorage.setItem(CURRENT_CHAT_KEY, currentChatId);
+}
+console.log('Chats saved to localStorage:', allChats);
+} catch (error) {
+console.error('Error saving chats:', error);
+}
 }
 
 
@@ -44,7 +65,8 @@ const chatTitle = firstMessage ?
 allChats[chatId] = {
 id: chatId,
 title: chatTitle,
-messages: []
+messages: [],
+createdAt: new Date().toISOString()
 };
 
 currentChatId = chatId;
@@ -58,6 +80,7 @@ function switchToChat(chatId) {
 if (!allChats[chatId]) return;
 
 currentChatId = chatId;
+localStorage.setItem(CURRENT_CHAT_KEY, chatId);
 loadChatMessages(chatId);
 updateChatListSelection();
 
@@ -101,10 +124,26 @@ function saveMessageToCurrentChat(sender, text) {
 if (!currentChatId) return;
 
 if (!allChats[currentChatId]) {
-allChats[currentChatId] = { id: currentChatId, title: "New Chat", messages: [] };
+allChats[currentChatId] = { 
+id: currentChatId, 
+title: "New Chat", 
+messages: [],
+createdAt: new Date().toISOString()
+};
 }
 
-allChats[currentChatId].messages.push({ sender, text });
+allChats[currentChatId].messages.push({ 
+sender, 
+text, 
+timestamp: new Date().toISOString() 
+});
+
+
+if (allChats[currentChatId].title === "New Chat" && sender === "user") {
+const newTitle = text.length > 30 ? text.substring(0, 30) + "..." : text;
+allChats[currentChatId].title = newTitle;
+}
+
 saveAllChats();
 }
 
@@ -112,9 +151,12 @@ saveAllChats();
 function updateChatList() {
 chatList.innerHTML = '';
 
-const chatIds = Object.keys(allChats).sort((a, b) =>
-new Date(allChats[b].id.split('_')[1]) - new Date(allChats[a].id.split('_')[1])
-);
+
+const chatIds = Object.keys(allChats).sort((a, b) => {
+const timeA = allChats[a].createdAt || allChats[a].id.split('_')[1];
+const timeB = allChats[b].createdAt || allChats[b].id.split('_')[1];
+return new Date(timeB) - new Date(timeA);
+});
 
 chatIds.forEach(chatId => {
 const chatData = allChats[chatId];
@@ -151,6 +193,7 @@ item.classList.remove('active');
 
 function startNewChat() {
 currentChatId = null;
+localStorage.removeItem(CURRENT_CHAT_KEY);
 chat.innerHTML = '';
 
 
@@ -183,10 +226,10 @@ e.preventDefault();
 e.stopPropagation();
 
 
-const chatButton = e.target.classList.contains('chat-button') ? 
-e.target : 
+const chatButton = e.target.classList.contains('chat-button') ?
+e.target :
 e.target.closest('.chat-button');
-        
+
 if (chatButton && chatButton.dataset.chatId) {
 const chatId = chatButton.dataset.chatId;
 switchToChat(chatId);
@@ -296,6 +339,7 @@ saveMessageToCurrentChat("user", userMessage);
 textarea.value = "";
 textarea.style.height = "auto";
 
+
 const aiDiv = document.createElement("div");
 aiDiv.className = "message ai";
 aiDiv.textContent = "Flicker AI is typing...";
@@ -345,6 +389,21 @@ saveMessageToCurrentChat("error", "Error talking to AI.");
 });
 }
 
+
+function clearAllChats() {
+if (confirm('Are you sure you want to delete all chats? This cannot be undone.')) {
+localStorage.removeItem(CHATS_STORAGE_KEY);
+localStorage.removeItem(CURRENT_CHAT_KEY);
+allChats = {};
+currentChatId = null;
+startNewChat();
+updateChatList();
+console.log('All chats cleared');
+}
+}
+
+
+window.clearAllChats = clearAllChats;
 loadAllChats();
 updateChatList();
 });
@@ -368,7 +427,6 @@ body.style.gridTemplateColumns = '60px 1fr';
 body.style.gridTemplateColumns = '250px 1fr';
 }
 
-
 setTimeout(() => {
 const chatContainer = document.getElementById('chat');
 const placeholder = document.getElementById("placeholder-container");
@@ -386,4 +444,4 @@ placeholder.offsetWidth;
 
 window.dispatchEvent(new Event('resize'));
 }, 100);
-}  
+}
