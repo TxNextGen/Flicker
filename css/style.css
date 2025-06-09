@@ -165,6 +165,26 @@ body {
     display: block;
 }
 
+
+#sidebar.close .btn-text,
+#sidebar.close .chat-title {
+  display: none;
+}
+
+#sidebar.close .chat-item {
+  display: none;
+}
+
+
+#sidebar.close #add-chat-btn {
+  display: flex !important;
+}
+
+
+#sidebar.close #add-chat-btn .btn-icon {
+  display: block !important;
+}
+
 #placeholder-container {
     display: flex;
     align-items: center;
@@ -486,7 +506,7 @@ h3 {
   overflow: hidden;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
-  backdrop-filter: blur(10px);
+  background-color: #303030;
   border: 1px solid transparent;
   border-radius: 12px;
 }
@@ -514,7 +534,6 @@ h3 {
     rgba(255, 255, 255, 0.04) 100%);
   border-color: rgba(255, 255, 255, 0.1);
   transform: translateY(-1px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
 .chat-item:hover::before {
@@ -774,8 +793,9 @@ h3 {
 #input {
     width: 100%;
     max-width: 100%;
-    padding: 10px;
+    padding: 15px;
     font-size: 1rem;
+    font-family: 'Raleway', sans-serif;
     border: none;
     background: transparent;
     color: white;
@@ -784,12 +804,17 @@ h3 {
     overflow-y: hidden;
     user-select: text;
     box-sizing: border-box;
-    display: block; 
+    display: block;
+    line-height: 1.5;
+    height: 50px; 
+    min-height: 50px;
+    max-height: 50px;
+    line-height: 20px; 
 }
 
 #input-area {
-    box-sizing: border-box; 
-    padding: 10px;       
+    box-sizing: border-box;
+    padding: 10px;
     width: 90%;
     max-width: 650px;
     margin: 2rem;
@@ -797,9 +822,9 @@ h3 {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: auto;
-    min-height: 60px;
-    max-height: 120px;
+    height: 70px; 
+    min-height: 70px;
+    max-height: 70px;
     position: relative;
     overflow: hidden;
     line-height: 30px;
@@ -812,15 +837,14 @@ h3 {
 
 
 
-
 #input::placeholder {
     align-items: center;
     text-align: left;
     line-height: normal;
     font-family: 'Raleway', sans-serif;
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 20px; 
 }
-
-
 
 #input::-webkit-scrollbar {
     width: 0px;
@@ -834,6 +858,23 @@ h3 {
 #input::-webkit-scrollbar-thumb {
     background: transparent;
     border: none;
+}
+
+
+@media (max-width: 768px) {
+    #input-area {
+        width: 95%;
+        margin: 1rem;
+        height: 70px;
+        min-height: 70px;
+        max-height: 70px;
+    }
+    
+    #input {
+        height: 50px;
+        min-height: 50px;
+        max-height: 50px;
+    }
 }
 
 
@@ -932,9 +973,7 @@ h3 {
 #add-chat-btn {
   width: 100%;
   padding: 12px 16px;
-  background: linear-gradient(135deg, 
-     rgba(48, 48, 48, 0.8) 0%, 
-     rgba(51, 51, 51, 0.9) 100%);
+  background:#303030;
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: #ffffff;
   font-weight: 600;
@@ -951,29 +990,17 @@ h3 {
   justify-content: center;
   gap: 8px;
   letter-spacing: 0.02em;
-  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.2);
-  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
 }
 
 #add-chat-btn::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, 
-     rgba(54, 54, 54, 0.9) 0%, 
-     rgba(66, 66, 66, 0.8) 100%);
   opacity: 0;
   transition: opacity 0.3s ease;
   border-radius: inherit;
 }
 
-#add-chat-btn:hover {
-  background: linear-gradient(135deg, 
-     rgba(78, 78, 78, 0.95) 0%, 
-     rgba(34, 34, 34, 0.9) 100%);
-  border-color: rgba(255, 255, 255, 0.2);
-  box-shadow: 0 8px 25px rgba(58, 58, 58, 0.3);
-}
 
 #add-chat-btn:hover::before {
   opacity: 1;
@@ -982,21 +1009,22 @@ h3 {
 #add-chat-btn:active {
   transform: translateY(0) scale(0.98);
   transition: transform 0.1s ease;
-  box-shadow: 0 2px 8px rgba(53, 53, 53, 0.4);
 }
 
 
 
 
-#add-chat-btn .emoji {
-  display: inline-block;
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  margin-right: 2px;
+
+
+.btn-icon{
+ transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
 }
 
-#add-chat-btn:hover .emoji {
+.btn-icon:hover{
   transform: rotate(90deg) scale(1.1);
 }
+
+
 
 
 #add-chat-btn:focus-visible {
@@ -1035,7 +1063,6 @@ h3 {
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
   transform: scale(0);
   transition: transform 0.3s ease;
   border-radius: inherit;
