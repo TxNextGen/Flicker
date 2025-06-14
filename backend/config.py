@@ -1,4 +1,4 @@
-API_KEY = "AIzaSyBioGZa_t3zWGELwqqYvV1oxlDNfrPnbqU" #Limited, cause i am not paying money for this. If you get a error dm me.
+API_KEY = "AAIzaSyAs8YUipjA3D5xIgMz4v1g8-oElPWYRVjY" #Limited, cause i am not paying money for this. If you get a error dm me.
 MEMORY_FILE = "memory.json"
 MODEL_NAME = "gemini-2.5-flash-preview-04-17" # changed from gemini-2.5-flash because that doesnt exist lol - xpki
 MAX_HISTORY = 10
