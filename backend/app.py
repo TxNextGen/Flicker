@@ -61,7 +61,10 @@ def chat():
         content_parts = []
         
         if message:
-            content_parts.append(message)
+            full_message = f"{SYSTEM_PROMPT}\n\nUser: {message}"
+            content_parts.append(full_message)
+        elif image_data:
+            content_parts.append(SYSTEM_PROMPT)
         
         if image_data:
             processed_image = process_image(image_data)
@@ -72,10 +75,7 @@ def chat():
         
         start_time = time.time()
         
-        response = model.generate_content(
-            content_parts,
-            system_instruction=SYSTEM_PROMPT
-        )
+        response = model.generate_content(content_parts)
         
         duration = time.time() - start_time
         print(f"Gemini API response time: {duration:.2f} seconds")
