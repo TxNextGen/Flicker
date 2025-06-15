@@ -1,11 +1,4 @@
 
-document.body.style.opacity = 0;
-document.body.style.transition = 'opacity 1s cubic-bezier(0.4, 0, 0.2, 1)';
-window.addEventListener('load', () => {
-  document.body.style.opacity = 1;
-});
-
-
 const input = document.getElementById('input');
 const inputArea = document.getElementById('input-area');
 

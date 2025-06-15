@@ -1,24 +1,141 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Sign Up</title>
-  <link rel="stylesheet" href="css/auth.css" />
-  <link rel="icon" href="images/flicker.png" type="image/x-icon" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flicker Chat - Sign Up</title>
+    <link rel="icon" href="images/flicker.png" type="image/x-icon" />
+      <link rel="stylesheet" href="css/auth.css">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    
 </head>
 <body>
-  <div class="form-container">
-    <form class="auth-form">
-      <h2>Sign Up</h2>
-      <input type="email" placeholder="Email" required />
-      <input type="password" placeholder="Password" required />
-      <button type="submit" class="submit-btn">Sign Up</button>
-      <div class="divider">or</div>
-      <button type="button" class="google-btn" onclick="">Sign up with Google</button>
-      <p class="bottom-text">
-        Already have an account? <a href="signin.html">Sign in</a>
-      </p>
-    </form>
-  </div>
+    <div class="form-container">
+        <form id="signup-form" class="auth-form">
+            <h2>Create Account</h2>
+            <div class="input-group">
+                <input type="text" id="signup-name" placeholder="Full name" required>
+            </div>
+            <div class="input-group">
+                <input type="email" id="signup-email" placeholder="Email address" required>
+            </div>
+            <div class="input-group">
+                <input type="password" id="signup-password" placeholder="Password" required>
+            </div>
+            <div class="input-group">
+                <input type="password" id="signup-confirm" placeholder="Confirm password" required>
+            </div>
+            <button type="submit" class="submit-btn">Create Account</button>
+            <div class="divider"></div>
+            <div id="g_id_onload"
+                 data-client_id="YOUR_GOOGLE_CLIENT_ID"
+                 data-context="signup"
+                 data-ux_mode="popup"
+                 data-callback="handleCredentialResponse"
+                 data-auto_prompt="false">
+            </div>
+            <div class="g_id_signin"
+                 data-type="standard"
+                 data-shape="rectangular"
+                 data-theme="outline"
+                 data-text="signup_with"
+                 data-size="large"
+                 data-logo_alignment="left">
+            </div>
+            <p class="bottom-text">
+                Already have an account? <a href="signin.html">Sign in</a>
+            </p>
+            <div id="signup-error" class="error"></div>
+            <div id="signup-success" class="success"></div>
+        </form>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script>
+        function handleCredentialResponse(response) {
+            const credential = response.credential;
+            const payload = JSON.parse(atob(credential.split('.')[1]));
+            
+            const googleUser = {
+                id: 'google_' + payload.sub,
+                name: payload.name,
+                email: payload.email,
+                picture: payload.picture,
+                provider: 'google',
+                createdAt: new Date().toISOString()
+            };
+            
+            UserManager.setCurrentUser(googleUser);
+            window.location.href = 'index.html';
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('signup-error');
+            const successDiv = document.getElementById('signup-success');
+            
+            successDiv.classList.remove('show');
+            errorDiv.textContent = message;
+            errorDiv.classList.add('show');
+        }
+
+        function showSuccess(message) {
+            const errorDiv = document.getElementById('signup-error');
+            const successDiv = document.getElementById('signup-success');
+            
+            errorDiv.classList.remove('show');
+            successDiv.textContent = message;
+            successDiv.classList.add('show');
+        }
+
+        function clearMessages() {
+            const errorDiv = document.getElementById('signup-error');
+            const successDiv = document.getElementById('signup-success');
+            
+            errorDiv.classList.remove('show');
+            successDiv.classList.remove('show');
+        }
+
+        document.getElementById('signup-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('signup-name').value.trim();
+            const email = document.getElementById('signup-email').value.trim();
+            const password = document.getElementById('signup-password').value;
+            const confirmPassword = document.getElementById('signup-confirm').value;
+            
+            clearMessages();
+            
+           
+            if (!name || !email || !password || !confirmPassword) {
+                showError('Please fill in all fields');
+                return;
+            }
+            
+       
+            if (password !== confirmPassword) {
+                showError('Passwords do not match');
+                return;
+            }
+            
+
+            if (password.length < 6) {
+                showError('Password must be at least 6 characters');
+                return;
+            }
+            
+            try {
+                const user = UserManager.signUp(name, email, password);
+                showSuccess('Account created successfully!');
+                
+                setTimeout(() => {
+                    UserManager.setCurrentUser(user);
+                    window.location.href = 'index.html';
+                }, 1000);
+                
+            } catch (error) {
+                showError(error.message);
+            }
+        });
+    </script>
 </body>
 </html>

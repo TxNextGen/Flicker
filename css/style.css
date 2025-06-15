@@ -497,7 +497,7 @@ h3 {
   }
 }
 
-    
+
 #cookie-consent {
   position: fixed;
   bottom: 20px;
@@ -561,8 +561,9 @@ h3 {
 }
 
 .cookie-accept {
-  background: #3d3d3d;
+  border: 1px solid #555;
   color: white;
+  background: transparent;
 }
 
 .cookie-accept:hover {
