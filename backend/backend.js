@@ -1,3 +1,4 @@
+// Added the cookies this is a experiment text rn 
 
 class CookieManager {
   constructor() {
