@@ -807,7 +807,7 @@ requestBody.image = tempImage;
 
 console.log('Sending request with image:', !!tempImage);
 
-const res = await fetch("https://flickerbackend2.onrender.com", {
+const res = await fetch("https://flickerbackend3.onrender.com", {
 method: "POST",
 headers: { "Content-Type": "application/json" },
 body: JSON.stringify(requestBody)
