@@ -28,7 +28,7 @@ When analyzing images, be detailed and helpful in your descriptions.
 """
 
 def process_image(image_data):
-"""Process base64 image data for Gemini API"""  # I Might be him 
+"""Process base64 image data for Gemini API""" 
 try:
 
 if ',' in image_data:
@@ -108,5 +108,3 @@ return "✅ Flask API is running (Gemini with Image Support). Use POST to send m
 if __name__ == "__main__":
 port = int(os.environ.get("PORT", 5000))
 app.run(host="0.0.0.0", port=port)
-
-
