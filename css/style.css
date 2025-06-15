@@ -927,7 +927,7 @@ body.cookies-declined main {
 #input {
     width: 100%;
     max-width: 100%;
-    padding: 15px;
+    padding: 15px 50px 15px 45px;
     font-size: 1rem;
     font-family: 'Raleway', sans-serif;
     border: none;
@@ -940,11 +940,11 @@ body.cookies-declined main {
     box-sizing: border-box;
     display: block;
     line-height: 1.5;
-    height: 50px; 
+    height: 50px;
     min-height: 50px;
     max-height: 50px;
-    line-height: 20px; 
 }
+
 
 #input-area {
     box-sizing: border-box;
@@ -953,14 +953,14 @@ body.cookies-declined main {
     max-width: 650px;
     margin: 2rem;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
     justify-content: center;
-    height: 70px; 
+    height: 70px;
     min-height: 70px;
     max-height: 70px;
     position: relative;
-    overflow: hidden;
+    overflow: visible; 
     line-height: 30px;
     border-radius: 20px;
     border: 0.5px solid rgba(255, 255, 255, 0.4);
@@ -969,15 +969,120 @@ body.cookies-declined main {
     margin-top: 2rem;
 }
 
+#image-upload-btn {
+    position: absolute;
+    left: 15px;
+    top: 52%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
+    z-index: 2;
+}
+
+#image-upload-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+#image-upload-btn svg {
+    width: 20px;
+    height: 20px;
+    fill: rgba(255, 255, 255, 0.7);
+    transition: fill 0.2s ease;
+}
+
+#image-upload-btn:hover svg {
+    fill: rgba(255, 255, 255, 1);
+}
+
+#image-upload-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+#image-input {
+    display: none;
+}
+
+#send {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
+}
+
+.image-preview {
+    position: absolute;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(40, 40, 40, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    padding: 12px;
+    max-width: 300px;
+    display: none;
+    z-index: 10;
+}
+
+.image-preview.show {
+    display: block;
+}
+
+.image-preview img {
+    max-width: 100%;
+    max-height: 150px;
+    border-radius: 8px;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.image-preview-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.image-preview-name {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.85rem;
+    font-family: 'Raleway', sans-serif;
+    flex: 1;
+    margin-right: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.remove-image-btn {
+    background: rgba(255, 59, 48, 0.8);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.remove-image-btn:hover {
+    background: rgba(255, 59, 48, 1);
+}
 
 
 #input::placeholder {
-    align-items: center;
-    text-align: left;
-    line-height: normal;
-    font-family: 'Raleway', sans-serif;
     color: rgba(255, 255, 255, 0.7);
-    line-height: 20px; 
+    font-family: 'Raleway', sans-serif;
+    line-height: 22px;
 }
 
 #input::-webkit-scrollbar {
@@ -993,7 +1098,6 @@ body.cookies-declined main {
     background: transparent;
     border: none;
 }
-
 
 @media (max-width: 768px) {
     #input-area {
@@ -1037,33 +1141,59 @@ body.cookies-declined main {
 
 
 
-
 #send {
     position: absolute;
-    top: 20%;                 
+    top: 50%; 
+    transform: translateY(-50%); 
     right: 10px;
     width: 35px;
     height: 35px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: rgba(80, 80, 80, 0.671);
-    border: none;
-    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(100, 100, 100, 0.8), rgba(60, 60, 60, 0.9)); /* Better gradient background */
+    border: 1px solid rgba(255, 255, 255, 0.2); 
+    border-radius: 12px; 
     cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); 
+    backdrop-filter: blur(10px); 
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); 
 }
 
+#send:hover {
+    background: linear-gradient(135deg, rgba(120, 120, 120, 0.9), rgba(80, 80, 80, 1));
+    transform: translateY(-50%) scale(1.08);
+    box-shadow: 0 4px 16px rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+#send:active {
+    transform: translateY(-50%) scale(0.95);
+    box-shadow: 0 2px 8px rgba(255, 255, 255, 0.15);
+}
 
 #send img {
     width: 15px;
     height: 15px;
+    opacity: 0.9;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+#send:hover img {
+    opacity: 1;
+    transform: scale(1.1);
 }
 
 #send:disabled {
     opacity: 0.5;
     cursor: not-allowed;
     box-shadow: none;
-} 
+    transform: translateY(-50%); 
+}
+
+#send:disabled img {
+    opacity: 0.3;
+}
 
 
 #footer {

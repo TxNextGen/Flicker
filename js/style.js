@@ -1,4 +1,3 @@
-
 const input = document.getElementById('input');
 const inputArea = document.getElementById('input-area');
 
@@ -12,23 +11,6 @@ input.addEventListener('blur', () => {
 
 
 const sendButton = document.getElementById('send');
-sendButton.style.transition = 'transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease';
-sendButton.addEventListener('mouseenter', () => {
-  sendButton.style.transform = 'scale(1.08)';
-  sendButton.style.boxShadow = '0 0 8px 2px rgba(255, 255, 255, 0.25)';
-});
-sendButton.addEventListener('mouseleave', () => {
-  sendButton.style.transform = 'scale(1)';
-  sendButton.style.boxShadow = 'none';
-});
-sendButton.addEventListener('mousedown', () => {
-  sendButton.style.transform = 'scale(0.95)';
-  sendButton.style.boxShadow = '0 0 12px 4px rgba(255, 255, 255, 0.35)';
-});
-sendButton.addEventListener('mouseup', () => {
-  sendButton.style.transform = 'scale(1.08)';
-  sendButton.style.boxShadow = '0 0 8px 2px rgba(255, 255, 255, 0.25)';
-});
 
 
 const boxes = document.querySelectorAll('.placeholder-box');
@@ -53,7 +35,6 @@ window.addEventListener('load', () => {
   revealBoxes();
 });
 
-
 document.querySelectorAll('.nav-button').forEach(button => {
   button.style.cursor = 'pointer';
   button.addEventListener('mouseenter', () => {
@@ -67,7 +48,6 @@ document.querySelectorAll('.nav-button').forEach(button => {
     button.style.boxShadow = 'none';
   });
 });
-
 
 boxes.forEach(box => {
   box.style.cursor = 'pointer';
@@ -114,4 +94,3 @@ function toggleSidebar() {
   sidebar.classList.toggle('close');
   toggleBtn.classList.toggle('rotated');
 }
-

@@ -1,142 +1,178 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="css/style.css" />
-  <link rel="icon" href="images/logo.png" type="image/x-icon" />
-  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@100;300;400;500;600;700;900&display=swap" rel="stylesheet" />
-  <title>Flicker AI - School Chatbot</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet" href="css/style.css" />
+<link rel="icon" href="images/logo.png" type="image/x-icon" />
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@100;300;400;500;600;700;900&display=swap" rel="stylesheet" />
+<title>Flicker AI - School Chatbot</title>
 </head>
 <body>
 
 
-  <div id="cookie-consent">
-    <div class="cookie-content">
-      <div class="cookie-text">
-        <h4>🍪 We use cookies to improve your experience</h4>
-        <p>Our site uses cookies to remember your logins, store chat history, personalize your interactions, and enhance overall performance. By using our services, you consent to our cookie policy.</p>
-      </div>
-      <div class="cookie-buttons">
-        <button class="cookie-btn cookie-decline" id="decline-cookies">Decline</button>
-        <button class="cookie-btn cookie-accept" id="accept-cookies">Accept</button>
-      </div>
-    </div>
-  </div>
+<div id="cookie-consent">
+<div class="cookie-content">
+<div class="cookie-text">
+<h4>🍪 We use cookies to improve your experience</h4>
+<p>Our site uses cookies to remember your logins, store chat history, personalize your interactions, and enhance overall performance. By using our services, you consent to our cookie policy.</p>
+</div>
+<div class="cookie-buttons">
+<button class="cookie-btn cookie-decline" id="decline-cookies">Decline</button>
+<button class="cookie-btn cookie-accept" id="accept-cookies">Accept</button>
+</div>
+</div>
+</div>
 
 
-  <div id="cookie-notice" class="cookie-notice">
-    <h3>Cookies Required</h3>
-    <p>To use Flicker AI's full features including login and chat history, please accept cookies.</p>
-    <button class="cookie-btn cookie-accept" onclick="showCookieConsent()">Accept Cookies</button>
-  </div>
+<div id="cookie-notice" class="cookie-notice">
+<h3>Cookies Required</h3>
+<p>To use Flicker AI's full features including login and chat history, please accept cookies.</p>
+<button class="cookie-btn cookie-accept" onclick="showCookieConsent()">Accept Cookies</button>
+</div>
 
 
-  <script id="gtag-script" type="text/plain">
-    (function() {
-      var script = document.createElement('script');
-      script.async = true;
-      script.src = 'https://www.googletagmanager.com/gtag/js?id=G-1Q4K4492QV';
-      document.head.appendChild(script);
-      
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-1Q4K4492QV');
-    })();
-  </script>
+<script id="gtag-script" type="text/plain">
+(function() {
+var script = document.createElement('script');
+script.async = true;
+script.src = 'https://www.googletagmanager.com/gtag/js?id=G-1Q4K4492QV';
+document.head.appendChild(script);
 
-  <div id="auth-box">
-  <button id="signin-btn">Sign In</button>
-    </div>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-1Q4K4492QV');
+})();
+</script>
+
+<div id="auth-box">
+<button id="signin-btn">Sign In</button>
+</div>
 
 <nav id="sidebar">
-  <ul>
-    <li class="logo-row">
-      <span class="logo">Flicker</span>
-      <button onclick="toggleSidebar()" id="toggle-btn">
-        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3">
-          <path d="M440-240 200-480l240-240 56 56-183 184 183 184-56 56Zm264 0L464-480l240-240 56 56-183 184 183 184-56 56Z"/>
-        </svg>
-      </button>
-    </li>
-
- <li>
-  <button id="add-chat-btn">
-    <img src="images/plus.png" alt="Add" class="btn-icon">
-    <span class="btn-text">New Chat</span>
-  </button>
+<ul>
+<li class="logo-row">
+<span class="logo">Flicker</span>
+<button onclick="toggleSidebar()" id="toggle-btn">
+<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3">
+<path d="M440-240 200-480l240-240 56 56-183 184 183 184-56 56Zm264 0L464-480l240-240 56 56-183 184 183 184-56 56Z"/>
+</svg>
+</button>
 </li>
 
-    <li>
-      <ul id="chat-list"></ul>
-    </li>
+<li>
+<button id="add-chat-btn">
+<img src="images/plus.png" alt="Add" class="btn-icon">
+<span class="btn-text">New Chat</span>
+</button>
+</li>
 
-  <div id="sidebar-footer">
-    <div class="sidebar-footer-line"></div>
-    <div class="sidebar-footer-text">
-      © Flicker Artificial, All rights reserved.
-    </div>
-    <div class="sidebar-footer-copyright">©</div>
-  </div>
+<li>
+<ul id="chat-list"></ul>
+</li>
 
-  
+<div id="sidebar-footer">
+<div class="sidebar-footer-line"></div>
+<div class="sidebar-footer-text">
+© Flicker Artificial, All rights reserved.
+</div>
+<div class="sidebar-footer-copyright">©</div>
+</div>
+
+
 
 </nav>
 
 <main>
-  <div id="header-container">
-    <h1><img src="images/logo.png" alt="F" id="title-logo" aria-hidden="true" />licker AI</h1>
-    <h3 id="subtitle"><b><u>#1 School Chatbot</u></b></h3>                                              
-    <h3>Your Personal Genius for Every Quiz &amp; Question.</h3>
-  </div>
+<div id="header-container">
+<h1><img src="images/logo.png" alt="F" id="title-logo" aria-hidden="true" />licker AI</h1>
+<h3 id="subtitle"><b><u>#1 School Chatbot</u></b></h3>
+<h3>Your Personal Genius for Every Quiz &amp; Question.</h3>
+</div>
 
-  <div id="placeholder-container">
-    <div class="placeholder-left">
-      <div class="placeholder-box small-box">
-        <div class="box-content">
-          <h4 class="box-title">AI Math Solving</h4>
-          <p class="box-subtitle">Step-by-step calculations</p>
-          <img src="images/algebra.png" alt="Math Icon" class="box-icon">
-        </div>
-      </div>
-      <div class="placeholder-box small-box">
-        <div class="box-content">
-          <h4 class="box-title">AI Writing</h4>
-          <p class="box-subtitle">Refine and improve writing</p>
-          <img src="images/pen-tool.png" alt="Essay Icon" class="box-icon">
-        </div>
-      </div>
-      <div class="placeholder-box small-box">
-        <div class="box-content">
-          <h4 class="box-title">AI Translating</h4>
-          <p class="box-subtitle">Learn new words & phrases</p>
-          <img src="images/translate.png" alt="Language Icon" class="box-icon">
-        </div>
-      </div>
-    </div>
+<div id="placeholder-container">
+<div class="placeholder-left">
+<div class="placeholder-box small-box">
+<div class="box-content">
+<h4 class="box-title">AI Math Solving</h4>
+<p class="box-subtitle">Step-by-step calculations</p>
+<img src="images/algebra.png" alt="Math Icon" class="box-icon">
+</div>
+</div>
+<div class="placeholder-box small-box">
+<div class="box-content">
+<h4 class="box-title">AI Writing</h4>
+<p class="box-subtitle">Refine and improve writing</p>
+<img src="images/pen-tool.png" alt="Essay Icon" class="box-icon">
+</div>
+</div>
+<div class="placeholder-box small-box">
+<div class="box-content">
+<h4 class="box-title">AI Translating</h4>
+<p class="box-subtitle">Learn new words & phrases</p>
+<img src="images/translate.png" alt="Language Icon" class="box-icon">
+</div>
+</div>
+</div>
 
-    <div class="placeholder-box large-box">
-      <div class="large-box">
-        <div class="inner-box">
-          <div class="box-text">
-            <h4 class="box-title">Multiple Workspaces</h4>
-            <p class="box-subtitle">Solve everything here with Flicker</p>
-          </div>
-          <img src="images/open-book.png" alt="Icon" class="box-icon">
-        </div>
-      </div>
-    </div>
-  </div>
+<div class="placeholder-box large-box">
+<div class="large-box">
+<div class="inner-box">
+<div class="box-text">
+<h4 class="box-title">Multiple Workspaces</h4>
+<p class="box-subtitle">Solve everything here with Flicker</p>
+</div>
+<img src="images/open-book.png" alt="Icon" class="box-icon">
+</div>
+</div>
+</div>
+</div>
 
-  <div id="chat" role="log" aria-live="polite" aria-relevant="additions"></div>
+<div id="chat" role="log" aria-live="polite" aria-relevant="additions"></div>
 
-  <div id="input-area">
-    <textarea id="input" placeholder="Send a message" autocomplete="off" rows="2" aria-label="Send a message"></textarea>
-    <button id="send" type="button" aria-label="Send message">
-      <img src="images/up-arrow.png" alt="Send Arrow" aria-hidden="true" />
-    </button>
-  </div>
+
+
+<div id="input-area">
+<button id="image-upload-btn" type="button" aria-label="Upload image">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+<path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
+</svg>
+</button>
+
+
+<input
+type="file"
+id="image-input"
+accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
+aria-label="Select image file"
+/>
+
+
+<textarea
+id="input"
+placeholder="Send a message"
+autocomplete="off"
+rows="2"
+aria-label="Send a message"
+></textarea>
+
+
+<button id="send" type="button" aria-label="Send message">
+<img src="images/up-arrow.png" alt="Send Arrow" aria-hidden="true" />
+</button>
+</div>
+
+
+<div id="image-preview" class="image-preview">
+<img src="" alt="Selected image preview" />
+<div class="image-preview-controls">
+<span class="image-preview-name"></span>
+<button id="remove-image-btn" class="remove-image-btn">Remove</button>
+</div>
+</div>
 </main>
 
 
@@ -146,5 +182,8 @@
 <script src="backend/backend.js"></script>
 <script src="js/style.js"></script>
 <script src="js/auth.js"></script>
+
+
 </body>
 </html>
+
