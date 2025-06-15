@@ -10,15 +10,41 @@
 </head>
 <body>
 
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-1Q4K4492QV"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
 
-  gtag('config', 'G-1Q4K4492QV');
-</script>
+  <div id="cookie-consent">
+    <div class="cookie-content">
+      <div class="cookie-text">
+        <h4>🍪 We use cookies to improve your experience</h4>
+        <p>Our site uses cookies to remember your logins, store chat history, personalize your interactions, and enhance overall performance. By using our services, you consent to our cookie policy.</p>
+      </div>
+      <div class="cookie-buttons">
+        <button class="cookie-btn cookie-decline" id="decline-cookies">Decline</button>
+        <button class="cookie-btn cookie-accept" id="accept-cookies">Accept</button>
+      </div>
+    </div>
+  </div>
+
+
+  <div id="cookie-notice" class="cookie-notice">
+    <h3>Cookies Required</h3>
+    <p>To use Flicker AI's full features including login and chat history, please accept cookies.</p>
+    <button class="cookie-btn cookie-accept" onclick="showCookieConsent()">Accept Cookies</button>
+  </div>
+
+
+  <script id="gtag-script" type="text/plain">
+    (function() {
+      var script = document.createElement('script');
+      script.async = true;
+      script.src = 'https://www.googletagmanager.com/gtag/js?id=G-1Q4K4492QV';
+      document.head.appendChild(script);
+      
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-1Q4K4492QV');
+    })();
+  </script>
 
 <div id="auth-box">
   <button id="signin-btn">Sign In</button>
@@ -113,10 +139,11 @@
   </div>
 </main>
 
+
+
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.5/dist/purify.min.js" defer></script>
 <script src="backend/backend.js"></script>
-<script src="style.js"></script>
-
+<script src="js/style.js"></script>
 </body>
 </html>

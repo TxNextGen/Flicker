@@ -497,9 +497,142 @@ h3 {
   }
 }
 
+    
+#cookie-consent {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  color: #ffffff;
+  padding: 20px;
+  z-index: 10000;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  max-width: 400px;
+  width: calc(100vw - 40px);
+  transform: translateX(120%);
+  transition: transform 0.3s ease-in-out;
+}
 
+#cookie-consent.show {
+  transform: translateX(0);
+}
 
+.cookie-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
 
+.cookie-text {
+  text-align: left;
+}
+
+.cookie-text h4 {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.cookie-text p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #ffffff;
+}
+
+.cookie-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.cookie-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Raleway', sans-serif;
+  flex: 1;
+}
+
+.cookie-accept {
+  background: #3d3d3d;
+  color: white;
+}
+
+.cookie-accept:hover {
+  background: #3d3d3d;
+  transform: translateY(-1px);
+}
+
+.cookie-decline {
+  background: transparent;
+  color: #e3e3e3;
+  border: 1px solid #555;
+}
+
+.cookie-decline:hover {
+  background: #555;
+  color: white;
+}
+
+@media (max-width: 768px) {
+  #cookie-consent {
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
+    max-width: none;
+    width: calc(100vw - 40px);
+  }
+  
+  .cookie-buttons {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .cookie-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  #cookie-consent {
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
+    width: calc(100vw - 20px);
+    padding: 16px;
+  }
+}
+
+body.cookies-declined #sidebar,
+body.cookies-declined main {
+  filter: blur(2px);
+  pointer-events: none;
+}
+
+.cookie-notice {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #1a1a1a;
+  color: white;
+  padding: 30px;
+  border-radius: 10px;
+  text-align: center;
+  z-index: 10001;
+  display: none;
+}
+
+.cookie-notice.show {
+  display: block;
+}
 
 .chat-item {
   margin-bottom: 2px;
