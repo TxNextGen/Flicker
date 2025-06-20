@@ -1,4 +1,3 @@
-//Image Uploader Support Im him
 
 class CookieManager {
 constructor() {
@@ -281,7 +280,6 @@ window.cookieManager = cookieManager;
 
 window.getCookieManager = () => window.cookieManager || cookieManager;
 
-
 document.addEventListener('DOMContentLoaded', () => {
 const signinBtn = document.getElementById('signin-btn');
 if (signinBtn) {
@@ -296,9 +294,9 @@ window.location.href = 'signin.html';
 }
 });
 
-
 let selectedImage = null;
 let selectedImageName = '';
+let currentRenamingChatId = null;
 
 document.addEventListener("DOMContentLoaded", () => {
 const textarea = document.getElementById("input");
@@ -306,7 +304,6 @@ const chat = document.getElementById("chat");
 const sendBtn = document.getElementById("send");
 const addChatBtn = document.getElementById("add-chat-btn");
 const chatList = document.getElementById("chat-list");
-
 
 const imageUploadBtn = document.getElementById('image-upload-btn');
 const imageInput = document.getElementById('image-input');
@@ -318,6 +315,8 @@ const CURRENT_CHAT_KEY = "flicker_current_chat";
 let currentChatId = null;
 let allChats = {};
 
+
+createRenamePopup();
 
 if (imageUploadBtn && imageInput) {
 console.log('Image upload elements found, initializing...');
@@ -341,18 +340,65 @@ if (removeImageBtn) {
 removeImageBtn.addEventListener('click', clearSelectedImage);
 }
 
+function createRenamePopup() {
+if (document.getElementById('rename-popup')) return;
+
+const popupHTML = `
+<div id="rename-popup" class="popup-overlay">
+<div class="popup-content">
+<h3>Rename Chat</h3>
+<input type="text" id="rename-input" placeholder="Enter new chat name">
+<div class="popup-buttons">
+<button id="cancel-rename" class="popup-btn cancel-btn">Cancel</button>
+<button id="save-rename" class="popup-btn save-btn">Save</button>
+</div>
+</div>
+</div>
+`;
+
+document.body.insertAdjacentHTML('beforeend', popupHTML);
+const renamePopup = document.getElementById('rename-popup');
+const renameInput = document.getElementById('rename-input');
+const saveRenameBtn = document.getElementById('save-rename');
+const cancelRenameBtn = document.getElementById('cancel-rename');
+
+if (saveRenameBtn) {
+saveRenameBtn.addEventListener('click', saveRename);
+}
+
+if (cancelRenameBtn) {
+cancelRenameBtn.addEventListener('click', cancelRename);
+}
+
+if (renameInput) {
+renameInput.addEventListener('keydown', (e) => {
+if (e.key === 'Enter') {
+saveRename();
+} else if (e.key === 'Escape') {
+cancelRename();
+}
+});
+}
+
+if (renamePopup) {
+renamePopup.addEventListener('click', (e) => {
+if (e.target === renamePopup) {
+cancelRename();
+}
+});
+}
+}
+
 function handleImageSelect(event) {
 console.log('Image selected');
 const file = event.target.files[0];
 if (!file) return;
-
 
 const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
 if (!validTypes.includes(file.type)) {
 alert('Please select a valid image file (JPEG, PNG, GIF, or WebP)');
 return;
 }
-
 
 const maxSize = 5 * 1024 * 1024;
 if (file.size > maxSize) {
@@ -366,7 +412,6 @@ selectedImage = e.target.result;
 selectedImageName = file.name;
 console.log('Image loaded:', selectedImageName);
 showImagePreview(selectedImage, selectedImageName);
-
 
 const input = document.getElementById('input');
 const uploadBtn = document.getElementById('image-upload-btn');
@@ -398,7 +443,6 @@ selectedImageName = '';
 
 if (imageInput) imageInput.value = '';
 if (imagePreview) imagePreview.classList.remove('show');
-
 
 const input = document.getElementById('input');
 const uploadBtn = document.getElementById('image-upload-btn');
@@ -545,7 +589,23 @@ allChats[currentChatId].title = newTitle;
 saveAllChats();
 }
 
+
+function createChatMenuHTML() {
+return `
+<button class="chat-menu-btn" type="button">
+<img src="images/dots.png" alt="Menu" class="menu-icon">
+</button>
+<div class="chat-menu">
+<button class="menu-option rename-option" type="button">Rename Chat</button>
+<button class="menu-option delete-option" type="button">Delete</button>
+</div>
+`;
+}
+
+
 function updateChatList() {
+if (!chatList) return;
+
 chatList.innerHTML = '';
 
 const chatIds = Object.keys(allChats).sort((a, b) => {
@@ -558,26 +618,206 @@ chatIds.forEach(chatId => {
 const chatData = allChats[chatId];
 const li = document.createElement('li');
 li.className = 'chat-item';
+li.setAttribute('data-chat-id', chatId);
+
 if (chatId === currentChatId) {
 li.classList.add('active');
 }
 
 li.innerHTML = `
-<button class="chat-button" data-chat-id="${chatId}">
+<button class="chat-button" data-chat-id="${chatId}" type="button">
 <span class="chat-title">${chatData.title}</span>
-<button class="delete-chat" data-chat-id="${chatId}">×</button>
 </button>
+${createChatMenuHTML()}
 `;
 
 chatList.appendChild(li);
+
+
+bindChatItemEvents(li, chatId, chatData);
 });
+}
+
+
+function bindChatItemEvents(chatItem, chatId, chatData) {
+const chatButton = chatItem.querySelector('.chat-button');
+const menuBtn = chatItem.querySelector('.chat-menu-btn');
+const menu = chatItem.querySelector('.chat-menu');
+const renameOption = chatItem.querySelector('.rename-option');
+const deleteOption = chatItem.querySelector('.delete-option');
+
+
+if (chatButton) {
+chatButton.addEventListener('click', (e) => {
+e.preventDefault();
+e.stopPropagation();
+
+if (!window.getCookieManager()?.canUseCookies()) {
+window.getCookieManager()?.showCookieNotice();
+return;
+}
+
+switchToChat(chatId);
+});
+}
+
+
+if (menuBtn && menu) {
+menuBtn.addEventListener('click', (e) => {
+e.preventDefault();
+e.stopPropagation();
+
+console.log('Menu button clicked!', chatId);
+
+
+document.querySelectorAll('.chat-menu.show').forEach(m => {
+if (m !== menu) {
+m.classList.remove('show');
+}
+});
+
+
+menu.classList.toggle('show');
+
+console.log('Menu should now be visible:', menu.classList.contains('show'));
+});
+}
+
+
+if (renameOption) {
+renameOption.addEventListener('click', (e) => {
+e.preventDefault();
+e.stopPropagation();
+closeAllMenus();
+openRenamePopup(chatId, chatData.title);
+});
+}
+
+
+if (deleteOption) {
+deleteOption.addEventListener('click', (e) => {
+e.preventDefault();
+e.stopPropagation();
+closeAllMenus();
+deleteChat(chatId);
+});
+}
+}
+
+
+function closeAllMenus() {
+document.querySelectorAll('.chat-menu').forEach(menu => {
+menu.classList.remove('show');
+});
+}
+
+
+document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('click', (e) => {
+if (!e.target.closest('.chat-menu-btn') && !e.target.closest('.chat-menu')) {
+closeAllMenus();
+}
+});
+});
+
+
+function testMenus() {
+const menus = document.querySelectorAll('.chat-menu');
+const buttons = document.querySelectorAll('.chat-menu-btn');
+console.log('Found', menus.length, 'menus and', buttons.length, 'menu buttons');
+
+buttons.forEach((btn, index) => {
+console.log('Button', index, ':', btn);
+btn.style.border = '2px solid red'; 
+});
+
+menus.forEach((menu, index) => {
+console.log('Menu', index, ':', menu);
+menu.style.border = '2px solid blue'; 
+});
+}
+
+function debugMenuClick(chatId) {
+console.log('Debug: Menu clicked for chat:', chatId);
+const menu = document.querySelector(`[data-chat-id="${chatId}"] .chat-menu`);
+if (menu) {
+console.log('Menu element found:', menu);
+console.log('Menu classes:', menu.className);
+menu.classList.add('show');
+console.log('Added show class, new classes:', menu.className);
+} else {
+console.log('Menu element NOT found for chat:', chatId);
+}
+}
+
+
+function openRenamePopup(chatId, currentTitle) {
+currentRenamingChatId = chatId;
+const renameInput = document.getElementById('rename-input');
+const renamePopup = document.getElementById('rename-popup');
+
+if (renameInput) {
+renameInput.value = currentTitle;
+}
+if (renamePopup) {
+renamePopup.classList.add('show');
+}
+if (renameInput) {
+setTimeout(() => {
+renameInput.focus();
+renameInput.select();
+}, 100);
+}
+}
+
+function saveRename() {
+const renameInput = document.getElementById('rename-input');
+if (!currentRenamingChatId || !renameInput) return;
+
+const newTitle = renameInput.value.trim();
+if (!newTitle) return;
+
+if (allChats[currentRenamingChatId]) {
+allChats[currentRenamingChatId].title = newTitle;
+saveAllChats();
+updateChatList();
+}
+
+cancelRename();
+}
+
+function cancelRename() {
+currentRenamingChatId = null;
+const renamePopup = document.getElementById('rename-popup');
+const renameInput = document.getElementById('rename-input');
+
+if (renamePopup) {
+renamePopup.classList.remove('show');
+}
+if (renameInput) {
+renameInput.value = '';
+}
+}
+
+function deleteChat(chatId) {
+if (!chatId || !allChats[chatId]) return;
+
+if (confirm('Are you sure you want to delete this chat? This cannot be undone.')) {
+delete allChats[chatId];
+saveAllChats();
+updateChatList();
+
+if (chatId === currentChatId) {
+startNewChat();
+}
+}
 }
 
 function updateChatListSelection() {
 const chatItems = chatList.querySelectorAll('.chat-item');
 chatItems.forEach(item => {
-const button = item.querySelector('.chat-button');
-if (button.dataset.chatId === currentChatId) {
+const chatId = item.getAttribute('data-chat-id');
+if (chatId === currentChatId) {
 item.classList.add('active');
 } else {
 item.classList.remove('active');
@@ -616,38 +856,17 @@ return;
 startNewChat();
 });
 
-chatList.addEventListener("click", (e) => {
-if (!window.getCookieManager()?.canUseCookies()) {
-e.preventDefault();
-window.getCookieManager()?.showCookieNotice();
-return;
-}
 
-if (e.target.classList.contains('chat-button') || e.target.classList.contains('chat-title')) {
-e.preventDefault();
+document.addEventListener('click', (e) => {
+if (!e.target.closest('.chat-menu-btn') && !e.target.closest('.chat-menu')) {
+closeAllMenus();
+}
+});
+
+
+chatList.addEventListener('click', (e) => {
+if (e.target.closest('.chat-menu') || e.target.closest('.chat-menu-btn')) {
 e.stopPropagation();
-
-const chatButton = e.target.classList.contains('chat-button') ?
-e.target :
-e.target.closest('.chat-button');
-
-if (chatButton && chatButton.dataset.chatId) {
-const chatId = chatButton.dataset.chatId;
-switchToChat(chatId);
-}
-} else if (e.target.classList.contains('delete-chat')) {
-e.preventDefault();
-e.stopPropagation();
-const chatId = e.target.dataset.chatId;
-if (chatId && allChats[chatId]) {
-delete allChats[chatId];
-saveAllChats();
-updateChatList();
-
-if (chatId === currentChatId) {
-startNewChat();
-}
-}
 }
 });
 
@@ -725,7 +944,6 @@ return;
 
 const userMessage = textarea.value.trim();
 
-
 if (!userMessage && !selectedImage) return;
 
 if (!currentChatId) {
@@ -750,10 +968,8 @@ chatContainer.style.display = "flex";
 chatContainer.style.visibility = "visible";
 }
 
-
 const userDiv = document.createElement("div");
 userDiv.className = "message user";
-
 
 if (selectedImage) {
 const imgElement = document.createElement("img");
@@ -766,7 +982,6 @@ imgElement.style.display = "block";
 userDiv.appendChild(imgElement);
 }
 
-
 if (userMessage) {
 const textElement = document.createElement("div");
 textElement.textContent = userMessage;
@@ -776,15 +991,12 @@ userDiv.appendChild(textElement);
 chat.appendChild(userDiv);
 scrollChatToBottom();
 
-
 saveMessageToCurrentChat("user", userMessage || "Image shared");
-
 
 textarea.value = "";
 textarea.style.height = "auto";
 const tempImage = selectedImage;
 clearSelectedImage();
-
 
 const aiDiv = document.createElement("div");
 aiDiv.className = "message ai";
@@ -795,11 +1007,9 @@ scrollChatToBottom();
 textarea.disabled = true;
 
 try {
-
 const requestBody = {
 message: userMessage || "What do you see in this image?"
 };
-
 
 if (tempImage) {
 requestBody.image = tempImage;
@@ -876,6 +1086,7 @@ setTimeout(initializeChats, 100);
 
 setTimeout(initializeChats, 50);
 });
+
 
 function toggleSidebar() {
 const sidebar = document.getElementById('sidebar');

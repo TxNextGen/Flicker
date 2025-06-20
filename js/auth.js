@@ -1,4 +1,3 @@
-
 class UserManager {
     static getUsers() {
         return JSON.parse(localStorage.getItem('flickerUsers') || '[]');
@@ -19,12 +18,10 @@ class UserManager {
     static signUp(name, email, password) {
         const users = this.getUsers();
         
-
         const existingUser = users.find(user => user.email === email);
         if (existingUser) {
             throw new Error('User already exists with this email');
         }
-
 
         const newUser = {
             id: Date.now().toString(),
@@ -70,26 +67,21 @@ document.addEventListener('DOMContentLoaded', function() {
     if (authBox && signinBtn) {
         updateAuthState();
         
-
         signinBtn.addEventListener('click', function() {
             if (UserManager.isLoggedIn()) {
-
                 toggleProfileMenu();
             } else {
-              
-                window.location.href = 'signin.html';
+                window.location.href = 'Auth/signin.html';
             }
         });
     }
 });
-
 
 function updateAuthState() {
     const authBox = document.getElementById('auth-box');
     const currentUser = UserManager.getCurrentUser();
     
     if (currentUser) {
-  
         authBox.innerHTML = `
             <div class="profile-dropdown">
                 <button id="profile-btn" class="profile-btn">
@@ -114,19 +106,15 @@ function updateAuthState() {
             </div>
         `;
         
-
         setupProfileEvents();
     } else {
-  
         authBox.innerHTML = `<button id="signin-btn">Sign In</button>`;
         
-
         document.getElementById('signin-btn').addEventListener('click', function() {
-            window.location.href = 'signin.html';
+            window.location.href = 'Auth/signin.html';
         });
     }
 }
-
 
 function setupProfileEvents() {
     const profileBtn = document.getElementById('profile-btn');
@@ -139,7 +127,6 @@ function setupProfileEvents() {
             profileMenu.classList.toggle('hidden');
         });
         
-        
         document.addEventListener('click', function(e) {
             if (!profileBtn.contains(e.target) && !profileMenu.contains(e.target)) {
                 profileMenu.classList.add('hidden');
@@ -151,12 +138,10 @@ function setupProfileEvents() {
         logoutBtn.addEventListener('click', function() {
             UserManager.logout();
             updateAuthState();
-  
             window.location.reload();
         });
     }
 }
-
 
 function toggleProfileMenu() {
     const profileMenu = document.getElementById('profile-menu');
@@ -165,11 +150,9 @@ function toggleProfileMenu() {
     }
 }
 
-
 function checkAuthOnLoad() {
-
     const currentPage = window.location.pathname.split('/').pop();
     if ((currentPage === 'signin.html' || currentPage === 'signup.html') && UserManager.isLoggedIn()) {
-        window.location.href = 'index.html';
+        window.location.href = '../index.html';
     }
 }

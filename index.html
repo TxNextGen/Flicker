@@ -1,21 +1,20 @@
 
 <script>
-    // This script must be placed in BEFORE any CSS files
-(function() {
+(function() {   // Dont Remove 
   try {
     if (localStorage.getItem('sidebarClosed') === 'true') {
-      // Create and inject style immediately
       var style = document.createElement('style');
       style.id = 'sidebar-initial-state';
       style.innerHTML = '#sidebar{width:60px!important;padding:5px!important;transition:none!important}#toggle-btn svg{transform:rotate(180deg)!important;transition:none!important}#sidebar .btn-text,#sidebar .chat-title,#sidebar .chat-item,#sidebar .sidebar-footer-text{display:none!important}#sidebar .sidebar-footer-copyright{display:block!important}';
       
-      // Insert as first child of head
       var head = document.head || document.getElementsByTagName('head')[0];
       head.insertBefore(style, head.firstChild);
     }
-  } catch (e) {}
+  } catch (e) {
+  }
 })();
 </script>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -27,7 +26,6 @@
 <title>Flicker AI</title>
 </head>
 <body>
-
 
 <div id="cookie-consent">
 <div class="cookie-content">
@@ -42,13 +40,11 @@
 </div>
 </div>
 
-
 <div id="cookie-notice" class="cookie-notice">
 <h3>Cookies Required</h3>
 <p>To use Flicker AI's full features including login and chat history, please accept cookies.</p>
 <button class="cookie-btn cookie-accept" onclick="showCookieConsent()">Accept Cookies</button>
 </div>
-
 
 <script id="gtag-script" type="text/plain">
 (function() {
@@ -68,27 +64,40 @@ gtag('config', 'G-1Q4K4492QV');
 <button id="signin-btn">Sign In</button>
 </div>
 
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const signinBtn = document.getElementById('signin-btn');
+    
+    if (signinBtn) {
+        signinBtn.addEventListener('click', function() {
+            window.location.href = 'Auth/signin.html';
+        });
+    }
+});
+</script>
+
 <nav id="sidebar">
-<ul>
-<li class="logo-row">
+<div class="sidebar-header">
+<div class="logo-row">
 <span class="logo">Flicker</span>
 <button onclick="toggleSidebar()" id="toggle-btn">
 <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3">
 <path d="M440-240 200-480l240-240 56 56-183 184 183 184-56 56Zm264 0L464-480l240-240 56 56-183 184 183 184-56 56Z"/>
 </svg>
 </button>
-</li>
+</div>
 
-<li>
 <button id="add-chat-btn">
 <img src="images/plus.png" alt="Add" class="btn-icon">
 <span class="btn-text">New Chat</span>
 </button>
-</li>
+</div>
 
-<li>
-<ul id="chat-list"></ul>
-</li>
+
+<div class="chat-list-container">
+<ul class="chat-list" id="chat-list">
+</ul>
+</div>
 
 <div id="sidebar-footer">
 <div class="sidebar-footer-line"></div>
@@ -97,9 +106,6 @@ gtag('config', 'G-1Q4K4492QV');
 </div>
 <div class="sidebar-footer-copyright">©</div>
 </div>
-
-
-
 </nav>
 
 <main>
@@ -149,7 +155,6 @@ gtag('config', 'G-1Q4K4492QV');
 
 <div id="chat" role="log" aria-live="polite" aria-relevant="additions"></div>
 
-
 <div id="input-area"> 
     <button id="image-upload-btn" type="button" aria-label="Upload image"> 
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" fill="currentColor">
@@ -157,14 +162,12 @@ gtag('config', 'G-1Q4K4492QV');
         </svg>
     </button>
 
-
 <input
 type="file"
 id="image-input"
 accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
 aria-label="Select image file"
 />
-
 
 <textarea
 id="input"
@@ -174,12 +177,10 @@ rows="2"
 aria-label="Send a message"
 ></textarea>
 
-
 <button id="send" type="button" aria-label="Send message">
 <img src="images/up-arrow.png" alt="Send Arrow" aria-hidden="true" />
 </button>
 </div>
-
 
 <div id="image-preview" class="image-preview">
 <img src="" alt="Selected image preview" />
@@ -188,17 +189,14 @@ aria-label="Send a message"
 <button id="remove-image-btn" class="remove-image-btn">Remove</button>
 </div>
 </div>
+
 </main>
-
-
 
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.5/dist/purify.min.js" defer></script>
 <script src="backend/backend.js"></script>
-<script src="js/style.js"></script>
+<script src="js/index.js"></script>
 <script src="js/auth.js"></script>
-
 
 </body>
 </html>
-

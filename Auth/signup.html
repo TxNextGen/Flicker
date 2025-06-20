@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flicker Chat - Sign Up</title>
-    <link rel="icon" href="images/logo.png" type="image/x-icon" />
-      <link rel="stylesheet" href="css/auth.css">
+    <title>Flicker Ai - Sign Up</title>
+    <link rel="icon" href="../images/logo.png" type="image/x-icon" />
+    <link rel="stylesheet" href="../css/auth.css">
     <script src="https://accounts.google.com/gsi/client" async defer></script>
-    
 </head>
 <body>
     <div class="form-container">
@@ -50,7 +49,7 @@
         </form>
     </div>
 
-    <script src="js/auth.js"></script>
+    <script src="../js/auth.js"></script>
     <script>
         function handleCredentialResponse(response) {
             const credential = response.credential;
@@ -66,7 +65,7 @@
             };
             
             UserManager.setCurrentUser(googleUser);
-            window.location.href = 'index.html';
+            window.location.href = '../index.html';
         }
 
         function showError(message) {
@@ -105,19 +104,16 @@
             
             clearMessages();
             
-           
             if (!name || !email || !password || !confirmPassword) {
                 showError('Please fill in all fields');
                 return;
             }
             
-       
             if (password !== confirmPassword) {
                 showError('Passwords do not match');
                 return;
             }
             
-
             if (password.length < 6) {
                 showError('Password must be at least 6 characters');
                 return;
@@ -129,7 +125,7 @@
                 
                 setTimeout(() => {
                     UserManager.setCurrentUser(user);
-                    window.location.href = 'index.html';
+                    window.location.href = '../index.html';
                 }, 1000);
                 
             } catch (error) {
