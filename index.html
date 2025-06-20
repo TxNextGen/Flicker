@@ -1,5 +1,21 @@
 
-
+<script>
+    // This script must be placed in BEFORE any CSS files
+(function() {
+  try {
+    if (localStorage.getItem('sidebarClosed') === 'true') {
+      // Create and inject style immediately
+      var style = document.createElement('style');
+      style.id = 'sidebar-initial-state';
+      style.innerHTML = '#sidebar{width:60px!important;padding:5px!important;transition:none!important}#toggle-btn svg{transform:rotate(180deg)!important;transition:none!important}#sidebar .btn-text,#sidebar .chat-title,#sidebar .chat-item,#sidebar .sidebar-footer-text{display:none!important}#sidebar .sidebar-footer-copyright{display:block!important}';
+      
+      // Insert as first child of head
+      var head = document.head || document.getElementsByTagName('head')[0];
+      head.insertBefore(style, head.firstChild);
+    }
+  } catch (e) {}
+})();
+</script>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,7 +24,7 @@
 <link rel="stylesheet" href="css/style.css" />
 <link rel="icon" href="images/logo.png" type="image/x-icon" />
 <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@100;300;400;500;600;700;900&display=swap" rel="stylesheet" />
-<title>Flicker AI - School Chatbot</title>
+<title>Flicker AI</title>
 </head>
 <body>
 
@@ -97,21 +113,21 @@ gtag('config', 'G-1Q4K4492QV');
 <div class="placeholder-left">
 <div class="placeholder-box small-box">
 <div class="box-content">
-<h4 class="box-title">AI Math Solving</h4>
+<h4 class="box-title">Math Solving</h4>
 <p class="box-subtitle">Step-by-step calculations</p>
 <img src="images/algebra.png" alt="Math Icon" class="box-icon">
 </div>
 </div>
 <div class="placeholder-box small-box">
 <div class="box-content">
-<h4 class="box-title">AI Writing</h4>
+<h4 class="box-title"> Writing</h4>
 <p class="box-subtitle">Refine and improve writing</p>
 <img src="images/pen-tool.png" alt="Essay Icon" class="box-icon">
 </div>
 </div>
 <div class="placeholder-box small-box">
 <div class="box-content">
-<h4 class="box-title">AI Translating</h4>
+<h4 class="box-title">Translating</h4>
 <p class="box-subtitle">Learn new words & phrases</p>
 <img src="images/translate.png" alt="Language Icon" class="box-icon">
 </div>
@@ -134,13 +150,12 @@ gtag('config', 'G-1Q4K4492QV');
 <div id="chat" role="log" aria-live="polite" aria-relevant="additions"></div>
 
 
-
-<div id="input-area">
-<button id="image-upload-btn" type="button" aria-label="Upload image">
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-<path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
-</svg>
-</button>
+<div id="input-area"> 
+    <button id="image-upload-btn" type="button" aria-label="Upload image"> 
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" fill="currentColor">
+            <path d="M43.246 466.142c-58.43-60.289-57.341-157.511 1.386-217.581L254.392 34c44.316-45.332 116.351-45.336 160.671 0 43.89 44.894 43.943 117.329 0 162.276L232.214 383.128c-29.855 30.537-78.633 30.111-107.982-.998-28.275-29.97-27.368-77.473 1.452-106.953l143.743-146.835c6.182-6.314 16.312-6.422 22.626-.241l22.861 22.379c6.315 6.182 6.422 16.312.241 22.626L171.427 319.927c-4.932 5.045-5.236 13.428-.648 18.292 4.372 4.634 11.245 4.711 15.688.165l182.849-186.851c19.613-20.062 19.613-52.725-.011-72.798-19.189-19.627-49.957-19.637-69.154 0L90.39 293.295c-34.763 35.56-35.299 93.12-1.191 128.313 34.01 35.093 88.985 35.137 123.058.286l172.06-175.999c6.177-6.319 16.307-6.433 22.626-.256l22.877 22.364c6.319 6.177 6.434 16.307.256 22.626l-172.06 175.998c-59.576 60.938-155.943 60.216-214.77-.485z"/>
+        </svg>
+    </button>
 
 
 <input

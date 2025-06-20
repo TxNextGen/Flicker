@@ -788,7 +788,7 @@ clearSelectedImage();
 
 const aiDiv = document.createElement("div");
 aiDiv.className = "message ai";
-aiDiv.textContent = "Flicker AI is analyzing...";
+aiDiv.textContent = "Flicker AI is Typing...";
 chat.appendChild(aiDiv);
 scrollChatToBottom();
 
