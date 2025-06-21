@@ -1,18 +1,83 @@
 
 <script>
-(function() {   // Dont Remove 
-  try {
-    if (localStorage.getItem('sidebarClosed') === 'true') {
-      var style = document.createElement('style');
-      style.id = 'sidebar-initial-state';
-      style.innerHTML = '#sidebar{width:60px!important;padding:5px!important;transition:none!important}#toggle-btn svg{transform:rotate(180deg)!important;transition:none!important}#sidebar .btn-text,#sidebar .chat-title,#sidebar .chat-item,#sidebar .sidebar-footer-text{display:none!important}#sidebar .sidebar-footer-copyright{display:block!important}';
-      
-      var head = document.head || document.getElementsByTagName('head')[0];
+(function() {   // Dont Remove    
+  try {     
+    if (localStorage.getItem('sidebarClosed') === 'true') {       
+      var style = document.createElement('style');       
+      style.id = 'sidebar-initial-state';       
+      style.innerHTML = '#sidebar{width:60px!important;padding:5px!important;transition:none!important}#toggle-btn svg{transform:rotate(180deg)!important;transition:none!important}#sidebar .btn-text,#sidebar .chat-title,#sidebar .chat-item,#sidebar .sidebar-footer-text{display:none!important}#sidebar .sidebar-footer-copyright{display:block!important}main,.main-content,#main-content{margin-left:0px!important;transition:none!important}';              
+      var head = document.head || document.getElementsByTagName('head')[0];       
+      head.insertBefore(style, head.firstChild);     
+    } else {
+      var style = document.createElement('style');       
+      style.id = 'sidebar-initial-state';       
+      style.innerHTML = 'main,.main-content,#main-content{margin-left:80px!important;transition:none!important}';              
+      var head = document.head || document.getElementsByTagName('head')[0];       
       head.insertBefore(style, head.firstChild);
-    }
-  } catch (e) {
-  }
+    }   
+  } catch (e) {   
+  } 
 })();
+
+function toggleSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const toggleBtn = document.getElementById('toggle-btn');
+  const mainContent = document.querySelector('main') || document.querySelector('.main-content') || document.querySelector('#main-content') || document.body;
+  
+  if (!sidebar || !toggleBtn) return;
+  
+  const tempStyle = document.getElementById('sidebar-initial-state');
+  if (tempStyle) {
+    tempStyle.remove();
+  }
+  
+  sidebar.classList.toggle('close');
+  toggleBtn.classList.toggle('rotated');
+  
+  const isClosed = sidebar.classList.contains('close');
+  
+
+  if (isClosed) {
+    mainContent.style.marginLeft = '0px';
+    mainContent.style.transition = 'margin-left 0.2s cubic-bezier(0.4, 0, 0.2, 1)';
+  } else {
+    mainContent.style.marginLeft = '80px';
+    mainContent.style.transition = 'margin-left 0.2s cubic-bezier(0.4, 0, 0.2, 1)';
+  }
+  
+  saveSidebarState(isClosed);
+}
+
+
+function initializeSidebarLayout() {
+  const sidebar = document.getElementById('sidebar');
+  const mainContent = document.querySelector('main') || document.querySelector('.main-content') || document.querySelector('#main-content') || document.body;
+  
+  if (!sidebar || !mainContent) return;
+  
+  const isClosed = sidebar.classList.contains('close');
+  
+
+  const tempStyle = document.getElementById('sidebar-initial-state');
+  if (tempStyle) {
+    tempStyle.remove();
+  }
+  
+  if (isClosed) {
+
+    mainContent.style.marginLeft = '0px';
+  } else {
+    mainContent.style.marginLeft = '80px';
+  }
+  
+  mainContent.style.transition = 'margin-left 0.2s cubic-bezier(0.4, 0, 0.2, 1)';
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initializeSidebarLayout);
+} else {
+  initializeSidebarLayout();
+}
 </script>
 
 <!DOCTYPE html>

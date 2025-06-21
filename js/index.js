@@ -1,4 +1,23 @@
 
+(function() {
+  try {
+    const sidebarClosed = localStorage.getItem('sidebarClosed') === 'true';
+    const style = document.createElement('style');
+    style.id = 'sidebar-initial-state';
+    
+    if (sidebarClosed) {
+      style.innerHTML = '#sidebar{width:60px!important;padding:5px!important;transition:none!important}#toggle-btn svg{transform:rotate(180deg)!important;transition:none!important}#sidebar .btn-text,#sidebar .chat-title,#sidebar .chat-item,#sidebar .sidebar-footer-text{display:none!important}#sidebar .sidebar-footer-copyright{display:block!important}main,.main-content,#main-content{margin-left:0px!important;transition:none!important}';
+    } else {
+      style.innerHTML = 'main,.main-content,#main-content{margin-left:80px!important;transition:none!important}';
+    }
+    
+    const head = document.head || document.getElementsByTagName('head')[0];
+    head.insertBefore(style, head.firstChild);
+  } catch (e) {
+    console.log('Error setting initial sidebar state:', e);
+  }
+})();
+
 const input = document.getElementById('input');
 const inputArea = document.getElementById('input-area');
 
@@ -11,7 +30,6 @@ input.addEventListener('blur', () => {
 });
 
 const sendButton = document.getElementById('send');
-
 
 const boxes = document.querySelectorAll('.placeholder-box');
 const revealBoxes = () => {
@@ -50,7 +68,6 @@ document.querySelectorAll('.nav-button').forEach(button => {
   });
 });
 
-
 boxes.forEach(box => {
   box.style.cursor = 'pointer';
   box.style.marginBottom = '14px';
@@ -84,7 +101,6 @@ boxes.forEach(box => {
   });
 });
 
-
 function saveSidebarState(isClosed) {
   try {
     localStorage.setItem('sidebarClosed', isClosed.toString());
@@ -102,18 +118,15 @@ function getSidebarState() {
   }
 }
 
-
 document.addEventListener('DOMContentLoaded', function() {
   const sidebar = document.getElementById('sidebar');
   const toggleBtn = document.getElementById('toggle-btn');
   
-
   const tempStyle = document.getElementById('sidebar-initial-state');
   if (tempStyle) {
     tempStyle.remove();
   }
   
-
   if (sidebar && toggleBtn) {
     const savedState = getSidebarState();
     if (savedState) {
@@ -123,6 +136,8 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   
 
+  initializeSidebarLayout();
+  
   const signinBtn = document.getElementById('signin-btn');
   if (signinBtn) {
     signinBtn.addEventListener('click', function() {
@@ -131,14 +146,13 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 
-
 function toggleSidebar() {
   const sidebar = document.getElementById('sidebar');
   const toggleBtn = document.getElementById('toggle-btn');
+  const mainContent = document.querySelector('main') || document.querySelector('.main-content') || document.querySelector('#main-content') || document.body;
   
   if (!sidebar || !toggleBtn) return;
   
-
   const tempStyle = document.getElementById('sidebar-initial-state');
   if (tempStyle) {
     tempStyle.remove();
@@ -148,5 +162,42 @@ function toggleSidebar() {
   toggleBtn.classList.toggle('rotated');
   
   const isClosed = sidebar.classList.contains('close');
+  
+
+  if (isClosed) {
+
+    mainContent.style.marginLeft = '0px';
+    mainContent.style.transition = 'margin-left 0.2s cubic-bezier(0.4, 0, 0.2, 1)';
+  } else {
+    mainContent.style.marginLeft = '80px';
+    mainContent.style.transition = 'margin-left 0.2s cubic-bezier(0.4, 0, 0.2, 1)';
+  }
+  
   saveSidebarState(isClosed);
+}
+
+
+function initializeSidebarLayout() {
+  const sidebar = document.getElementById('sidebar');
+  const mainContent = document.querySelector('main') || document.querySelector('.main-content') || document.querySelector('#main-content') || document.body;
+  
+  if (!sidebar || !mainContent) return;
+  
+
+  const tempStyle = document.getElementById('sidebar-initial-state');
+  if (tempStyle) {
+    tempStyle.remove();
+  }
+  
+
+  const sidebarClosed = localStorage.getItem('sidebarClosed') === 'true';
+  
+  if (sidebarClosed) {
+  
+    mainContent.style.marginLeft = '0px';
+  } else {
+    mainContent.style.marginLeft = '80px';
+  }
+  
+  mainContent.style.transition = 'margin-left 0.2s cubic-bezier(0.4, 0, 0.2, 1)';
 }
