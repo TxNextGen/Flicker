@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<link rel="stylesheet" href="css/Mobile.css" />
+<script src="backend/mobile-backend.js"></script>
+<script src="js/mobile.js"></script>
+<link rel="icon" href="images/logo.png" type="image/x-icon" />
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@100;300;400;500;600;700;900&display=swap" rel="stylesheet" />
+<title>Flicker AI</title>
+</head>
+<body>
+
+<header class="mobile-header">
+    <button class="mobile-menu-btn" id="mobile-menu-toggle">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+        </svg>
+    </button>
+    
+    <div class="mobile-logo">
+        Flicker AI
+    </div>
+    
+    <button class="mobile-auth" id="mobile-signin">Sign In</button>
+</header>
+
+<nav class="mobile-sidebar" id="mobile-sidebar">
+    <div class="mobile-sidebar-header">
+        <div class="mobile-sidebar-logo">
+            Flicker
+        </div>
+        <button class="mobile-add-chat">
+            <img src="images/plus.png" alt="Add" style="width: 16px; height: 16px;" />
+            New Chat
+        </button>
+    </div>
+    
+    <ul class="mobile-chat-list" id="mobile-chat-list">
+    </ul>
+</nav>
+
+<div class="mobile-overlay" id="mobile-overlay"></div>
+
+<main class="mobile-main">
+    <div class="mobile-welcome" id="mobile-welcome">
+        <h1>
+        <img src="images/logo.png" alt="F" id="title-logo" aria-hidden="true" 
+        style="height: 50px; position: relative; top: -1px; left: 8px;" />
+            licker AI
+        </h1>                                                                                                                                 
+        <h3><b><u>#1 School Chatbot</u></b></h3>
+        <p>Your Personal Genius for Every Quiz & Question.</p>
+        
+        <div class="mobile-features">
+            <div class="mobile-feature-card">
+                <div class="mobile-feature-card-content">
+                    <div class="mobile-feature-card-text">
+                        <h4>Math Solving</h4>
+                        <p>Step-by-step calculations</p>
+                    </div>
+                    <img src="images/algebra.png" alt="Math" />
+                </div>
+            </div>
+            <div class="mobile-feature-card">
+                <div class="mobile-feature-card-content">
+                    <div class="mobile-feature-card-text">
+                        <h4>Writing</h4>
+                        <p>Refine and improve writing</p>
+                    </div>
+                    <img src="images/pen-tool.png" alt="Writing" />
+                </div>
+            </div>
+            <div class="mobile-feature-card">
+                <div class="mobile-feature-card-content">
+                    <div class="mobile-feature-card-text">
+                        <h4>Translating</h4>
+                        <p>Learn new words & phrases</p>
+                    </div>
+                    <img src="images/translate.png" alt="Translate" />
+                </div>
+            </div>
+            <div class="mobile-feature-card">
+                <div class="mobile-feature-card-content">
+                    <div class="mobile-feature-card-text">
+                        <h4>Workspaces</h4>
+                        <p>Solve everything here</p>
+                    </div>
+                    <img src="images/open-book.png" alt="Book" />
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="mobile-chat-container" id="mobile-chat-container">
+        <div class="mobile-chat" id="mobile-chat">
+          
+        </div>
+    </div>
+</main>
+
+<div class="mobile-input-container">
+    <div class="mobile-input-area">
+        <button class="mobile-image-upload-btn" id="mobile-image-upload-btn">
+ <svg xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 448 512">
+  <path d="M364.2 83.8c-24.4-24.4-64-24.4-88.4 0l-184 184c-42.1 42.1-42.1 110.3 0 152.4s110.3 42.1 152.4 0l152-152c10.9-10.9 28.7-10.9 39.6 0s10.9 28.7 0 39.6l-152 152c-64 64-167.6 64-231.6 0s-64-167.6 0-231.6l184-184c46.3-46.3 121.3-46.3 167.6 0s46.3 121.3 0 167.6l-176 176c-28.6 28.6-75 28.6-103.6 0s-28.6-75 0-103.6l144-144c10.9-10.9 28.7-10.9 39.6 0s10.9 28.7 0 39.6l-144 144c-6.7 6.7-6.7 17.7 0 24.4s17.7 6.7 24.4 0l176-176c24.4-24.4 24.4-64 0-88.4z"/></svg>
+        </button>
+        <input type="file" id="mobile-image-input" accept="image/*" />
+        <textarea 
+            class="mobile-input" 
+            id="mobile-input" 
+            placeholder="Send a message"
+            rows="1"
+        ></textarea>
+        <button class="mobile-send-btn" id="mobile-send">
+            <img src="images/up-arrow.png" alt="Send" />
+        </button>
+    </div>
+</div>
+<div id="mobile-image-preview" class="mobile-image-preview"></div>
+
+
+
+</body>
+</html>
