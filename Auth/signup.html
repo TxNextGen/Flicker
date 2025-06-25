@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flicker Ai - Sign Up</title>
+    <title>Create your Flicker AI account</title>
     <link rel="icon" href="../images/logo.png" type="image/x-icon" />
     <link rel="stylesheet" href="../css/auth.css">
     <script src="https://accounts.google.com/gsi/client" async defer></script>
@@ -11,88 +11,157 @@
 <body>
     <div class="form-container">
         <form id="signup-form" class="auth-form">
-            <h2>Create Account</h2>
+            <div class="logo">
+                <img src="../images/flicker.png" alt="Flicker AI Logo" class="logo-image">
+            </div>
+            <h2>Create account</h2>
+            <p class="subtitle">Get started with Flicker AI today</p>
+            
             <div class="input-group">
                 <input type="text" id="signup-name" placeholder="Full name" required>
             </div>
+            
             <div class="input-group">
                 <input type="email" id="signup-email" placeholder="Email address" required>
             </div>
+            
             <div class="input-group">
-                <input type="password" id="signup-password" placeholder="Password" required>
+                <input type="password" id="signup-password" placeholder="Password (8+ characters)" required minlength="8">
             </div>
+            
             <div class="input-group">
-                <input type="password" id="signup-confirm" placeholder="Confirm password" required>
+                <input type="password" id="signup-confirm-password" placeholder="Confirm password" required>
             </div>
-            <button type="submit" class="submit-btn">Create Account</button>
-            <div class="divider"></div>
-            <div id="g_id_onload"
-                 data-client_id="YOUR_GOOGLE_CLIENT_ID"
-                 data-context="signup"
-                 data-ux_mode="popup"
-                 data-callback="handleCredentialResponse"
-                 data-auto_prompt="false">
-            </div>
-            <div class="g_id_signin"
-                 data-type="standard"
-                 data-shape="rectangular"
-                 data-theme="outline"
-                 data-text="signup_with"
-                 data-size="large"
-                 data-logo_alignment="left">
-            </div>
+            
+            <button type="submit" class="submit-btn">Create account</button>
+            
+            <div class="divider">OR</div>
+            
+            <div id="g_id_signin"></div>
+            
             <p class="bottom-text">
                 Already have an account? <a href="signin.html">Sign in</a>
             </p>
+            
             <div id="signup-error" class="error"></div>
-            <div id="signup-success" class="success"></div>
         </form>
     </div>
 
     <script src="../js/auth.js"></script>
     <script>
+        window.onload = function() {
+            if (typeof google !== 'undefined' && google.accounts) {
+                google.accounts.id.initialize({
+                    client_id: "YOUR_GOOGLE_CLIENT_ID", 
+                    callback: handleCredentialResponse,
+                    auto_select: false,
+                    cancel_on_tap_outside: false
+                });
+
+
+                google.accounts.id.renderButton(
+                    document.getElementById("g_id_signin"),
+                    {
+                        theme: "outline",
+                        size: "large",
+                        width: "100%",
+                        text: "signup_with",
+                        shape: "rectangular"
+                    }
+                );
+            }
+        };
+
         function handleCredentialResponse(response) {
-            const credential = response.credential;
-            const payload = JSON.parse(atob(credential.split('.')[1]));
-            
-            const googleUser = {
-                id: 'google_' + payload.sub,
-                name: payload.name,
-                email: payload.email,
-                picture: payload.picture,
-                provider: 'google',
-                createdAt: new Date().toISOString()
-            };
-            
-            UserManager.setCurrentUser(googleUser);
-            window.location.href = '../index.html';
+            try {
+                const credential = response.credential;
+                const payload = JSON.parse(atob(credential.split('.')[1]));
+                
+                const googleUser = {
+                    sub: payload.sub,
+                    name: payload.name,
+                    email: payload.email,
+                    picture: payload.picture
+                };
+                
+         
+                if (UserManager.isTempMail(googleUser.email)) {
+                    showError('Temporary email addresses are not allowed. Please use a permanent email address.');
+                    return;
+                }
+                
+                UserManager.signInWithGoogle(googleUser);
+       
+                showSuccess('Account created successfully! Redirecting...');
+                
+                setTimeout(() => {
+                    window.location.href = '../index.html';
+                }, 1500);
+                
+            } catch (error) {
+                console.error('Google sign-up error:', error);
+                showError('Failed to sign up with Google. Please try again.');
+            }
         }
 
         function showError(message) {
             const errorDiv = document.getElementById('signup-error');
-            const successDiv = document.getElementById('signup-success');
-            
-            successDiv.classList.remove('show');
             errorDiv.textContent = message;
+            errorDiv.style.background = 'rgba(239, 68, 68, 0.1)';
+            errorDiv.style.borderColor = 'rgba(239, 68, 68, 0.3)';
+            errorDiv.style.color = '#ef4444';
             errorDiv.classList.add('show');
+            
+            setTimeout(() => {
+                errorDiv.classList.remove('show');
+            }, 5000);
         }
 
         function showSuccess(message) {
             const errorDiv = document.getElementById('signup-error');
-            const successDiv = document.getElementById('signup-success');
-            
-            errorDiv.classList.remove('show');
-            successDiv.textContent = message;
-            successDiv.classList.add('show');
+            errorDiv.textContent = message;
+            errorDiv.style.background = 'rgba(16, 163, 127, 0.1)';
+            errorDiv.style.borderColor = 'rgba(16, 163, 127, 0.3)';
+            errorDiv.style.color = '#10a37f';
+            errorDiv.classList.add('show');
         }
 
-        function clearMessages() {
+        function clearError() {
             const errorDiv = document.getElementById('signup-error');
-            const successDiv = document.getElementById('signup-success');
-            
             errorDiv.classList.remove('show');
-            successDiv.classList.remove('show');
         }
+
+        function validatePassword(password) {
+            const requirements = [];
+            
+            if (password.length < 8) {
+                requirements.push('at least 8 characters');
+            }
+            if (!/[A-Z]/.test(password)) {
+                requirements.push('one uppercase letter');
+            }
+            if (!/[a-z]/.test(password)) {
+                requirements.push('one lowercase letter');
+            }
+            if (!/[0-9]/.test(password)) {
+                requirements.push('one number');
+            }
+            
+            return requirements;
+        }
+
+        document.getElementById('signup-password').addEventListener('input', (e) => {
+            const password = e.target.value;
+            const requirements = validatePassword(password);
+            
+            if (requirements.length > 0 && password.length > 0) {
+                e.target.style.borderColor = '#ef4444';
+            } else if (password.length > 0) {
+                e.target.style.borderColor = '#10a37f';
+            } else {
+                e.target.style.borderColor = '#e5e5e5';
+            }
+        });
 
         document.getElementById('signup-form').addEventListener('submit', (e) => {
             e.preventDefault();
@@ -100,12 +169,29 @@
             const name = document.getElementById('signup-name').value.trim();
             const email = document.getElementById('signup-email').value.trim();
             const password = document.getElementById('signup-password').value;
-            const confirmPassword = document.getElementById('signup-confirm').value;
+            const confirmPassword = document.getElementById('signup-confirm-password').value;
             
-            clearMessages();
+            clearError();
             
+         
             if (!name || !email || !password || !confirmPassword) {
                 showError('Please fill in all fields');
+                return;
+            }
+            
+            if (!email.includes('@')) {
+                showError('Please enter a valid email address');
+                return;
+            }
+            
+            if (UserManager.isTempMail(email)) {
+                showError('Temporary email addresses are not allowed. Please use a permanent email address.');
+                return;
+            }
+            
+            const passwordRequirements = validatePassword(password);
+            if (passwordRequirements.length > 0) {
+                showError(`Password must include: ${passwordRequirements.join(', ')}`);
                 return;
             }
             
@@ -114,22 +200,39 @@
                 return;
             }
             
-            if (password.length < 6) {
-                showError('Password must be at least 6 characters');
-                return;
-            }
+            const submitBtn = document.querySelector('.submit-btn');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Creating account...';
+            submitBtn.disabled = true;
             
             try {
-                const user = UserManager.signUp(name, email, password);
-                showSuccess('Account created successfully!');
+                UserManager.signUp(name, email, password);
+                
+                showSuccess('Account created successfully! Redirecting...');
                 
                 setTimeout(() => {
-                    UserManager.setCurrentUser(user);
                     window.location.href = '../index.html';
-                }, 1000);
+                }, 1500);
                 
             } catch (error) {
                 showError(error.message);
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+
+        document.getElementById('signup-confirm-password').addEventListener('input', (e) => {
+            const password = document.getElementById('signup-password').value;
+            const confirmPassword = e.target.value;
+            
+            if (confirmPassword.length > 0) {
+                if (password === confirmPassword) {
+                    e.target.style.borderColor = '#10a37f';
+                } else {
+                    e.target.style.borderColor = '#ef4444';
+                }
+            } else {
+                e.target.style.borderColor = '#e5e5e5';
             }
         });
     </script>

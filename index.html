@@ -1,86 +1,83 @@
-
 <script>
-(function() {   // Dont Remove    
-  try {     
-    if (localStorage.getItem('sidebarClosed') === 'true') {       
-      var style = document.createElement('style');       
-      style.id = 'sidebar-initial-state';       
-      style.innerHTML = '#sidebar{width:60px!important;padding:5px!important;transition:none!important}#toggle-btn svg{transform:rotate(180deg)!important;transition:none!important}#sidebar .btn-text,#sidebar .chat-title,#sidebar .chat-item,#sidebar .sidebar-footer-text{display:none!important}#sidebar .sidebar-footer-copyright{display:block!important}main,.main-content,#main-content{margin-left:0px!important;transition:none!important}';              
-      var head = document.head || document.getElementsByTagName('head')[0];       
-      head.insertBefore(style, head.firstChild);     
-    } else {
-      var style = document.createElement('style');       
-      style.id = 'sidebar-initial-state';       
-      style.innerHTML = 'main,.main-content,#main-content{margin-left:80px!important;transition:none!important}';              
-      var head = document.head || document.getElementsByTagName('head')[0];       
-      head.insertBefore(style, head.firstChild);
-    }   
-  } catch (e) {   
-  } 
+(function() { // Dont Remove
+try {
+if (localStorage.getItem('sidebarClosed') === 'true') {
+var style = document.createElement('style');
+style.id = 'sidebar-initial-state';
+style.innerHTML = '#sidebar{width:60px!important;padding:5px!important;transition:none!important}#toggle-btn svg{transform:rotate(180deg)!important;transition:none!important}#sidebar .btn-text,#sidebar .chat-title,#sidebar .chat-item,#sidebar .sidebar-footer-text{display:none!important}#sidebar .sidebar-footer-copyright{display:block!important}main,.main-content,#main-content{margin-left:0px!important;transition:none!important}';
+var head = document.head || document.getElementsByTagName('head')[0];
+head.insertBefore(style, head.firstChild);
+} else {
+var style = document.createElement('style');
+style.id = 'sidebar-initial-state';
+style.innerHTML = 'main,.main-content,#main-content{margin-left:80px!important;transition:none!important}';
+var head = document.head || document.getElementsByTagName('head')[0];
+head.insertBefore(style, head.firstChild);
+}
+} catch (e) {
+}
 })();
 
 function toggleSidebar() {
-  const sidebar = document.getElementById('sidebar');
-  const toggleBtn = document.getElementById('toggle-btn');
-  const mainContent = document.querySelector('main') || document.querySelector('.main-content') || document.querySelector('#main-content') || document.body;
-  
-  if (!sidebar || !toggleBtn) return;
-  
-  const tempStyle = document.getElementById('sidebar-initial-state');
-  if (tempStyle) {
-    tempStyle.remove();
-  }
-  
-  sidebar.classList.toggle('close');
-  toggleBtn.classList.toggle('rotated');
-  
-  const isClosed = sidebar.classList.contains('close');
-  
+const sidebar = document.getElementById('sidebar');
+const toggleBtn = document.getElementById('toggle-btn');
+const mainContent = document.querySelector('main') || document.querySelector('.main-content') || document.querySelector('#main-content') || document.body;
 
-  if (isClosed) {
-    mainContent.style.marginLeft = '0px';
-    mainContent.style.transition = 'margin-left 0.2s cubic-bezier(0.4, 0, 0.2, 1)';
-  } else {
-    mainContent.style.marginLeft = '80px';
-    mainContent.style.transition = 'margin-left 0.2s cubic-bezier(0.4, 0, 0.2, 1)';
-  }
-  
-  saveSidebarState(isClosed);
+if (!sidebar || !toggleBtn) return;
+
+const tempStyle = document.getElementById('sidebar-initial-state');
+if (tempStyle) {
+tempStyle.remove();
+}
+
+sidebar.classList.toggle('close');
+toggleBtn.classList.toggle('rotated');
+
+const isClosed = sidebar.classList.contains('close');
+
+
+if (isClosed) {
+mainContent.style.marginLeft = '0px';
+mainContent.style.transition = 'margin-left 0.2s cubic-bezier(0.4, 0, 0.2, 1)';
+} else {
+mainContent.style.marginLeft = '80px';
+mainContent.style.transition = 'margin-left 0.2s cubic-bezier(0.4, 0, 0.2, 1)';
+}
+
+saveSidebarState(isClosed);
 }
 
 
 function initializeSidebarLayout() {
-  const sidebar = document.getElementById('sidebar');
-  const mainContent = document.querySelector('main') || document.querySelector('.main-content') || document.querySelector('#main-content') || document.body;
-  
-  if (!sidebar || !mainContent) return;
-  
-  const isClosed = sidebar.classList.contains('close');
-  
+const sidebar = document.getElementById('sidebar');
+const mainContent = document.querySelector('main') || document.querySelector('.main-content') || document.querySelector('#main-content') || document.body;
 
-  const tempStyle = document.getElementById('sidebar-initial-state');
-  if (tempStyle) {
-    tempStyle.remove();
-  }
-  
-  if (isClosed) {
+if (!sidebar || !mainContent) return;
 
-    mainContent.style.marginLeft = '0px';
-  } else {
-    mainContent.style.marginLeft = '80px';
-  }
-  
-  mainContent.style.transition = 'margin-left 0.2s cubic-bezier(0.4, 0, 0.2, 1)';
+const isClosed = sidebar.classList.contains('close');
+
+
+const tempStyle = document.getElementById('sidebar-initial-state');
+if (tempStyle) {
+tempStyle.remove();
+}
+
+if (isClosed) {
+
+mainContent.style.marginLeft = '0px';
+} else {
+mainContent.style.marginLeft = '80px';
+}
+
+mainContent.style.transition = 'margin-left 0.2s cubic-bezier(0.4, 0, 0.2, 1)';
 }
 
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initializeSidebarLayout);
+document.addEventListener('DOMContentLoaded', initializeSidebarLayout);
 } else {
-  initializeSidebarLayout();
+initializeSidebarLayout();
 }
 </script>
-
-<script src="js/redirect.js"></script>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -88,11 +85,32 @@ if (document.readyState === 'loading') {
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="stylesheet" href="css/style.css" />
+
 <link rel="icon" href="images/logo.png" type="image/x-icon" />
 <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@100;300;400;500;600;700;900&display=swap" rel="stylesheet" />
 <title>Flicker AI</title>
 </head>
+
+
+
 <body>
+
+
+<script src="js/redirect.js"></script>
+
+
+<div id="welcome-popup">
+    <div class="welcome-popup-content">
+        <button class="popup-close" id="popup-close" aria-label="Close">&times;</button>
+        <h2>Welcome back</h2>
+        <p>Log in or sign up to Access Image And File Uploading and more</p>
+        <div class="popup-buttons">
+            <a href="Auth/signin.html" class="popup-btn popup-btn-primary">Log in</a>
+            <a href="Auth/signup.html" class="popup-btn popup-btn-secondary">Sign up for free</a>
+            <button class="popup-btn popup-btn-tertiary" id="stay-logged-out">Stay logged out</button>
+        </div>
+    </div>
+</div>
 
 <div id="cookie-consent">
 <div class="cookie-content">
@@ -131,18 +149,6 @@ gtag('config', 'G-1Q4K4492QV');
 <button id="signin-btn">Sign In</button>
 </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const signinBtn = document.getElementById('signin-btn');
-    
-    if (signinBtn) {
-        signinBtn.addEventListener('click', function() {
-            window.location.href = 'Auth/signin.html';
-        });
-    }
-});
-</script>
-
 <nav id="sidebar">
 <div class="sidebar-header">
 <div class="logo-row">
@@ -154,14 +160,11 @@ document.addEventListener('DOMContentLoaded', function() {
 </button>
 </div>
 
-
-
 <button id="add-chat-btn">
 <img src="images/plus.png" alt="Add" class="btn-icon">
 <span class="btn-text">New Chat</span>
 </button>
 </div>
-
 
 <div class="chat-list-container">
 <ul class="chat-list" id="chat-list">
@@ -183,6 +186,8 @@ document.addEventListener('DOMContentLoaded', function() {
 <h3 id="subtitle"><b><u>#1 School Chatbot</u></b></h3>
 <h3>Your Personal Genius for Every Quiz &amp; Question.</h3>
 </div>
+
+
 
 <div id="placeholder-container">
 <div class="placeholder-left">
@@ -266,5 +271,88 @@ aria-label="Send a message"
 <script src="backend/backend.js"></script>
 <script src="js/index.js"></script>
 <script src="js/auth.js"></script>
+
+<script>
+function showWelcomePopup() {
+    const popup = document.getElementById('welcome-popup');
+    if (popup) {
+        popup.classList.add('show');
+        document.body.style.overflow = 'hidden'; 
+    }
+}
+
+function hideWelcomePopup() {
+    const popup = document.getElementById('welcome-popup');
+    if (popup) {
+        popup.classList.remove('show');
+        document.body.style.overflow = ''; 
+    }
+}
+
+function stayLoggedOut() {
+    hideWelcomePopup();
+    sessionStorage.setItem('stayLoggedOut', 'true');
+}
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    const popupClose = document.getElementById('popup-close');
+    const stayLoggedOutBtn = document.getElementById('stay-logged-out');
+    const welcomePopup = document.getElementById('welcome-popup');
+    
+    if (popupClose) {
+        popupClose.addEventListener('click', hideWelcomePopup);
+    }
+    
+    if (stayLoggedOutBtn) {
+        stayLoggedOutBtn.addEventListener('click', stayLoggedOut);
+    }
+    
+
+    if (welcomePopup) {
+        welcomePopup.addEventListener('click', function(e) {
+            if (e.target === welcomePopup) {
+                hideWelcomePopup();
+            }
+        });
+    }
+    
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            hideWelcomePopup();
+        }
+    });
+    
+    setTimeout(function() {
+        if (typeof UserManager !== 'undefined' && !UserManager.isLoggedIn()) {
+            if (sessionStorage.getItem('stayLoggedOut') !== 'true') {
+                showWelcomePopup();
+            }
+        }
+    }, 500); 
+});
+
+let originalUpdateAuthState;
+
+function setupAuthStateOverride() {
+    if (typeof updateAuthState === 'function' && !originalUpdateAuthState) {
+        originalUpdateAuthState = updateAuthState;
+        updateAuthState = function() {
+            originalUpdateAuthState();
+            if (typeof UserManager !== 'undefined') {
+                if (!UserManager.isLoggedIn() && sessionStorage.getItem('stayLoggedOut') !== 'true') {
+                    showWelcomePopup();
+                } else {
+                    hideWelcomePopup();
+                }
+            }
+        };
+    }
+}
+
+setupAuthStateOverride();
+setTimeout(setupAuthStateOverride, 1000);
+</script>
+
 </body>
 </html>

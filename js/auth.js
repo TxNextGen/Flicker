@@ -1,4 +1,20 @@
 class UserManager {
+    static tempEmailDomains = [
+        '10minutemail.com', 'guerrillamail.com', 'mailinator.com',
+        'tempmail.org', 'yopmail.com', 'throwawaymail.com',
+        'maildrop.cc', 'getnada.com', 'temp-mail.org',
+        'disposablemail.com', 'sharklasers.com', 'trashmail.com',
+        'fakeinbox.com', 'emailondeck.com', 'tempinbox.com'
+    ];
+
+    static isTempMail(email) {
+        const domain = email.toLowerCase().split('@')[1];
+        return this.tempEmailDomains.includes(domain);
+    }
+    static isTemporaryEmail(email) {
+        return this.isTempMail(email);
+    }
+
     static getUsers() {
         return JSON.parse(localStorage.getItem('flickerUsers') || '[]');
     }
@@ -16,6 +32,10 @@ class UserManager {
     }
 
     static signUp(name, email, password) {
+        if (this.isTempMail(email)) {
+            throw new Error('Temporary email addresses are not allowed. Please use a permanent email address.');
+        }
+
         const users = this.getUsers();
         
         const existingUser = users.find(user => user.email === email);
@@ -33,6 +53,7 @@ class UserManager {
 
         users.push(newUser);
         this.saveUsers(users);
+        this.setCurrentUser(newUser); 
         
         return newUser;
     }
@@ -51,6 +72,38 @@ class UserManager {
         return user;
     }
 
+    static signInWithGoogle(googleUser) {
+        if (this.isTempMail(googleUser.email)) {
+            throw new Error('Temporary email addresses are not allowed. Please use a permanent email address.');
+        }
+
+        const users = this.getUsers();
+        let existingUser = users.find(user => user.email === googleUser.email);
+        
+        if (existingUser) {
+            existingUser.name = googleUser.name;
+            existingUser.picture = googleUser.picture;
+            existingUser.provider = 'google';
+            this.saveUsers(users);
+            this.setCurrentUser(existingUser);
+            return existingUser;
+        } else {
+            const newUser = {
+                id: 'google_' + googleUser.sub,
+                name: googleUser.name,
+                email: googleUser.email,
+                picture: googleUser.picture,
+                provider: 'google',
+                createdAt: new Date().toISOString()
+            };
+            
+            users.push(newUser);
+            this.saveUsers(users);
+            this.setCurrentUser(newUser);
+            return newUser;
+        }
+    }
+
     static logout() {
         localStorage.removeItem('flickerCurrentUser');
     }
@@ -64,21 +117,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const authBox = document.getElementById('auth-box');
     const signinBtn = document.getElementById('signin-btn');
     
-    if (authBox && signinBtn) {
+    if (authBox) {
         updateAuthState();
-        
-        signinBtn.addEventListener('click', function() {
-            if (UserManager.isLoggedIn()) {
-                toggleProfileMenu();
-            } else {
-                window.location.href = 'Auth/signin.html';
-            }
-        });
+        checkAuthOnLoad();
     }
 });
 
 function updateAuthState() {
     const authBox = document.getElementById('auth-box');
+    if (!authBox) return;
+    
     const currentUser = UserManager.getCurrentUser();
     
     if (currentUser) {
@@ -110,9 +158,12 @@ function updateAuthState() {
     } else {
         authBox.innerHTML = `<button id="signin-btn">Sign In</button>`;
         
-        document.getElementById('signin-btn').addEventListener('click', function() {
-            window.location.href = 'Auth/signin.html';
-        });
+        const newSigninBtn = document.getElementById('signin-btn');
+        if (newSigninBtn) {
+            newSigninBtn.addEventListener('click', function() {
+                window.location.href = 'Auth/signin.html';
+            });
+        }
     }
 }
 
@@ -143,16 +194,43 @@ function setupProfileEvents() {
     }
 }
 
-function toggleProfileMenu() {
-    const profileMenu = document.getElementById('profile-menu');
-    if (profileMenu) {
-        profileMenu.classList.toggle('hidden');
-    }
-}
-
 function checkAuthOnLoad() {
     const currentPage = window.location.pathname.split('/').pop();
     if ((currentPage === 'signin.html' || currentPage === 'signup.html') && UserManager.isLoggedIn()) {
         window.location.href = '../index.html';
     }
 }
+
+function handleCredentialResponse(response) {
+    try {
+        const credential = response.credential;
+        const payload = JSON.parse(atob(credential.split('.')[1]));
+        
+        const googleUser = {
+            sub: payload.sub,
+            name: payload.name,
+            email: payload.email,
+            picture: payload.picture
+        };
+        
+        UserManager.signInWithGoogle(googleUser);
+        
+        if (window.location.pathname.includes('Auth/')) {
+            window.location.href = '../index.html';
+        } else {
+            window.location.reload();
+        }
+    } catch (error) {
+        console.error('Google sign-in error:', error);
+        showError('Failed to sign in with Google. Please try again.');
+    }
+}
+
+window.onload = function() {
+    if (typeof google !== 'undefined' && google.accounts) {
+        google.accounts.id.initialize({
+            client_id: "YOUR_GOOGLE_CLIENT_ID",
+            callback: handleCredentialResponse
+        });
+    }
+};

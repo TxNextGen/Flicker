@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flicker Ai - Sign In</title>
+    <title>Sign in to Flicker AI</title>
     <link rel="icon" href="../images/logo.png" type="image/x-icon" />
     <link rel="stylesheet" href="../css/auth.css">
     <script src="https://accounts.google.com/gsi/client" async defer></script>
@@ -11,60 +11,91 @@
 <body>
     <div class="form-container">
         <form id="signin-form" class="auth-form">
-            <h2>Welcome Back</h2>
+            <div class="logo">
+                <img src="../images/flicker.png" alt="Flicker AI Logo" class="logo-image">
+            </div>
+            <h2>Welcome back</h2>
+            <p class="subtitle">Sign in to your Flicker AI account</p>
+            
             <div class="input-group">
                 <input type="email" id="signin-email" placeholder="Email address" required>
             </div>
+            
             <div class="input-group">
                 <input type="password" id="signin-password" placeholder="Password" required>
             </div>
-            <button type="submit" class="submit-btn">Sign In</button>
-            <div class="divider"></div>
-            <div id="g_id_onload"
-                 data-client_id="YOUR_GOOGLE_CLIENT_ID"
-                 data-context="signin"
-                 data-ux_mode="popup"
-                 data-callback="handleCredentialResponse"
-                 data-auto_prompt="false">
-            </div>
-            <div class="g_id_signin"
-                 data-type="standard"
-                 data-shape="rectangular"
-                 data-theme="outline"
-                 data-text="signin_with"
-                 data-size="large"
-                 data-logo_alignment="left">
-            </div>
+            
+            <button type="submit" class="submit-btn">Continue</button>
+            
+            <div class="divider">OR</div>
+            
+            <div id="g_id_signin"></div>
+            
             <p class="bottom-text">
                 Don't have an account? <a href="signup.html">Sign up</a>
             </p>
+            
             <div id="signin-error" class="error"></div>
         </form>
     </div>
 
     <script src="../js/auth.js"></script>
     <script>
+        window.onload = function() {
+            if (typeof google !== 'undefined' && google.accounts) {
+                google.accounts.id.initialize({
+                    client_id: "YOUR_GOOGLE_CLIENT_ID",
+                    callback: handleCredentialResponse,
+                    auto_select: false,
+                    cancel_on_tap_outside: false
+                });
+
+                google.accounts.id.renderButton(
+                    document.getElementById("g_id_signin"),
+                    {
+                        theme: "outline",
+                        size: "large",
+                        width: "100%",
+                        text: "signin_with",
+                        shape: "rectangular"
+                    }
+                );
+            }
+        };
+
         function handleCredentialResponse(response) {
-            const credential = response.credential;
-            const payload = JSON.parse(atob(credential.split('.')[1]));
-            
-            const googleUser = {
-                id: 'google_' + payload.sub,
-                name: payload.name,
-                email: payload.email,
-                picture: payload.picture,
-                provider: 'google',
-                createdAt: new Date().toISOString()
-            };
-            
-            UserManager.setCurrentUser(googleUser);
-            window.location.href = '../index.html';
+            try {
+                const credential = response.credential;
+                const payload = JSON.parse(atob(credential.split('.')[1]));
+                
+                const googleUser = {
+                    sub: payload.sub,
+                    name: payload.name,
+                    email: payload.email,
+                    picture: payload.picture
+                };
+                
+                if (UserManager.isTempMail(googleUser.email)) {
+                    showError('Temporary email addresses are not allowed. Please use a permanent email address.');
+                    return;
+                }
+                
+                UserManager.signInWithGoogle(googleUser);
+                window.location.href = '../index.html';
+            } catch (error) {
+                console.error('Google sign-in error:', error);
+                showError('Failed to sign in with Google. Please try again.');
+            }
         }
 
         function showError(message) {
             const errorDiv = document.getElementById('signin-error');
             errorDiv.textContent = message;
             errorDiv.classList.add('show');
+            
+            setTimeout(() => {
+                errorDiv.classList.remove('show');
+            }, 5000);
         }
 
         function clearError() {
@@ -85,11 +116,28 @@
                 return;
             }
             
+            if (!email.includes('@')) {
+                showError('Please enter a valid email address');
+                return;
+            }
+            
+            if (UserManager.isTempMail(email)) {
+                showError('Temporary email addresses are not allowed. Please use a permanent email address.');
+                return;
+            }
+            
+            const submitBtn = document.querySelector('.submit-btn');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Signing in...';
+            submitBtn.disabled = true;
+            
             try {
                 UserManager.signIn(email, password);
                 window.location.href = '../index.html';
             } catch (error) {
                 showError(error.message);
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
             }
         });
     </script>
