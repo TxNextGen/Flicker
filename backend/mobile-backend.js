@@ -75,6 +75,7 @@ class MobileCookieManager {
                 z-index: 10000;
                 transform: translateY(100%);
                 transition: transform 0.3s ease;
+                font-family: 'Raleway', sans-serif;
             }
 
             .mobile-cookie-popup.show {
@@ -85,6 +86,7 @@ class MobileCookieManager {
                 color: white;
                 margin-bottom: 10px;
                 font-size: 1.1rem;
+                font-family: 'Raleway', sans-serif;
             }
 
             .mobile-cookie-content p {
@@ -92,6 +94,7 @@ class MobileCookieManager {
                 margin-bottom: 20px;
                 font-size: 0.9rem;
                 line-height: 1.4;
+                font-family: 'Raleway', sans-serif;
             }
 
             .mobile-cookie-buttons {
@@ -108,17 +111,21 @@ class MobileCookieManager {
                 font-weight: 500;
                 cursor: pointer;
                 transition: all 0.2s ease;
+                font-family: 'Raleway', sans-serif;
             }
 
             .mobile-cookie-btn.accept {
-                background: #4CAF50;
+                background: rgba(255, 255, 255, 0.1);
                 color: white;
+                border: 1px solid rgba(255, 255, 255, 0.3);
+                font-family: 'Raleway', sans-serif;
             }
 
             .mobile-cookie-btn.decline {
                 background: rgba(255, 255, 255, 0.1);
                 color: white;
                 border: 1px solid rgba(255, 255, 255, 0.3);
+                font-family: 'Raleway', sans-serif;
             }
 
             .mobile-cookie-btn:hover {
