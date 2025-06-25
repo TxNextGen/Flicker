@@ -168,7 +168,7 @@ body::before {
 
 .divider {
     text-align: center;
-    color: #8e8ea0;
+    color: #1d1d1d;
     font-size: 13px;
     position: relative;
     margin: 4px 0;
@@ -182,7 +182,7 @@ body::before {
     top: 50%;
     width: 42%;
     height: 1px;
-    background: linear-gradient(90deg, transparent, #e5e5e5, transparent);
+    background:#1a1a1a;
 }
 
 .divider::before {
