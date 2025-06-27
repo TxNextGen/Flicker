@@ -1477,9 +1477,9 @@ body.menu-open {
     top: 100%;
     right: 0;
     margin-top: 8px;
-    background: rgba(0, 0, 0, 0.9);
+    background: rgba(49, 49, 49, 0.9);
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(46, 46, 46, 0.1);
     border-radius: 12px;
     padding: 12px;
     min-width: 200px;
@@ -1502,7 +1502,7 @@ body.menu-open {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #474747 0%, #1d1d1d 100%);
+    background: linear-gradient(135deg, #797979 0%, #5c5c5c 100%);
     display: flex;
     align-items: center;
     justify-content: center;
