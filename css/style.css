@@ -389,31 +389,26 @@ h3 {
     border-radius: 10px;
     border: 2px solid #1e1e1e;
 }
-
 #chat div {
-  margin-bottom: 1.2rem;
-  padding: 1rem 1.2rem;
-  border-radius: 15px;
-  max-width: 50%;
-  width: 700px;
-  word-wrap: break-word;
-  line-height: 1.5;
-  font-size: 1rem;
-  font-weight: 500;
-  user-select: text;
+    margin-bottom: 1.2rem;
+    padding: 1rem 1.2rem;
+    border-radius: 15px;
+    max-width: 50%;
+    word-wrap: break-word;
+    line-height: 1.5;
+    font-size: 1rem;
+    font-weight: 500;
+    user-select: text;
 }
 
 .user {
-  background-color: #9191914d;
-  color: #fff;
-  margin-left: auto;
-  text-align: left;
-  border-bottom-left-radius: 2px;
-}
-
-
-.user:hover {
-    background-color: #222;
+    background-color: #9191914d;
+    color: #fff;
+    margin-left: auto;
+    text-align: left;
+    border-bottom-left-radius: 2px;
+    width: fit-content;
+    min-width: 0;
 }
 
 .bot {
@@ -421,16 +416,20 @@ h3 {
     color: #ffffff;
     text-align: left;
     max-width: fit-content;
+    width: fit-content;
+    min-width: 0;
     margin-right: auto;
     display: block;
 }
 
-
-
-
-
-.bot:hover {
-    background-color: #f5f5f500;
+.message.typing-indicator {
+    width: fit-content;
+    max-width: 50%;
+    margin-right: auto;
+    background-color: #333;
+    color: #bbb;
+    font-style: italic;
+    padding: 0.8rem 1rem;
 }
 
 
