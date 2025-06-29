@@ -1465,7 +1465,7 @@ body.menu-open {
     backdrop-filter: blur(10px);
     border: 1px solid rgba(46, 46, 46, 0.1);
     border-radius: 12px;
-    padding: 12px;
+    padding: 13px;
     min-width: 200px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     z-index: 1000;
@@ -1485,7 +1485,7 @@ body.menu-open {
 .profile-avatar-large {
     width: 40px;
     height: 40px;
-    border-radius: 50%;
+    border-radius: 50;
     background: linear-gradient(135deg, #797979 0%, #5c5c5c 100%);
     display: flex;
     align-items: center;
