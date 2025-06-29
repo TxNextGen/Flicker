@@ -1,4 +1,4 @@
-# Flicker
+# Flicker AI
 Flicker Website Data
 
 Founded by Vander &amp; NextGen
