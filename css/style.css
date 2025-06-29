@@ -391,24 +391,24 @@ h3 {
 }
 
 #chat div {
-    margin-bottom: 1.2rem;
-    padding: 1rem 1.2rem;
-    border-radius: 15px;
-    max-width: 50%;
-    width: 700px;
-    word-wrap: break-word;
-    line-height: 1.5;
-    font-size: 1rem;
-    font-weight: 500;
-    user-select: text;
+  margin-bottom: 1.2rem;
+  padding: 1rem 1.2rem;
+  border-radius: 15px;
+  max-width: 50%;
+  width: 700px;
+  word-wrap: break-word;
+  line-height: 1.5;
+  font-size: 1rem;
+  font-weight: 500;
+  user-select: text;
 }
 
 .user {
-    background-color: #9191914d;
-    color: #fff;
-    margin-left: auto;
-    text-align: left;
-    border-bottom-left-radius: 2px;
+  background-color: #9191914d;
+  color: #fff;
+  margin-left: auto;
+  text-align: left;
+  border-bottom-left-radius: 2px;
 }
 
 
