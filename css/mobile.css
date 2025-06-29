@@ -94,17 +94,6 @@ html, body {
     gap: 10px;
   }
   
-  .small-box {
-    width: 100%;
-    margin-right: 0;
-    margin-bottom: 10px;
-  }
-  
-  .large-box {
-    width: 100%;
-    height: 200px;
-  }
-  
 
   #input-area {
     width: calc(100% - 20px);
@@ -164,14 +153,6 @@ html, body {
 @media screen and (min-width: 769px) and (max-width: 1024px) {
   #placeholder-container {
     max-width: 90%;
-  }
-  
-  .small-box {
-    width: 280px;
-  }
-  
-  .large-box {
-    width: 280px;
   }
   
   #input-area {
