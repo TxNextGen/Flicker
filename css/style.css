@@ -813,9 +813,9 @@ height: 32px;
 display: flex;
 align-items: center;
 justify-content: center;
-background: #2f2f2f;
+background: none;
 border: 1px solid rgba(255, 255, 255, 0.2);
-border-radius: 8px;
+border-radius: 7.5px;
 cursor: pointer;
 transition: all 0.2s ease;
 z-index: 2;
@@ -971,12 +971,6 @@ background: rgba(255, 255, 255, 0.1);
 width: 15px;
 height: 15px;
 opacity: 0.9;
-transition: opacity 0.2s ease, transform 0.2s ease;
-}
-
-#send:hover img {
-opacity: 1;
-transform: scale(1.1);
 }
 
 #send:disabled {
