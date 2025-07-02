@@ -764,6 +764,8 @@ bottom: 320px;
 
 #image-upload-btn {
 position: absolute;
+top: 50%;
+transform: translateY(10%);
 left: 12px;
 bottom: 12px;
 margin-top: 1.5rem;
@@ -772,8 +774,10 @@ border: none;
 cursor: pointer;
 padding: 8px;
 border: 1px solid rgba(255, 255, 255, 0.2);
-border-radius: 8px;
-transition: background-color 0.2s ease;
+border-radius: 12px;
+transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+backdrop-filter: blur(10px);
+box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 z-index: 2;
 display: flex;
 align-items: center;
@@ -788,7 +792,6 @@ background: rgba(255, 255, 255, 0.1);
 width: 20px;
 height: 20px;
 fill: rgba(255, 255, 255, 0.7);
-transition: fill 0.2s ease;
 }
 
 #image-upload-btn:hover svg {
