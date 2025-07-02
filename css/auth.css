@@ -228,6 +228,75 @@ body::before {
     animation: slideIn 0.3s ease;
 }
 
+
+        .password-input-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        
+        .password-input-container input {
+            padding-right: 45px;
+        }
+        
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #666;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+        }
+        
+        .password-toggle:hover {
+            color: #333;
+        }
+        
+        .password-toggle:focus {
+            outline: none;
+        }
+
+
+
+         .password-input-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        
+        .password-input-container input {
+            padding-right: 45px;
+        }
+        
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #666;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+        }
+        
+        .password-toggle:hover {
+            color: #333;
+        }
+        
+        .password-toggle:focus {
+            outline: none;
+        }
+
 @keyframes slideIn {
     from {
         opacity: 0;
