@@ -1,104 +1,19 @@
-
-<script>
-(function() { // Dont Remove
-try {
-if (localStorage.getItem('sidebarClosed') === 'true') {
-var style = document.createElement('style');
-style.id = 'sidebar-initial-state';
-style.innerHTML = '#sidebar{width:60px!important;padding:5px!important;transition:none!important}#toggle-btn svg{transform:rotate(180deg)!important;transition:none!important}#sidebar .btn-text,#sidebar .chat-title,#sidebar .chat-item,#sidebar .sidebar-footer-text{display:none!important}#sidebar .sidebar-footer-copyright{display:block!important}main,.main-content,#main-content{margin-left:0px!important;transition:none!important}';
-var head = document.head || document.getElementsByTagName('head')[0];
-head.insertBefore(style, head.firstChild);
-} else {
-var style = document.createElement('style');
-style.id = 'sidebar-initial-state';
-style.innerHTML = 'main,.main-content,#main-content{margin-left:80px!important;transition:none!important}';
-var head = document.head || document.getElementsByTagName('head')[0];
-head.insertBefore(style, head.firstChild);
-}
-} catch (e) {
-}
-})();
-
-function toggleSidebar() {
-const sidebar = document.getElementById('sidebar');
-const toggleBtn = document.getElementById('toggle-btn');
-const mainContent = document.querySelector('main') || document.querySelector('.main-content') || document.querySelector('#main-content') || document.body;
-
-if (!sidebar || !toggleBtn) return;
-
-const tempStyle = document.getElementById('sidebar-initial-state');
-if (tempStyle) {
-tempStyle.remove();
-}
-
-sidebar.classList.toggle('close');
-toggleBtn.classList.toggle('rotated');
-
-const isClosed = sidebar.classList.contains('close');
-
-
-if (isClosed) {
-mainContent.style.marginLeft = '0px';
-mainContent.style.transition = 'margin-left 0.2s cubic-bezier(0.4, 0, 0.2, 1)';
-} else {
-mainContent.style.marginLeft = '80px';
-mainContent.style.transition = 'margin-left 0.2s cubic-bezier(0.4, 0, 0.2, 1)';
-}
-
-saveSidebarState(isClosed);
-}
-
-
-function initializeSidebarLayout() {
-const sidebar = document.getElementById('sidebar');
-const mainContent = document.querySelector('main') || document.querySelector('.main-content') || document.querySelector('#main-content') || document.body;
-
-if (!sidebar || !mainContent) return;
-
-const isClosed = sidebar.classList.contains('close');
-
-
-const tempStyle = document.getElementById('sidebar-initial-state');
-if (tempStyle) {
-tempStyle.remove();
-}
-
-if (isClosed) {
-
-mainContent.style.marginLeft = '0px';
-} else {
-mainContent.style.marginLeft = '80px';
-}
-
-mainContent.style.transition = 'margin-left 0.2s cubic-bezier(0.4, 0, 0.2, 1)';
-}
-
-if (document.readyState === 'loading') {
-document.addEventListener('DOMContentLoaded', initializeSidebarLayout);
-} else {
-initializeSidebarLayout();
-}
-</script>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="stylesheet" href="css/style.css" />
+<link rel="stylesheet" href="css/quotes.css" />
 
 <link rel="icon" href="images/logo.png" type="image/x-icon" />
 <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@100;300;400;500;600;700;900&display=swap" rel="stylesheet" />
 <title>Flicker AI</title>
 </head>
 
-
-
 <body>
 
-
 <script src="js/redirect.js"></script>
-
 
 <div id="welcome-popup">
 <div class="welcome-popup-content">
@@ -182,7 +97,11 @@ gtag('config', 'G-1Q4K4492QV');
 </nav>
 
 <main>
-  
+
+<div class="quote-container">
+<h1 id="dynamic-quote" class="dynamic-quote">What brings you here today?</h1>
+</div>
+
 <div id="chat" role="log" aria-live="polite" aria-relevant="additions"></div>
 
 <div id="input-area">
@@ -250,7 +169,6 @@ hideWelcomePopup();
 sessionStorage.setItem('stayLoggedOut', 'true');
 }
 
-
 document.addEventListener('DOMContentLoaded', function() {
 const popupClose = document.getElementById('popup-close');
 const stayLoggedOutBtn = document.getElementById('stay-logged-out');
@@ -263,7 +181,6 @@ popupClose.addEventListener('click', hideWelcomePopup);
 if (stayLoggedOutBtn) {
 stayLoggedOutBtn.addEventListener('click', stayLoggedOut);
 }
-
 
 if (welcomePopup) {
 welcomePopup.addEventListener('click', function(e) {
@@ -312,4 +229,3 @@ setTimeout(setupAuthStateOverride, 1000);
 
 </body>
 </html>
-

@@ -1,4 +1,58 @@
 
+const dynamicQuotes = [
+  "What brings you here today?",
+  "I'm here to help just tell me where to start.",
+  "What would you like to work on today?",
+  "What's on your mind?",
+  "Ready to dive in?",
+  "How can I assist you today?",
+];
+
+function getRandomQuote() {
+  const randomIndex = Math.floor(Math.random() * dynamicQuotes.length);
+  return dynamicQuotes[randomIndex];
+}
+
+function updateQuote() {
+  const quoteElement = document.getElementById('dynamic-quote');
+  if (!quoteElement) return;
+  
+  const newQuote = getRandomQuote();
+  if (newQuote === quoteElement.textContent) {
+    updateQuote();
+    return;
+  }
+  
+  quoteElement.classList.add('quote-changing');
+  
+  setTimeout(() => {
+    quoteElement.textContent = newQuote;
+    quoteElement.classList.remove('quote-changing');
+    quoteElement.classList.add('quote-entering');
+    
+    setTimeout(() => {
+      quoteElement.classList.remove('quote-entering');
+    }, 600);
+  }, 300);
+}
+
+function initializeQuotes() {
+  const quoteElement = document.getElementById('dynamic-quote');
+  if (quoteElement) {
+    quoteElement.textContent = getRandomQuote();
+    
+
+    setInterval(updateQuote, 10000);
+    
+
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) {
+        updateQuote();
+      }
+    });
+  }
+}
+
 (function() {
   try {
     const sidebarClosed = localStorage.getItem('sidebarClosed') === 'true';
@@ -21,17 +75,19 @@
 const input = document.getElementById('input');
 const inputArea = document.getElementById('input-area');
 
-input.addEventListener('focus', () => {
-  inputArea.classList.add('no-transition');
-});
+if (input && inputArea) {
+  input.addEventListener('focus', () => {
+    inputArea.classList.add('no-transition');
+  });
 
-input.addEventListener('blur', () => {
-  inputArea.classList.remove('no-transition');
-});
+  input.addEventListener('blur', () => {
+    inputArea.classList.remove('no-transition');
+  });
+}
 
 const sendButton = document.getElementById('send');
-
 const boxes = document.querySelectorAll('.placeholder-box');
+
 const revealBoxes = () => {
   boxes.forEach(box => {
     const boxTop = box.getBoundingClientRect().top;
@@ -118,34 +174,6 @@ function getSidebarState() {
   }
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-  const sidebar = document.getElementById('sidebar');
-  const toggleBtn = document.getElementById('toggle-btn');
-  
-  const tempStyle = document.getElementById('sidebar-initial-state');
-  if (tempStyle) {
-    tempStyle.remove();
-  }
-  
-  if (sidebar && toggleBtn) {
-    const savedState = getSidebarState();
-    if (savedState) {
-      sidebar.classList.add('close');
-      toggleBtn.classList.add('rotated');
-    }
-  }
-  
-
-  initializeSidebarLayout();
-  
-  const signinBtn = document.getElementById('signin-btn');
-  if (signinBtn) {
-    signinBtn.addEventListener('click', function() {
-      window.location.href = 'Auth/signin.html';
-    });
-  }
-});
-
 function toggleSidebar() {
   const sidebar = document.getElementById('sidebar');
   const toggleBtn = document.getElementById('toggle-btn');
@@ -163,9 +191,7 @@ function toggleSidebar() {
   
   const isClosed = sidebar.classList.contains('close');
   
-
   if (isClosed) {
-
     mainContent.style.marginLeft = '0px';
     mainContent.style.transition = 'margin-left 0.2s cubic-bezier(0.4, 0, 0.2, 1)';
   } else {
@@ -176,24 +202,20 @@ function toggleSidebar() {
   saveSidebarState(isClosed);
 }
 
-
 function initializeSidebarLayout() {
   const sidebar = document.getElementById('sidebar');
   const mainContent = document.querySelector('main') || document.querySelector('.main-content') || document.querySelector('#main-content') || document.body;
   
   if (!sidebar || !mainContent) return;
   
-
   const tempStyle = document.getElementById('sidebar-initial-state');
   if (tempStyle) {
     tempStyle.remove();
   }
   
-
   const sidebarClosed = localStorage.getItem('sidebarClosed') === 'true';
   
   if (sidebarClosed) {
-  
     mainContent.style.marginLeft = '0px';
   } else {
     mainContent.style.marginLeft = '80px';
@@ -201,3 +223,35 @@ function initializeSidebarLayout() {
   
   mainContent.style.transition = 'margin-left 0.2s cubic-bezier(0.4, 0, 0.2, 1)';
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+  initializeQuotes();
+  
+  const sidebar = document.getElementById('sidebar');
+  const toggleBtn = document.getElementById('toggle-btn');
+  
+  const tempStyle = document.getElementById('sidebar-initial-state');
+  if (tempStyle) {
+    tempStyle.remove();
+  }
+  
+  if (sidebar && toggleBtn) {
+    const savedState = getSidebarState();
+    if (savedState) {
+      sidebar.classList.add('close');
+      toggleBtn.classList.add('rotated');
+    }
+  }
+  
+  initializeSidebarLayout();
+  
+  const signinBtn = document.getElementById('signin-btn');
+  if (signinBtn) {
+    signinBtn.addEventListener('click', function() {
+      window.location.href = 'Auth/signin.html';
+    });
+  }
+});
+
+window.toggleSidebar = toggleSidebar;
+window.initializeSidebarLayout = initializeSidebarLayout;
