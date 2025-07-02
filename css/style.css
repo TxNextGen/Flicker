@@ -655,7 +655,11 @@ border-radius: 20px;
 border: 0.5px solid rgba(255, 255, 255, 0.4);
 background: rgba(80, 80, 80, 0.2);
 left: 0;
+<<<<<<< HEAD
 bottom: 150px;
+=======
+bottom: 2rem;
+>>>>>>> 0cfb8624fb38fe21924b45cec0aade0a3ea5564d
 }
 
 #image-upload-btn {
