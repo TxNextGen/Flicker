@@ -526,11 +526,6 @@ text-align: left;
 border-bottom-left-radius: 2px;
 }
 
-
-.user:hover {
-background-color: #222;
-}
-
 .bot {
 background-color: #ffffff00;
 color: #ffffff;
