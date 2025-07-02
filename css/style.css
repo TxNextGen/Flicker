@@ -715,7 +715,7 @@ display: block;
 #input {
 width: 100%;
 max-width: 100%;
-padding: 15px 50px 15px 45px;
+padding: 12px 50px 50px 12px;
 font-size: 1rem;
 font-family: 'Raleway', sans-serif;
 border: none;
@@ -728,9 +728,14 @@ user-select: text;
 box-sizing: border-box;
 display: block;
 line-height: 1.5;
-height: 50px;
-min-height: 50px;
-max-height: 50px;
+height: 100%;
+min-height: 100%;
+max-height: 100%;
+vertical-align: top;
+text-align: left;
+white-space: pre-wrap;
+word-wrap: break-word;
+margin-bottom: 50px;
 }
 
 
@@ -759,9 +764,8 @@ bottom: 320px;
 
 #image-upload-btn {
 position: absolute;
-left: 15px;
-top: 50%;
-transform: translateY(10%);
+left: 12px;
+bottom: 12px;
 background: transparent;
 border: none;
 cursor: pointer;
@@ -769,6 +773,9 @@ padding: 8px;
 border-radius: 6px;
 transition: background-color 0.2s ease;
 z-index: 2;
+display: flex;
+align-items: center;
+justify-content: center;
 }
 
 #image-upload-btn:hover {
@@ -797,15 +804,19 @@ display: none;
 
 #send {
 position: absolute;
-right: 10px;
-top: 50%;
-transform: translateY(10%);
-background: transparent;
-border: none;
-cursor: pointer;
-padding: 10px;
+right: 12px;
+bottom: 12px;
+width: 32px;
+height: 32px;
+display: flex;
+align-items: center;
+justify-content: center;
+background: #2f2f2f;
+border: 1px solid rgba(255, 255, 255, 0.2);
 border-radius: 8px;
-transition: background-color 0.2s ease;
+cursor: pointer;
+transition: all 0.2s ease;
+z-index: 2;
 }
 
 .image-preview {
@@ -870,7 +881,9 @@ background: rgba(255, 59, 48, 1);
 #input::placeholder {
 color: rgba(255, 255, 255, 0.7);
 font-family: 'Raleway', sans-serif;
-line-height: 22px;
+line-height: 1.5;
+vertical-align: top;
+text-align: left;
 }
 
 #input::-webkit-scrollbar {
