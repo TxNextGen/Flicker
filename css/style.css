@@ -655,6 +655,7 @@ border-radius: 20px;
 border: 0.5px solid rgba(255, 255, 255, 0.4);
 background: rgba(80, 80, 80, 0.2);
 left: 0;
+margin-bottom: 2rem;
 }
 
 #image-upload-btn {
