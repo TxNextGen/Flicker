@@ -711,101 +711,192 @@ display: block;
 
 
 
-
 #input {
-width: 100%;
-max-width: 100%;
-padding: 12px 50px 50px 12px;
-font-size: 1rem;
-font-family: 'Raleway', sans-serif;
-border: none;
-background: transparent;
-color: white;
-outline: none;
-resize: none;
-overflow-y: hidden;
-user-select: text;
-box-sizing: border-box;
-display: block;
-line-height: 1.5;
-height: 100%;
-min-height: 100%;
-max-height: 100%;
-vertical-align: top;
-text-align: left;
-white-space: pre-wrap;
-word-wrap: break-word;
-margin-bottom: 50px;
+    width: 100%;
+    max-width: 100%;
+    padding: 12px 50px 50px 12px;
+    font-size: 1rem;
+    font-family: 'Raleway', sans-serif;
+    border: none;
+    background: transparent;
+    color: white;
+    outline: none;
+    resize: none;
+    overflow-y: hidden;
+    user-select: text;
+    box-sizing: border-box;
+    display: block;
+    line-height: 3;
+    height: 100%;
+    min-height: 100%;
+    max-height: 100%;
+    text-align: left;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    margin-bottom: 50px;
 }
 
-
 #input-area {
-box-sizing: border-box;
-padding: 10px;
-width: 100%;
-max-width: 750px;
-margin: 1rem auto 0 auto;
-display: flex;
-flex-direction: row;
-align-items: center;
-justify-content: center;
-height: 100px;
-min-height: 100px;
-max-height: 100px;
-position: relative;
-overflow: visible;
-line-height: 30px;
-border-radius: 20px;
-border: 0.5px solid rgba(255, 255, 255, 0.4);
-background: rgba(80, 80, 80, 0.2);
-left: 0;
-bottom: 320px;
+    box-sizing: border-box;
+    padding: 10px;
+    width: 100%;
+    max-width: 750px;
+    margin: 1rem auto 0 auto;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    height: 100px;
+    min-height: 100px;
+    max-height: 100px;
+    position: relative;
+    overflow: visible;
+    line-height: 30px;
+    border-radius: 20px;
+    border: 0.5px solid rgba(255, 255, 255, 0.4);
+    background: rgba(80, 80, 80, 0.2);
+    left: 0;
+    bottom: 320px;
+}
+
+#input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+    font-family: 'Raleway', sans-serif;
+    line-height: 3;
+    vertical-align: top;
+    text-align: left;
+}
+
+#input::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
+}
+
+#input::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#input::-webkit-scrollbar-thumb {
+    background: transparent;
+    border: none;
 }
 
 #image-upload-btn {
-position: absolute;
-top: 50%;
-transform: translateY(10%);
-left: 12px;
-bottom: 12px;
-margin-top: 1.5rem;
-background: transparent;
-border: none;
-cursor: pointer;
-padding: 8px;
-border: 1px solid rgba(255, 255, 255, 0.2);
-border-radius: 12px;
-transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-backdrop-filter: blur(10px);
-box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-z-index: 2;
-display: flex;
-align-items: center;
-justify-content: center;
+    position: absolute;
+    top: 70%;
+    transform: translateY(-50%);
+    left: 15px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
 }
 
 #image-upload-btn:hover {
-background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.1);
 }
 
 #image-upload-btn svg {
-width: 20px;
-height: 20px;
-fill: rgba(255, 255, 255, 0.7);
+    width: 20px;
+    height: 20px;
+    fill: rgba(255, 255, 255, 0.7);
+    transition: fill 0.2s ease;
 }
 
 #image-upload-btn:hover svg {
-fill: rgba(255, 255, 255, 1);
+    fill: rgba(255, 255, 255, 1);
 }
 
 #image-upload-btn:disabled {
-cursor: not-allowed;
-opacity: 0.5;
+    cursor: not-allowed;
+    opacity: 0.5;
 }
 
 #image-input {
-display: none;
+    display: none;
 }
+
+.image-preview {
+    position: absolute;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(40, 40, 40, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    padding: 12px;
+    max-width: 300px;
+    display: none;
+    z-index: 10;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+.image-preview.show {
+    display: block;
+}
+
+.image-preview img {
+    max-width: 100%;
+    max-height: 150px;
+    border-radius: 8px;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.image-preview-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.image-preview-name {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.85rem;
+    font-family: 'Raleway', sans-serif;
+    flex: 1;
+    margin-right: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.remove-image-btn {
+    background: rgba(255, 59, 48, 0.8);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.remove-image-btn:hover {
+    background: rgba(255, 59, 48, 1);
+}
+
+
 
 #send {
 position: absolute;
@@ -824,102 +915,6 @@ transition: all 0.2s ease;
 z-index: 2;
 }
 
-.image-preview {
-position: absolute;
-bottom: 80px;
-left: 50%;
-transform: translateX(-50%);
-background: rgba(40, 40, 40, 0.95);
-border: 1px solid rgba(255, 255, 255, 0.2);
-border-radius: 12px;
-padding: 12px;
-max-width: 300px;
-display: none;
-z-index: 10;
-}
-
-.image-preview.show {
-display: block;
-}
-
-.image-preview img {
-max-width: 100%;
-max-height: 150px;
-border-radius: 8px;
-display: block;
-margin-bottom: 8px;
-}
-
-.image-preview-controls {
-display: flex;
-justify-content: space-between;
-align-items: center;
-}
-
-.image-preview-name {
-color: rgba(255, 255, 255, 0.8);
-font-size: 0.85rem;
-font-family: 'Raleway', sans-serif;
-flex: 1;
-margin-right: 10px;
-white-space: nowrap;
-overflow: hidden;
-text-overflow: ellipsis;
-}
-
-.remove-image-btn {
-background: rgba(255, 59, 48, 0.8);
-color: white;
-border: none;
-border-radius: 6px;
-padding: 4px 8px;
-font-size: 0.75rem;
-cursor: pointer;
-transition: background-color 0.2s ease;
-}
-
-.remove-image-btn:hover {
-background: rgba(255, 59, 48, 1);
-}
-
-
-#input::placeholder {
-color: rgba(255, 255, 255, 0.7);
-font-family: 'Raleway', sans-serif;
-line-height: 1.5;
-vertical-align: top;
-text-align: left;
-}
-
-#input::-webkit-scrollbar {
-width: 0px;
-background: transparent;
-}
-
-#input::-webkit-scrollbar-track {
-background: transparent;
-}
-
-#input::-webkit-scrollbar-thumb {
-background: transparent;
-border: none;
-}
-
-@media (max-width: 768px) {
-#input-area {
-width: 95%;
-margin: 1rem;
-height: 70px;
-min-height: 70px;
-max-height: 70px;
-}
-
-#input {
-height: 50px;
-min-height: 50px;
-max-height: 50px;
-}
-}
 
 
 #auth-box {
