@@ -357,7 +357,7 @@ opacity: 0.2;
   animation: gradientShift 4s ease-in-out infinite, fadeInUp 0.8s ease-out;
   position: relative;
   z-index: 1;
-  margin-top: 150px;
+  margin-top: 170px;
 }
 
 @keyframes gradientShift {

@@ -29,6 +29,9 @@ class UserManager {
 
     static setCurrentUser(user) {
         localStorage.setItem('flickerCurrentUser', JSON.stringify(user));
+        if (typeof window.refreshQuotes === 'function') {
+            window.refreshQuotes();
+        }
     }
 
     static signUp(name, email, password) {
@@ -106,6 +109,9 @@ class UserManager {
 
     static logout() {
         localStorage.removeItem('flickerCurrentUser');
+        if (typeof window.refreshQuotes === 'function') {
+            window.refreshQuotes();
+        }
     }
 
     static isLoggedIn() {
@@ -154,16 +160,17 @@ function updateAuthState() {
     const currentUser = UserManager.getCurrentUser();
     
     if (currentUser) {
+        const firstName = currentUser.name.split(' ')[0];
         authBox.innerHTML = `
             <div class="profile-dropdown">
                 <button id="profile-btn" class="profile-btn">
-                    <div class="profile-avatar">${currentUser.name.charAt(0).toUpperCase()}</div>
-                    <span class="profile-name">${currentUser.name}</span>
+                    <div class="profile-avatar">${firstName.charAt(0).toUpperCase()}</div>
+                    <span class="profile-name">${firstName}</span>
                     <span class="dropdown-arrow">▼</span>
                 </button>
                 <div id="profile-menu" class="profile-menu hidden">
                     <div class="profile-info">
-                        <div class="profile-avatar-large">${currentUser.name.charAt(0).toUpperCase()}</div>
+                        <div class="profile-avatar-large">${firstName.charAt(0).toUpperCase()}</div>
                         <div class="profile-details">
                             <div class="profile-name-large">${currentUser.name}</div>
                             <div class="profile-email">${currentUser.email}</div>
@@ -187,6 +194,11 @@ function updateAuthState() {
         `;
         
         setupProfileEvents();
+        setTimeout(() => {
+            if (typeof window.refreshQuotes === 'function') {
+                window.refreshQuotes();
+            }
+        }, 100);
     } else {
         authBox.innerHTML = `<button id="signin-btn">Sign In</button>`;
         
