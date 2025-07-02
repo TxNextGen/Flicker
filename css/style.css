@@ -954,7 +954,7 @@ height: 35px;
 display: flex;
 align-items: center;
 justify-content: center;
-background: linear-gradient(135deg, rgba(100, 100, 100, 0.8), rgba(60, 60, 60, 0.9)); /* Better gradient background */
+background: none;
 border: 1px solid rgba(255, 255, 255, 0.2);
 border-radius: 12px;
 cursor: pointer;
@@ -964,15 +964,7 @@ box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 #send:hover {
-background: linear-gradient(135deg, rgba(120, 120, 120, 0.9), rgba(80, 80, 80, 1));
-transform: translateY(-50%) scale(1.08);
-box-shadow: 0 4px 16px rgba(255, 255, 255, 0.2);
-border-color: rgba(255, 255, 255, 0.4);
-}
-
-#send:active {
-transform: translateY(-50%) scale(0.95);
-box-shadow: 0 2px 8px rgba(255, 255, 255, 0.15);
+background: rgba(255, 255, 255, 0.1);
 }
 
 #send img {
