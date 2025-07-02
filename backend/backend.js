@@ -1,4 +1,3 @@
-
 class CookieManager {
 constructor() {
 this.cookiesAccepted = this.getCookieConsent();
@@ -162,6 +161,8 @@ this.currentChatId = null;
 this.allChats = {};
 this.CHATS_KEY = "flicker_all_chats";
 this.CURRENT_KEY = "flicker_current_chat";
+this.chatBarMoved = false; 
+this.typingInterval = null; 
 this.init();
 }
 
@@ -175,17 +176,119 @@ chatList: document.getElementById("chat-list"),
 imageUploadBtn: document.getElementById('image-upload-btn'),
 imageInput: document.getElementById('image-input'),
 imagePreview: document.getElementById('image-preview'),
-removeImageBtn: document.getElementById('remove-image-btn')
+removeImageBtn: document.getElementById('remove-image-btn'),
+inputArea: document.getElementById('input-area') 
 };
 
 this.createRenamePopup();
 this.bindEvents();
 this.initializeChats();
+this.addTypingStyles();
+}
+addTypingStyles() {
+const existingStyle = document.getElementById('typing-styles');
+if (existingStyle) existingStyle.remove();
+
+const style = document.createElement('style');
+style.id = 'typing-styles';
+style.textContent = `
+.typing-indicator {
+display: flex;
+align-items: center;
+padding: 8px;
+margin-left: -50px;
+}
+
+.typing-dots {
+display: flex;
+gap: 4px;
+align-items: center;
+}
+
+.typing-dot {
+width: 35px;
+height: 20px;
+border-radius: 50%;
+background-color: #555;
+display: inline-block;
+animation: typingPulse 1.4s infinite ease-in-out;
+}
+
+.typing-dot:nth-child(1) { animation-delay: 0s; }
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes typingPulse {
+0%, 60%, 100% {
+transform: scale(1);
+opacity: 0.4;
+}
+30% {
+transform: scale(1.3);
+opacity: 0.9;
+}
+}
+`;
+document.head.appendChild(style);
+}
+
+createTypingIndicator() {
+const typingDiv = document.createElement("div");
+typingDiv.className = "message ai";
+const dot1 = document.createElement("span");
+dot1.className = "typing-dot";
+dot1.style.cssText = "width:8px!important;height:8px!important;background:#666!important;border-radius:50%!important;display:inline-block!important;animation:typingPulse 1.4s infinite ease-in-out!important;animation-delay:0s!important;margin:0 2px!important;";
+
+const dot2 = document.createElement("span");
+dot2.className = "typing-dot";
+dot2.style.cssText = "width:8px!important;height:8px!important;background:#666!important;border-radius:50%!important;display:inline-block!important;animation:typingPulse 1.4s infinite ease-in-out!important;animation-delay:0.2s!important;margin:0 2px!important;";
+
+const dot3 = document.createElement("span");
+dot3.className = "typing-dot";
+dot3.style.cssText = "width:8px!important;height:8px!important;background:#666!important;border-radius:50%!important;display:inline-block!important;animation:typingPulse 1.4s infinite ease-in-out!important;animation-delay:0.4s!important;margin:0 2px!important;";
+
+const dotsContainer = document.createElement("div");
+dotsContainer.className = "typing-dots";
+dotsContainer.style.cssText = "display:flex!important;gap:4px!important;align-items:center!important;";
+dotsContainer.appendChild(dot1);
+dotsContainer.appendChild(dot2);
+dotsContainer.appendChild(dot3);
+
+const indicator = document.createElement("div");
+indicator.className = "typing-indicator";
+indicator.style.cssText = "display:flex!important;align-items:center!important;padding:8px!important;margin-left:-50px!important;";
+indicator.appendChild(dotsContainer);
+
+typingDiv.appendChild(indicator);
+return typingDiv;
+}
+
+
+
+moveChatBarDown() {
+const inputArea = this.elements.inputArea;
+if (!inputArea || this.chatBarMoved) return;
+
+
+inputArea.style.transition = 'bottom 0.5s ease-in-out';
+
+inputArea.style.bottom = '20px';
+
+this.chatBarMoved = true;
+}
+
+
+resetChatBarPosition() {
+const inputArea = this.elements.inputArea;
+if (!inputArea) return;
+
+inputArea.style.transition = 'bottom 0.5s ease-in-out';
+inputArea.style.bottom = '320px';
+this.chatBarMoved = false;
 }
 
 bindEvents() {
 const {textarea, sendBtn, addChatBtn, imageUploadBtn, imageInput, removeImageBtn} = this.elements;
-
 
 imageUploadBtn?.addEventListener('click', e => {
 if (!this.checkCookies(e)) return;
@@ -194,14 +297,12 @@ imageInput.click();
 imageInput?.addEventListener('change', e => this.handleImageSelect(e));
 removeImageBtn?.addEventListener('click', () => this.clearSelectedImage());
 
-
 addChatBtn?.addEventListener("click", e => {
 if (!this.checkCookies(e)) return;
 this.startNewChat();
 });
 
 sendBtn?.addEventListener("click", e => this.sendMessage(e));
-
 
 if (textarea) {
 textarea.addEventListener("focus", e => { if (!this.checkCookies(e)) e.target.blur(); });
@@ -214,7 +315,6 @@ sendBtn?.click();
 }
 });
 }
-
 
 document.addEventListener('click', e => {
 if (!e.target.closest('.chat-menu-btn') && !e.target.closest('.chat-menu')) {
@@ -371,13 +471,79 @@ this.currentChatId = chatId;
 this.safeStorage().setItem(this.CURRENT_KEY, chatId);
 this.loadChatMessages(chatId);
 this.updateChatListSelection();
-this.hideElements(['placeholder-container', 'header-container']);
+this.hidePlaceholderContent();
+if (this.allChats[chatId].messages.length > 0) {
+this.moveChatBarDown();
+}
 }
 
-hideElements(ids) {
-ids.forEach(id => {
-const el = document.getElementById(id);
-if (el) el.style.display = "none";
+hidePlaceholderContent() {
+const quoteContainer = document.querySelector('.quote-container');
+if (quoteContainer) {
+quoteContainer.style.display = 'none';
+}
+
+
+const dynamicQuote = document.getElementById('dynamic-quote');
+if (dynamicQuote) {
+dynamicQuote.style.display = 'none';
+}
+
+const placeholderSelectors = [
+'.quote-container',
+'#dynamic-quote',
+'.placeholder-container',
+'#placeholder-container',
+'.header-container',
+'#header-container'
+];
+
+placeholderSelectors.forEach(selector => {
+const elements = document.querySelectorAll(selector);
+elements.forEach(el => {
+if (el) {
+el.style.display = 'none';
+}
+});
+});
+
+
+const chatContainer = document.getElementById('chat');
+if (chatContainer) {
+chatContainer.style.display = 'block';
+chatContainer.style.visibility = 'visible';
+}
+}
+
+
+showPlaceholderContent() {
+if (this.currentChatId) return;
+const quoteContainer = document.querySelector('.quote-container');
+if (quoteContainer) {
+quoteContainer.style.display = 'block';
+}
+
+const dynamicQuote = document.getElementById('dynamic-quote');
+if (dynamicQuote) {
+dynamicQuote.style.display = 'block';
+}
+
+const placeholderSelectors = [
+'.quote-container',
+'#dynamic-quote',
+'.placeholder-container',
+'#placeholder-container',
+'.header-container',
+'#header-container'
+];
+
+placeholderSelectors.forEach(selector => {
+const elements = document.querySelectorAll(selector);
+elements.forEach(el => {
+if (el) {
+el.style.display = 'block';
+}
+});
 });
 }
 
@@ -442,7 +608,6 @@ popup.innerHTML = `
 `;
 
 document.body.appendChild(popup);
-
 
 document.getElementById('save-rename')?.addEventListener('click', () => this.saveRename());
 document.getElementById('cancel-rename')?.addEventListener('click', () => this.cancelRename());
@@ -582,10 +747,9 @@ this.currentChatId = null;
 this.safeStorage().removeItem(this.CURRENT_KEY);
 this.elements.chat.innerHTML = '';
 
-['placeholder-container', 'header-container'].forEach(id => {
-document.getElementById(id)?.removeAttribute('style');
-});
 
+this.resetChatBarPosition();
+this.showPlaceholderContent();
 this.updateChatListSelection();
 }
 
@@ -617,10 +781,11 @@ if (!message && !this.selectedImage) return;
 if (!this.currentChatId) {
 const newId = this.createNewChat(message || "Image");
 if (!newId) return;
+this.currentChatId = newId; 
 }
 
-this.hideElements(['placeholder-container', 'header-container']);
-
+this.hidePlaceholderContent();
+this.moveChatBarDown();
 
 const userDiv = document.createElement("div");
 userDiv.className = "message user";
@@ -642,16 +807,11 @@ this.elements.chat.appendChild(userDiv);
 this.scrollToBottom();
 this.saveMessage("user", message || "Image shared");
 
-
 textarea.value = "";
 textarea.style.height = "auto";
 const tempImage = this.selectedImage;
 this.clearSelectedImage();
-
-
-const aiDiv = document.createElement("div");
-aiDiv.className = "message ai";
-aiDiv.textContent = "Flicker AI is Typing...";
+const aiDiv = this.createTypingIndicator();
 this.elements.chat.appendChild(aiDiv);
 this.scrollToBottom();
 
@@ -669,7 +829,7 @@ body: JSON.stringify(body)
 
 const data = await res.json();
 const reply = data.reply || data.error || "No response";
-
+aiDiv.className = "message ai";
 this.typeEffect(aiDiv, reply, () => {
 if (typeof marked !== 'undefined' && typeof DOMPurify !== 'undefined') {
 aiDiv.innerHTML = DOMPurify.sanitize(marked.parse(reply));
@@ -749,7 +909,6 @@ window.dispatchEvent(new Event('resize'));
 }, 100);
 }
 
-
 let cookieManager, chatSystem;
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -758,7 +917,6 @@ chatSystem = new ChatSystem();
 window.cookieManager = cookieManager;
 window.chatSystem = chatSystem;
 window.clearAllChats = () => chatSystem.clearAllChats();
-
 
 document.getElementById('signin-btn')?.addEventListener('click', e => {
 if (!cookieManager.canUseCookies()) {
