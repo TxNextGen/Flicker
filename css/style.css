@@ -702,7 +702,7 @@ display: block;
 #input {
 width: 100%;
 max-width: 100%;
-padding: 20px 50px 20px 45px;
+padding: 10px 50px 10px 55px;
 font-size: 1rem;
 font-family: 'Raleway', sans-serif;
 border: none;
@@ -715,9 +715,9 @@ user-select: text;
 box-sizing: border-box;
 display: block;
 line-height: 1.5;
-height: 70px;
-min-height: 70px;
-max-height: 80px;
+height: 80px;
+min-height: 80px;
+max-height: 150px;
 }
 
 
@@ -747,8 +747,8 @@ margin-top: 2rem;
 #image-upload-btn {
 position: absolute;
 left: 15px;
-top: 52%;
-transform: translateY(-50%);
+top: 40px
+transform: none;
 background: transparent;
 border: none;
 cursor: pointer;
@@ -785,8 +785,8 @@ display: none;
 #send {
 position: absolute;
 right: 10px;
-top: 50%;
-transform: translateY(-50%);
+top: 40px;
+transform: none;
 background: transparent;
 border: none;
 cursor: pointer;
@@ -857,7 +857,7 @@ background: rgba(255, 59, 48, 1);
 #input::placeholder {
 color: rgba(255, 255, 255, 0.7);
 font-family: 'Raleway', sans-serif;
-line-height: 22px;
+line-height: 1.5rem;
 }
 
 #input::-webkit-scrollbar {
@@ -878,9 +878,10 @@ border: none;
 #input-area {
 width: 98%;
 margin: 1rem;
-height: 95px;
-min-height: 95px;
-max-height: 115px;
+height: 120px;
+min-height: 120px;
+max-height: 180px;
+padding: 15px 10px;
 }
 
 #input {
@@ -918,8 +919,8 @@ background-color: #333;
 
 #send {
 position: absolute;
-top: 50%;
-transform: translateY(-50%);
+top: 40px;
+transform: none;
 right: 10px;
 width: 35px;
 height: 35px;
