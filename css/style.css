@@ -932,7 +932,7 @@ background-color: #333;
 #send {
 position: absolute;
 top: 50%;
-transform: translateY(-50%);
+transform: translateY(10%);
 right: 10px;
 width: 35px;
 height: 35px;
