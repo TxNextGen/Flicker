@@ -761,7 +761,7 @@ bottom: 320px;
 position: absolute;
 left: 15px;
 top: 52%;
-transform: translateY(-50%);
+transform: translateY(-0%);
 background: transparent;
 border: none;
 cursor: pointer;
