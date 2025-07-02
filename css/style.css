@@ -764,8 +764,7 @@ bottom: 320px;
 
 #image-upload-btn {
 position: absolute;
-top: 50%;
-transform: translateY(10%);
+transform: translateY(7.5%);
 left: 12px;
 bottom: 12px;
 margin-top: 1.5rem;
