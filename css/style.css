@@ -1198,35 +1198,31 @@ min-width: 60px;
 .save-btn {
 background: transparent;
 color: white;
-border: 1px solid #565869;
 }
 
 .save-btn:hover {
-background: transparent;
-border: 1px solid #565869;
+background: #444444;
 color: white;
 }
 
-.save-btn:focus {
-outline: none;
-}
+
 
 .cancel-btn {
 background: transparent;
 color: white;
-border: 1px solid #565869;
 }
 
 .cancel-btn:hover {
-border-color: #565869;
-
+background: #444444;
+color: white;
 }
 
-.cancel-btn:focus {
-outline: none;
-background: rgba(255, 255, 255, 0.05);
-border-color: #6e6e80;
-}
+
+
+
+
+
+
 
 body.menu-open {
 overflow: hidden;
@@ -1640,6 +1636,8 @@ transition: all 0.2s ease;
 background: #f0f0f0;
 color: #666666;
 }
+
+
 
 @keyframes fadeIn {
 from {
