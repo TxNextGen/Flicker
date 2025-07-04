@@ -1,15 +1,27 @@
-API_KEY = "AIzaSyDT2aBkKfb0JVSs9hKXA7NOPiOKEk3fJ-U" #Limited, cause i am not paying money for this. If you get a error dm me.
+import os
+
+API_KEY = os.getenv("GEMINI_API_KEY", "AIzaSyDT2aBkKfb0JVSs9hKXA7NOPiOKEk3fJ-U")
+MODEL_NAME = "gemini-2.0-flash-exp"
 MEMORY_FILE = "memory.json"
-MODEL_NAME = "gemini-2.5-flash-preview-06-17" # changed from gemini-2.5-flash because that doesnt exist lol - xpki
 MAX_HISTORY = 10
 
-GENERATION_CONFIG = { #Currently has 0 filters, i still need to change it. PLS KEEP IT THIS WAY FOR TESTING! WE WILL CHANGE IT LATER ON! -Ben
-    "safety_settings": [
-        {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE"},
-        {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE"},
-        {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_NONE"},
-        {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE"},
-    ],
+USAGE_LIMITS = {
+    "max_questions_per_user": 50,
+    "reset_period": "daily",
+    "reset_time": "00:00",
 }
-# ^^^ remove this. the default settings for safety are good enough - xpki
-# ^^^ The safety settings are currently bugged for 2.5. Ill change them when google fixed them -Ben
+
+GENERATION_CONFIG = {
+    "temperature": 0.7,
+    "top_p": 0.9,
+    "top_k": 40,
+    "max_output_tokens": 8192,
+    "candidate_count": 1,
+}
+
+SAFETY_SETTINGS = [
+    {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_MEDIUM_AND_ABOVE"},
+    {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_MEDIUM_AND_ABOVE"},
+    {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_MEDIUM_AND_ABOVE"},
+    {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_MEDIUM_AND_ABOVE"},
+]
