@@ -1,5 +1,5 @@
 
-# [Flicker Ai](https://flicker.chat)
+# [Flicker AI](https://flicker.chat)
 
 Flicker Website Data
 
