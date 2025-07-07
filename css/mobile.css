@@ -611,6 +611,11 @@ body {
   color: rgba(230, 230, 255, 0.5);
 }
 
+
+.mobile-input-area input[type="file"] {
+  display: none;
+}
+
 .mobile-image-upload-btn {
   width: 38px;
   height: 38px;
@@ -624,18 +629,6 @@ body {
   transition: all 0.3s ease;
   color: rgba(230, 230, 255, 0.7);
   flex-shrink: 0;
-  position: relative;
-  overflow: hidden;
-}
-
-.mobile-image-upload-btn input[type="file"] {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  cursor: pointer;
 }
 
 .mobile-image-upload-btn:hover {
@@ -650,9 +643,10 @@ body {
   fill: currentColor;
 }
 
+
 .mobile-send-btn {
-  width: 38px;
-  height: 38px;
+  width: 38px; 
+  height: 38px; 
   background: linear-gradient(135deg, #5d5fef, #7b68ee);
   border: 1px solid rgba(123, 104, 238, 0.5);
   border-radius: 50%;
@@ -663,7 +657,7 @@ body {
   transition: all 0.3s ease;
   flex-shrink: 0;
   box-shadow: 0 2px 8px rgba(93, 95, 239, 0.3);
-  margin-left: 0;
+  margin-left: 0; 
 }
 
 .mobile-send-btn:disabled {
@@ -678,8 +672,8 @@ body {
 }
 
 .mobile-send-btn svg {
-  width: 18px;
-  height: 18px;
+  width: 18px; 
+  height: 18px; 
   fill: white;
 }
 
