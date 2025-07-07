@@ -55,16 +55,16 @@ document.addEventListener('DOMContentLoaded', function() {
                     li.classList.add('active');
                 }
 
-                li.innerHTML = `
-                    <span class="mobile-chat-item-text">${chat.title}</span>
-                    <button class="mobile-chat-menu-btn" data-chat-id="${chatId}">
-                        <img src="images/dots.png" alt="Menu" />
-                    </button>
-                    <div class="mobile-chat-menu" data-chat-id="${chatId}">
-                        <div class="mobile-chat-menu-item rename-chat" data-chat-id="${chatId}">Rename</div>
-                        <div class="mobile-chat-menu-item delete-chat delete" data-chat-id="${chatId}">Delete</div>
-                    </div>
-                `;
+               li.innerHTML = `
+    <span class="mobile-chat-item-text">${chat.title}</span>
+    <button class="mobile-chat-menu-btn" data-chat-id="${chatId}">
+        <i class="fas fa-ellipsis-v"></i> <!-- Font Awesome 3-dot vertical icon -->
+    </button>
+    <div class="mobile-chat-menu" data-chat-id="${chatId}">
+        <div class="mobile-chat-menu-item rename-chat" data-chat-id="${chatId}">Rename</div>
+        <div class="mobile-chat-menu-item delete-chat delete" data-chat-id="${chatId}">Delete</div>
+    </div>
+`;
                 li.addEventListener('click', (e) => {
                     if (!e.target.closest('.mobile-chat-menu-btn') && !e.target.closest('.mobile-chat-menu')) {
                         if (window.mobileCookieManager?.canUseCookies()) {
