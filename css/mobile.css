@@ -645,8 +645,8 @@ body {
 }
 
 .mobile-send-btn {
-  width: 38px;
-  height: 38px;
+  width: 32px; 
+  height: 32px; 
   background: linear-gradient(135deg, #5d5fef, #7b68ee);
   border: 1px solid rgba(123, 104, 238, 0.5);
   border-radius: 50%;
@@ -656,7 +656,8 @@ body {
   justify-content: center;
   transition: all 0.3s ease;
   flex-shrink: 0;
-  box-shadow: 0 4px 10px rgba(93, 95, 239, 0.3);
+  box-shadow: 0 2px 8px rgba(93, 95, 239, 0.3); 
+  margin-left: 8px; 
 }
 
 .mobile-send-btn:disabled {
@@ -667,15 +668,14 @@ body {
 .mobile-send-btn:not(:disabled):hover {
   transform: scale(1.05);
   background: linear-gradient(135deg, #6d6fff, #8b78ff);
-  box-shadow: 0 6px 15px rgba(93, 95, 239, 0.4);
+  box-shadow: 0 4px 12px rgba(93, 95, 239, 0.4); 
 }
 
 .mobile-send-btn svg {
-  width: 18px;
-  height: 18px;
+  width: 16px; 
+  height: 16px; 
   fill: white;
 }
-
 
   display: none;
 }
