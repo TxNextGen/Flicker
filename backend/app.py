@@ -9,10 +9,10 @@ import io
 import json
 import hashlib
 import config
+import re
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
-
 
 genai.configure(api_key=config.API_KEY)
 model = genai.GenerativeModel(
@@ -22,6 +22,62 @@ model = genai.GenerativeModel(
 )
 
 USAGE_FILE = "usage.json"
+
+
+PROFANITY_WORDS = [
+
+    'fuck', 'shit', 'bitch', 'damn', 'hell', 'ass', 'crap', 'piss',
+    'bastard', 'whore', 'slut', 'cunt', 'cock', 'dick', 'pussy',
+    'tits', 'boobs', 'motherfucker', 'asshole', 'bullshit', 'goddamn',
+    'dumbass', 'jackass', 'dipshit', 'shithead', 'fuckface', 'dickhead',
+    'prick', 'twat', 'fag', 'faggot', 'nigger', 'retard', 'spic',
+    'chink', 'gook', 'wetback', 'kike', 'towelhead', 'raghead',
+    
+   
+    'f*ck', 'sh*t', 'b*tch', 'f***', 's***', 'b***', 'a$$', 'a**',
+    'fck', 'shxt', 'btch', 'fuk', 'sht', 'fook', 'phuck', 'phuk',
+    'biatch', 'beotch', 'beyotch', 'shiznit', 'azz', 'arse', 'arsehole',
+    'phuq', 'phuck', 'sheeit', 'shiit', 'shiet', 'dafuq', 'wtf',
+    'stfu', 'gtfo', 'omfg', 'jfc', 'pos', 'sob', 'mofo', 'mf',
+    
+
+    'f u c k', 'f-u-c-k', 'f.u.c.k', 's h i t', 's-h-i-t', 's.h.i.t',
+    'f**k', 's**t', 'b**ch', 'a**hole', 'd**n', 'h**l', 'cr*p',
+    'p*ss', 'b*st*rd', 'wh*re', 'sl*t', 'c*nt', 'c*ck', 'd*ck',
+    'p*ssy', 't*ts', 'b**bs', 'motherf*cker', 'bullsh*t', 'godd*mn',
+    'dumb*ss', 'jack*ss', 'dipsh*t', 'sh*thead', 'f*ckface',
+    'd*ckhead', 'pr*ck', 'tw*t'
+]
+
+def contains_profanity(text):
+    """Check if text contains profanity"""
+    if not text:
+        return False
+    
+   
+    text_lower = text.lower()
+    
+
+    normalized_text = re.sub(r'[^a-zA-Z0-9\s]', '', text_lower)
+    
+
+    for word in PROFANITY_WORDS:
+        if word in text_lower:
+            return True
+    
+
+    spaced_text = re.sub(r'\s+', '', normalized_text)
+    for word in PROFANITY_WORDS:
+        if word.replace(' ', '') in spaced_text:
+            return True
+    
+  
+    words = normalized_text.split()
+    for word in words:
+        if word in PROFANITY_WORDS:
+            return True
+    
+    return False
 
 def load_usage():
     """Load usage data from file"""
@@ -119,6 +175,13 @@ def chat():
         
         if not message and not image_data:
             return jsonify({"error": "No message or image provided"}), 400
+        
+  
+        if message and contains_profanity(message):
+            return jsonify({
+                "error": "I Understand If your frustrated. But try to keep the conversation respectful.",
+                "profanity_detected": True
+            }), 400
         
         new_usage_count = increment_usage(user_id)
         
