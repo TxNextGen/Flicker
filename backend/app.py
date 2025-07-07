@@ -1,6 +1,8 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import google.generativeai as genai
+from google import genai as imagen_client
+from google.genai import types
 import time
 import os
 import base64
@@ -19,7 +21,6 @@ import config
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
 
-
 logging.basicConfig(
     level=getattr(logging, config.LOG_LEVEL),
     format=config.LOG_FORMAT,
@@ -34,16 +35,16 @@ logger = logging.getLogger(__name__)
 genai.configure(api_key=config.API_KEY)
 
 
+imagen_client_instance = imagen_client.Client(api_key=config.API_KEY)
+
 model = genai.GenerativeModel(
     model_name=config.MODEL_NAME,
     generation_config=config.GENERATION_CONFIG,
     safety_settings=config.SAFETY_SETTINGS
 )
 
-
 rate_limiter = defaultdict(list)
 rate_lock = threading.Lock()
-
 
 SYSTEM_PROMPT = """You are Flicker AI - an exceptionally intelligent, creative, and helpful assistant with advanced reasoning capabilities.
 
@@ -97,14 +98,11 @@ def rate_limit_check(user_id):
         now = time.time()
         user_requests = rate_limiter[user_id]
         
-      
         user_requests[:] = [req_time for req_time in user_requests if now - req_time < 60]
         
-     
         if len(user_requests) >= config.RATE_LIMITING["requests_per_minute"]:
             return False, len(user_requests)
         
-    
         user_requests.append(now)
         return True, len(user_requests)
 
@@ -160,7 +158,6 @@ def check_usage_limit(user_id, limit_type="questions"):
     
     user_data = usage_data[user_id]
 
-    
     if should_reset_usage(user_data["last_reset"]):
         user_data["questions"] = 0
         user_data["image_generations"] = 0
@@ -195,17 +192,14 @@ def process_image(image_data):
         
         image_bytes = base64.b64decode(image_data)
         
-        
         if len(image_bytes) > 10 * 1024 * 1024:
             return None, "Image too large. Maximum size is 10MB."
         
         image = Image.open(io.BytesIO(image_bytes))
         
-     
         if image.mode != 'RGB':
             image = image.convert('RGB')
         
-    
         max_size = (2048, 2048)
         if image.size[0] > max_size[0] or image.size[1] > max_size[1]:
             image.thumbnail(max_size, Image.Resampling.LANCZOS)
@@ -243,14 +237,12 @@ def chat():
     try:
         user_id = get_user_id(request)
         
-   
         can_proceed, current_rate = rate_limit_check(user_id)
         if not can_proceed:
             return jsonify({
                 "error": config.ERROR_MESSAGES["rate_limit"]
             }), 429
         
-    
         can_use, current_count = check_usage_limit(user_id, "questions")
         if not can_use:
             return jsonify({
@@ -266,11 +258,9 @@ def chat():
                 "error": config.ERROR_MESSAGES["invalid_request"]
             }), 400
         
-       
         if config.FEATURES["image_generation"] and detect_image_generation_request(message):
             return handle_image_generation(user_id, message)
         
-
         content_parts = []
         
         if message:
@@ -287,7 +277,6 @@ def chat():
                 }), 400
             content_parts.append(processed_image)
         
-      
         start_time = time.time()
         
         response = model.generate_content(
@@ -299,7 +288,6 @@ def chat():
         duration = time.time() - start_time
         logger.info(f"Response generated in {duration:.2f}s for user {user_id[:8]}")
         
-      
         increment_usage(user_id, "questions")
         
         reply = response.text.strip()
@@ -319,44 +307,51 @@ def chat():
         }), 500
 
 def handle_image_generation(user_id, prompt):
-    """Handle image generation requests"""
+    """Handle image generation requests using Imagen 3"""
     try:
-    
         can_generate, current_count = check_usage_limit(user_id, "image_generations")
         if not can_generate:
             return jsonify({
                 "error": config.ERROR_MESSAGES["image_limit"]
             }), 429
         
-        
-        imagen_model = genai.GenerativeModel(config.IMAGE_MODEL_NAME)
-        
-  
         start_time = time.time()
         
-        response = imagen_model.generate_content(
-            f"Generate an image: {prompt}",
-            generation_config=config.IMAGE_GENERATION_CONFIG
+        # Use the new Imagen 3 API with correct configuration
+        response = imagen_client_instance.models.generate_images(
+            model=config.IMAGE_MODEL_NAME,
+            prompt=prompt,
+            config=types.GenerateImagesConfig(
+                number_of_images=config.IMAGE_GENERATION_CONFIG["number_of_images"],
+                aspect_ratio=config.IMAGE_GENERATION_CONFIG["aspect_ratio"],
+                safety_filter_level=config.IMAGE_GENERATION_CONFIG["safety_filter_level"],
+                person_generation=config.IMAGE_GENERATION_CONFIG["person_generation"]
+            )
         )
         
         duration = time.time() - start_time
         logger.info(f"Image generated in {duration:.2f}s for user {user_id[:8]}")
         
-     
         increment_usage(user_id, "image_generations")
         
- 
-        image_data = base64.b64encode(response.parts[0].data).decode('utf-8')
-        
-        remaining_generations = config.USAGE_LIMITS["max_image_generations_per_user"] - (current_count + 1)
-        
-        return jsonify({
-            "reply": "Here's your generated image!",
-            "image": f"data:image/jpeg;base64,{image_data}",
-            "remaining_generations": remaining_generations,
-            "response_time": round(duration, 2),
-            "type": "image"
-        })
+        # Convert the first generated image to base64
+        if response.generated_images:
+            image_bytes = response.generated_images[0].image.image_bytes
+            image_data = base64.b64encode(image_bytes).decode('utf-8')
+            
+            remaining_generations = config.USAGE_LIMITS["max_image_generations_per_user"] - (current_count + 1)
+            
+            return jsonify({
+                "reply": "Here's your generated image!",
+                "image": f"data:image/jpeg;base64,{image_data}",
+                "remaining_generations": remaining_generations,
+                "response_time": round(duration, 2),
+                "type": "image"
+            })
+        else:
+            return jsonify({
+                "error": "No images were generated"
+            }), 500
         
     except Exception as e:
         logger.error(f"Image generation error: {e}")
