@@ -1712,4 +1712,47 @@ body.menu-open {
   .welcome-popup-content p {
     font-size: 14px;
   }
+
+.sidebar-download-btn {
+  width: calc(100% - 32px);
+  margin: 8px 16px;
+  padding: 12px 16px;
+  background: #5d5fef;
+  color: white !important;
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-decoration: none !important;
+  border: none;
+  min-height: 44px;
+  box-shadow: 0 2px 8px rgba(93, 95, 239, 0.3);
+}
+
+.sidebar-download-btn:hover {
+  background: #7b68ee;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(93, 95, 239, 0.4);
+}
+
+.sidebar-download-btn:active {
+  transform: translateY(0);
+}
+
+#sidebar.close .sidebar-download-btn {
+  width: calc(100% - 10px);
+  margin: 8px 5px;
+}
+
+#sidebar.close .sidebar-download-btn .btn-text {
+  display: none;
+}
+
+#sidebar.close .sidebar-download-btn .btn-icon {
+  margin: 0 auto;
 }
