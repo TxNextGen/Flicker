@@ -13,7 +13,6 @@ body {
   line-height: 1.5;
 }
 
-
 .mobile-header {
   position: fixed;
   top: 0;
@@ -104,7 +103,6 @@ body {
   height: 16px;
   fill: currentColor;
 }
-
 
 .mobile-sidebar {
   position: fixed;
@@ -332,7 +330,6 @@ body {
   visibility: visible;
 }
 
-
 .mobile-main {
   margin-top: 60px;
   min-height: calc(100vh - 60px);
@@ -340,7 +337,6 @@ body {
   flex-direction: column;
   padding: 0 15px;
 }
-
 
 .mobile-welcome {
   flex: 1;
@@ -479,7 +475,6 @@ body {
   fill: #7b68ee;
 }
 
-
 .mobile-chat-container {
   display: none;
   flex-direction: column;
@@ -568,7 +563,6 @@ body {
   30% { transform: translateY(-5px); }
 }
 
-
 .mobile-input-container {
   position: fixed;
   bottom: 0;
@@ -630,6 +624,18 @@ body {
   transition: all 0.3s ease;
   color: rgba(230, 230, 255, 0.7);
   flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.mobile-image-upload-btn input[type="file"] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
 }
 
 .mobile-image-upload-btn:hover {
@@ -645,8 +651,8 @@ body {
 }
 
 .mobile-send-btn {
-  width: 32px; 
-  height: 32px; 
+  width: 38px;
+  height: 38px;
   background: linear-gradient(135deg, #5d5fef, #7b68ee);
   border: 1px solid rgba(123, 104, 238, 0.5);
   border-radius: 50%;
@@ -656,8 +662,8 @@ body {
   justify-content: center;
   transition: all 0.3s ease;
   flex-shrink: 0;
-  box-shadow: 0 2px 8px rgba(93, 95, 239, 0.3); 
-  margin-left: 8px; 
+  box-shadow: 0 2px 8px rgba(93, 95, 239, 0.3);
+  margin-left: 0;
 }
 
 .mobile-send-btn:disabled {
@@ -668,18 +674,14 @@ body {
 .mobile-send-btn:not(:disabled):hover {
   transform: scale(1.05);
   background: linear-gradient(135deg, #6d6fff, #8b78ff);
-  box-shadow: 0 4px 12px rgba(93, 95, 239, 0.4); 
+  box-shadow: 0 4px 12px rgba(93, 95, 239, 0.4);
 }
 
 .mobile-send-btn svg {
-  width: 16px; 
-  height: 16px; 
+  width: 18px;
+  height: 18px;
   fill: white;
 }
-
-  display: none;
-}
-
 
 .mobile-cookie-consent {
   position: fixed;
@@ -765,7 +767,6 @@ body {
   background: rgba(123, 104, 238, 0.1);
 }
 
-
 .mobile-error {
   position: fixed;
   bottom: 90px;
@@ -793,7 +794,6 @@ body {
   bottom: 100px;
 }
 
-
 @media (max-width: 480px) {
   .mobile-sidebar {
     width: 260px;
@@ -813,7 +813,6 @@ body {
     font-size: 0.92rem;
   }
 }
-
 
 .floating {
   position: absolute;
@@ -847,7 +846,6 @@ body {
   75% { transform: translate(10px, -10px); }
 }
 
-
 .mobile-chat::-webkit-scrollbar {
   width: 6px;
 }
@@ -865,7 +863,6 @@ body {
 .mobile-chat::-webkit-scrollbar-thumb:hover {
   background: rgba(123, 104, 238, 0.6);
 }
-
 
 .mobile-loading {
   display: flex;
@@ -894,7 +891,6 @@ body {
   0%, 100% { transform: scale(1); opacity: 1; }
   50% { transform: scale(0.7); opacity: 0.5; }
 }
-
 
 .fade-enter {
   opacity: 0;
