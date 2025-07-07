@@ -236,6 +236,7 @@ body {
   font-weight: 500;
 }
 
+/* FIX: Menu button always visible on mobile */
 .mobile-chat-menu-btn {
   background: transparent;
   border: none;
@@ -243,18 +244,14 @@ body {
   padding: 5px;
   border-radius: 6px;
   cursor: pointer;
-  opacity: 0;
+  opacity: 1; /* Changed from 0 to 1 */
   transition: all 0.2s ease;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
-}
-
-.mobile-chat-item:hover .mobile-chat-menu-btn {
-  opacity: 1;
+  width: 36px; /* Increased size for better touch */
+  height: 36px;
 }
 
 .mobile-chat-menu-btn:hover {
@@ -263,8 +260,8 @@ body {
 }
 
 .mobile-chat-menu-btn svg {
-  width: 18px;
-  height: 18px;
+  width: 20px; /* Slightly larger icon */
+  height: 20px;
   fill: currentColor;
 }
 
@@ -911,8 +908,4 @@ body {
 .fade-exit-active {
   opacity: 0;
   transition: opacity 300ms;
-}
-.mobile-send-btn i {
-    font-size: 16px; 
-    color: #FFFFFF; 
 }
