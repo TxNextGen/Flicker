@@ -6,6 +6,7 @@
     <title>Create your Flicker AI account</title>
     <link rel="icon" href="../images/logo.png" type="image/x-icon" />
     <link rel="stylesheet" href="../css/auth.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 
 </head>
@@ -26,19 +27,16 @@
                 <input type="email" id="signup-email" placeholder="Email address" required>
             </div>
             
-            <div class="input-group">
-                <div class="password-input-container">
-                    <input type="password" id="signup-password" placeholder="Password (8+ characters)" required minlength="8">
-                    <button type="button" class="password-toggle" onclick="togglePassword('signup-password', 'password-icon-1')">
-                        <span id="password-icon-1">
-                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path stroke="white !important" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
-    <path stroke="white !important" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M1 1l22 22"/>
-</svg>
-                        </span>
-                    </button>
-                </div>
-            </div>
+           <div class="input-group">
+  <div class="password-input-container">
+    <input type="password" id="signup-password" placeholder="Password (8+ characters)" required minlength="8">
+    <button type="button" class="password-toggle" onclick="togglePassword('signup-password', 'password-icon-1')">
+      <span id="password-icon-1">
+        <i class="fas fa-eye-slash" style="color: white;"></i> 
+      </span>
+    </button>
+  </div>
+</div>
             
             <div class="input-group">
                 <div class="password-input-container">
