@@ -175,7 +175,7 @@ def get_usage():
 
 @app.route("/", methods=["GET"])
 def hello():
-    return "✅ Flicker AI is running (Gemini 2.0 Flash with Advanced Intelligence & Image Support). Use POST to send messages.", 200
+    return "✅ Flicker AI is running (Gemini 2.5 Flash With Image Support). Use POST to send messages.", 200
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
