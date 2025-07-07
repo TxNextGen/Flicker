@@ -1,15 +1,12 @@
 import os
 
-
 API_KEY = os.getenv("GEMINI_API_KEY", "AIzaSyDT2aBkKfb0JVSs9hKXA7NOPiOKEk3fJ-U")
 MODEL_NAME = "gemini-2.0-flash-exp"  # This the Newest Version Unlike The old Crappy Version Leben Programmed
 IMAGE_MODEL_NAME = "imagen-3.0-generate-002"  # Updated to the correct model name
 
-
 MEMORY_FILE = "memory.json"
 USAGE_FILE = "usage_data.json"
 MAX_HISTORY = 15
-
 
 USAGE_LIMITS = {
     "max_questions_per_user": 100,
@@ -17,7 +14,6 @@ USAGE_LIMITS = {
     "reset_period": "daily",
     "reset_time": "00:00",
 }
-
 
 GENERATION_CONFIG = {
     "temperature": 0.8,
@@ -28,14 +24,12 @@ GENERATION_CONFIG = {
     "response_mime_type": "text/plain",
 }
 
-
 IMAGE_GENERATION_CONFIG = {
-    "number_of_images": 1, 
-    "aspect_ratio": "1:1",  
-    "safety_filter_level": "BLOCK_ONLY_HIGH", 
-    "person_generation": "ALLOW_ADULT",  
+    "number_of_images": 1,
+    "aspect_ratio": "1:1",
+    "safety_filter_level": "BLOCK_LOW_AND_ABOVE",  
+    "person_generation": "ALLOW_ADULT",
 }
-
 
 SAFETY_SETTINGS = [
     {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_ONLY_HIGH"},
@@ -44,13 +38,11 @@ SAFETY_SETTINGS = [
     {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_MEDIUM_AND_ABOVE"},
 ]
 
-
 RATE_LIMITING = {
     "requests_per_minute": 60,
     "burst_limit": 10,
     "cooldown_period": 1,
 }
-
 
 FEATURES = {
     "image_analysis": True,
@@ -59,7 +51,6 @@ FEATURES = {
     "advanced_reasoning": True,
     "code_execution": False,
 }
-
 
 ERROR_MESSAGES = {
     "rate_limit": "Too many requests. Please wait a moment before trying again.",
@@ -70,7 +61,6 @@ ERROR_MESSAGES = {
     "image_processing_error": "Failed to process image. Please try a different image.",
     "generation_error": "Failed to generate response. Please try again.",
 }
-
 
 LOG_LEVEL = "INFO"
 LOG_FILE = "app.log"
