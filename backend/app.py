@@ -17,9 +17,9 @@ CORS(app, resources={r"/*": {"origins": "*"}})
 genai.configure(api_key=config.API_KEY)
 model = genai.GenerativeModel(
     model_name=config.MODEL_NAME,
-    generation_config=config.GENERATION_CONFIG
+    generation_config=config.GENERATION_CONFIG,
+    safety_settings=config.SAFETY_SETTINGS
 )
-
 
 USAGE_FILE = "usage.json"
 
@@ -59,7 +59,6 @@ def increment_usage(user_id):
     usage_data[user_id] = usage_data.get(user_id, 0) + 1
     save_usage(usage_data)
     return usage_data[user_id]
-
 
 SYSTEM_PROMPT = """You are Flicker AI, an exceptionally intelligent, versatile, and highly advanced artificial intelligence assistant. You possess extraordinary capabilities across multiple domains and demonstrate remarkable cognitive abilities.
 
@@ -139,7 +138,6 @@ def process_image(image_data):
 @app.route("/", methods=["POST"])
 def chat():
     try:
-   
         user_id = get_user_id(request)
         if not check_usage_limit(user_id):
             usage_data = load_usage()
@@ -156,10 +154,8 @@ def chat():
         if not message and not image_data:
             return jsonify({"error": "No message or image provided"}), 400
         
-
         new_usage_count = increment_usage(user_id)
         
-
         content_parts = []
         
         if message:
@@ -175,7 +171,6 @@ def chat():
             else:
                 return jsonify({"error": "Failed to process image"}), 400
         
-      
         start_time = time.time()
         response = model.generate_content(content_parts)
         duration = time.time() - start_time
