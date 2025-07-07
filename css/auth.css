@@ -119,6 +119,7 @@
         .password-toggle:hover {
             background: rgba(123, 104, 238, 0.15);
         }
+
 .eye-icon {
     position: relative;
     width: 20px;
@@ -146,7 +147,6 @@
     transform-origin: center;
     transition: background 0.2s ease;
 }
-
         .password-toggle:hover .eye-icon svg,
         .password-toggle:hover .eye-icon .slash {
             fill: #ffffff;
