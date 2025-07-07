@@ -55,14 +55,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     li.classList.add('active');
                 }
 
-               li.innerHTML = `
+           li.innerHTML = `
     <span class="mobile-chat-item-text">${chat.title}</span>
     <button class="mobile-chat-menu-btn" data-chat-id="${chatId}">
-        <i class="fas fa-ellipsis-v"></i> <!-- Font Awesome 3-dot vertical icon -->
+        <i class="fas fa-ellipsis-h"></i> <!-- Horizontal dots (⋯) -->
     </button>
     <div class="mobile-chat-menu" data-chat-id="${chatId}">
         <div class="mobile-chat-menu-item rename-chat" data-chat-id="${chatId}">Rename</div>
-        <div class="mobile-chat-menu-item delete-chat delete" data-chat-id="${chatId}">Delete</div>
+        <div class="mobile-chat-menu-item delete-chat" data-chat-id="${chatId}">Delete</div>
     </div>
 `;
                 li.addEventListener('click', (e) => {
