@@ -52,20 +52,43 @@ quoteElement.classList.remove('quote-entering');
 }, 300);
 }
 
+function updateMainHeading() {
+    const mainHeading = document.querySelector('h1');
+    if (!mainHeading) return;
+
+    const currentUser = JSON.parse(localStorage.getItem('flickerCurrentUser') || 'null');
+
+    if (currentUser) {
+        const firstName = currentUser.name.split(' ')[0];
+        mainHeading.textContent = `Welcome back, ${firstName}`;
+        mainHeading.style.fontSize = '3rem';
+    } else {
+        mainHeading.innerHTML = '<img src="images/logo.png" alt="Flicker AI Logo" class="logo-icon">licker AI';
+        mainHeading.style.fontSize = '3.5rem';
+        mainHeading.style.display = 'flex';
+        mainHeading.style.alignItems = 'center';
+        mainHeading.style.gap = '10px';
+    }
+}
+
 function initializeQuotes() {
+const currentUser = JSON.parse(localStorage.getItem('flickerCurrentUser') || 'null');
 const quoteElement = document.getElementById('dynamic-quote');
-if (quoteElement) {
+
+
+updateMainHeading();
+if (currentUser && quoteElement) {
 quoteElement.textContent = getRandomQuote();
 
-
 setInterval(updateQuote, 10000);
-
 
 document.addEventListener('visibilitychange', () => {
 if (!document.hidden) {
 updateQuote();
 }
 });
+} else if (quoteElement) {
+quoteElement.textContent = '';
 }
 }
 
@@ -241,10 +264,17 @@ mainContent.style.transition = 'margin-left 0.2s cubic-bezier(0.4, 0, 0.2, 1)';
 }
 
 function refreshQuotes() {
+const currentUser = JSON.parse(localStorage.getItem('flickerCurrentUser') || 'null');
 const quoteElement = document.getElementById('dynamic-quote');
-if (quoteElement) {
+
+if (currentUser && quoteElement) {
 updateQuote();
+} else if (quoteElement) {
+quoteElement.textContent = '';
 }
+
+
+updateMainHeading();
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -279,3 +309,4 @@ window.location.href = 'Auth/signin.html';
 window.toggleSidebar = toggleSidebar;
 window.initializeSidebarLayout = initializeSidebarLayout;
 window.refreshQuotes = refreshQuotes;
+window.updateMainHeading = updateMainHeading;
