@@ -1,5 +1,4 @@
 flask
 flask-cors
 google-generativeai
-google-genai
 pillow
