@@ -185,102 +185,6 @@ this.bindEvents();
 this.initializeChats();
 this.addTypingStyles();
 }
-
-// Smart title generation based on conversation content
-generateSmartTitle(userMessage, aiResponse) {
-// Clean and prepare text for analysis
-const cleanText = (text) => text.toLowerCase().replace(/[^\w\s]/g, ' ').trim();
-const userText = cleanText(userMessage || '');
-const aiText = cleanText(aiResponse || '');
-const combinedText = `${userText} ${aiText}`;
-
-// Define topic keywords and their corresponding titles
-const topicPatterns = {
-    // Programming & Tech
-    'code|programming|javascript|python|html|css|bug|function|variable|array|object|database|api|framework|library|syntax|error|debug': 'Programming Help',
-    'website|web development|frontend|backend|responsive|ui|ux|design|layout|bootstrap|react|vue|angular': 'Web Development',
-    'machine learning|ai|artificial intelligence|neural network|deep learning|tensorflow|pytorch|model|algorithm|data science': 'AI & Machine Learning',
-    'sql|database|query|table|join|select|insert|update|delete|mysql|postgresql|mongodb|nosql': 'Database Query',
-    
-    // Writing & Content
-    'write|writing|essay|article|blog|content|draft|edit|grammar|spelling|proofreading|copywriting': 'Writing Assistance',
-    'email|letter|message|communication|formal|informal|business|professional|correspondence': 'Email & Communication',
-    'story|creative writing|fiction|novel|character|plot|narrative|dialogue|creative': 'Creative Writing',
-    'resume|cv|cover letter|job application|interview|career|professional|linkedin': 'Career & Resume',
-    
-    // Education & Learning
-    'explain|definition|what is|how does|learn|study|understand|concept|theory|principle|tutorial': 'Learning & Education',
-    'math|mathematics|calculation|equation|formula|algebra|geometry|calculus|statistics|probability': 'Mathematics',
-    'science|physics|chemistry|biology|experiment|research|hypothesis|theory|scientific method': 'Science Help',
-    'history|historical|event|date|timeline|civilization|culture|ancient|medieval|modern': 'History Discussion',
-    
-    // Business & Finance
-    'business|marketing|strategy|plan|entrepreneur|startup|company|revenue|profit|growth|sales': 'Business Strategy',
-    'finance|money|budget|investment|stock|trading|cryptocurrency|bitcoin|economic|financial': 'Finance & Investment',
-    'project|management|planning|timeline|task|deadline|team|collaboration|workflow': 'Project Management',
-    
-    // Health & Lifestyle
-    'health|medical|symptom|disease|treatment|doctor|medicine|healthcare|wellness|fitness': 'Health & Wellness',
-    'recipe|cooking|food|ingredient|meal|diet|nutrition|kitchen|baking|cuisine': 'Cooking & Recipes',
-    'travel|vacation|trip|destination|hotel|flight|tourism|guide|adventure|culture': 'Travel Planning',
-    'workout|exercise|fitness|gym|training|muscle|strength|cardio|yoga|sport': 'Fitness & Exercise',
-    
-    // Creative & Entertainment
-    'music|song|instrument|melody|chord|rhythm|composition|band|artist|genre': 'Music Discussion',
-    'movie|film|cinema|actor|director|review|recommendation|plot|genre|entertainment': 'Movies & Entertainment',
-    'game|gaming|video game|strategy|rpg|fps|puzzle|mobile game|console|pc': 'Gaming Discussion',
-    'art|drawing|painting|design|color|sketch|illustration|creative|artistic|visual': 'Art & Design',
-    
-    // Daily Life & Practical
-    'help|problem|issue|solution|advice|suggestion|recommendation|tip|guide|how to': 'General Help',
-    'shopping|product|review|comparison|recommendation|buy|purchase|quality|price': 'Shopping & Reviews',
-    'home|house|apartment|cleaning|organization|decoration|furniture|maintenance|diy': 'Home & Living',
-    'relationship|family|friend|social|dating|marriage|communication|conflict|advice': 'Relationships & Social',
-    
-    // Technical Support
-    'computer|laptop|software|hardware|windows|mac|linux|install|setup|troubleshooting': 'Tech Support',
-    'phone|mobile|smartphone|app|application|ios|android|tablet|device|technology': 'Mobile & Apps',
-    'internet|wifi|network|connection|router|broadband|speed|online|web|browser': 'Internet & Networking'
-};
-
-// Try to match patterns and find the best topic
-for (const [pattern, title] of Object.entries(topicPatterns)) {
-    const regex = new RegExp(`\\b(${pattern})\\b`, 'i');
-    if (regex.test(combinedText)) {
-        return title;
-    }
-}
-
-// If no specific pattern matches, try to extract key nouns/topics
-const words = combinedText.split(/\s+/).filter(word => word.length > 3);
-const commonWords = ['this', 'that', 'with', 'have', 'will', 'would', 'could', 'should', 'about', 'from', 'they', 'them', 'were', 'been', 'said', 'each', 'which', 'their', 'time', 'way', 'may', 'use', 'her', 'many', 'these', 'some', 'what', 'know', 'just', 'first', 'get', 'over', 'think', 'also', 'your', 'work', 'life', 'only', 'can', 'still', 'should', 'after', 'being', 'now', 'made', 'before', 'here', 'through', 'when', 'where', 'much', 'go', 'me', 'back', 'with', 'good', 'woman', 'through', 'us', 'used', 'water', 'long', 'little', 'very', 'after', 'without', 'come', 'me', 'man', 'too', 'any', 'day', 'get', 'use', 'her', 'way', 'may', 'say'];
-    
-    // Find meaningful words (filter out common words)
-    const meaningfulWords = words.filter(word => 
-        !commonWords.includes(word) && 
-        word.length > 2 && 
-        isNaN(word)
-    );
-
-    // Use the first few meaningful words for title
-    if (meaningfulWords.length > 0) {
-        const titleWords = meaningfulWords.slice(0, 3);
-        const title = titleWords.map(word => 
-            word.charAt(0).toUpperCase() + word.slice(1)
-        ).join(' ');
-        return title.length > 30 ? title.substring(0, 30) + '...' : title;
-    }
-
-    // Fallback to first part of user message if available
-    if (userMessage && userMessage.trim()) {
-        const fallbackTitle = userMessage.trim();
-        return fallbackTitle.length > 30 ? fallbackTitle.substring(0, 30) + '...' : fallbackTitle;
-    }
-
-    // Final fallback
-    return 'New Chat';
-}
-
 addTypingStyles() {
 const existingStyle = document.getElementById('typing-styles');
 if (existingStyle) existingStyle.remove();
@@ -359,14 +263,20 @@ typingDiv.appendChild(indicator);
 return typingDiv;
 }
 
+
+
 moveChatBarDown() {
 const inputArea = this.elements.inputArea;
 if (!inputArea || this.chatBarMoved) return;
 
+
 inputArea.style.transition = 'bottom 0.5s ease-in-out';
+
 inputArea.style.bottom = '20px';
+
 this.chatBarMoved = true;
 }
+
 
 resetChatBarPosition() {
 const inputArea = this.elements.inputArea;
@@ -537,32 +447,21 @@ createNewChat(firstMessage = null) {
 if (!this.checkCookies()) return null;
 
 const chatId = this.generateChatId();
-// Initially set as "New Chat" - will be updated after first AI response
-const chatTitle = "New Chat";
+const chatTitle = firstMessage ?
+(firstMessage.length > 30 ? firstMessage.substring(0, 30) + "..." : firstMessage) :
+"New Chat";
 
 this.allChats[chatId] = {
 id: chatId,
 title: chatTitle,
 messages: [],
-createdAt: new Date().toISOString(),
-titleGenerated: false // Flag to track if smart title has been generated
+createdAt: new Date().toISOString()
 };
 
 this.currentChatId = chatId;
 this.saveAllChats();
 this.updateChatList();
 return chatId;
-}
-
-// Method to update chat title after AI response
-updateChatTitle(chatId, userMessage, aiResponse) {
-if (!this.allChats[chatId] || this.allChats[chatId].titleGenerated) return;
-
-const smartTitle = this.generateSmartTitle(userMessage, aiResponse);
-this.allChats[chatId].title = smartTitle;
-this.allChats[chatId].titleGenerated = true;
-this.saveAllChats();
-this.updateChatList();
 }
 
 switchToChat(chatId) {
@@ -583,6 +482,7 @@ const quoteContainer = document.querySelector('.quote-container');
 if (quoteContainer) {
 quoteContainer.style.display = 'none';
 }
+
 
 const dynamicQuote = document.getElementById('dynamic-quote');
 if (dynamicQuote) {
@@ -607,12 +507,14 @@ el.style.display = 'none';
 });
 });
 
+
 const chatContainer = document.getElementById('chat');
 if (chatContainer) {
 chatContainer.style.display = 'block';
 chatContainer.style.visibility = 'visible';
 }
 }
+
 
 showPlaceholderContent() {
 if (this.currentChatId) return;
@@ -672,14 +574,18 @@ this.allChats[this.currentChatId] = {
 id: this.currentChatId,
 title: "New Chat",
 messages: [],
-createdAt: new Date().toISOString(),
-titleGenerated: false
+createdAt: new Date().toISOString()
 };
 }
 
 this.allChats[this.currentChatId].messages.push({
 sender, text, timestamp: new Date().toISOString()
 });
+
+if (this.allChats[this.currentChatId].title === "New Chat" && sender === "user") {
+this.allChats[this.currentChatId].title = text.length > 30 ?
+text.substring(0, 30) + "..." : text;
+}
 
 this.saveAllChats();
 }
