@@ -32,9 +32,6 @@ class UserManager {
         if (typeof window.refreshQuotes === 'function') {
             window.refreshQuotes();
         }
-        if (typeof window.updateMainHeading === 'function') {
-            window.updateMainHeading();
-        }
     }
 
     static signUp(name, email, password) {
@@ -114,9 +111,6 @@ class UserManager {
         localStorage.removeItem('flickerCurrentUser');
         if (typeof window.refreshQuotes === 'function') {
             window.refreshQuotes();
-        }
-        if (typeof window.updateMainHeading === 'function') {
-            window.updateMainHeading();
         }
     }
 
@@ -204,9 +198,6 @@ function updateAuthState() {
             if (typeof window.refreshQuotes === 'function') {
                 window.refreshQuotes();
             }
-            if (typeof window.updateMainHeading === 'function') {
-                window.updateMainHeading();
-            }
         }, 100);
     } else {
         authBox.innerHTML = `<button id="signin-btn">Sign In</button>`;
@@ -217,13 +208,6 @@ function updateAuthState() {
                 window.location.href = 'Auth/signin.html';
             });
         }
-        
-
-        setTimeout(() => {
-            if (typeof window.updateMainHeading === 'function') {
-                window.updateMainHeading();
-            }
-        }, 100);
     }
 }
 
