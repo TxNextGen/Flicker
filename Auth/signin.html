@@ -50,6 +50,7 @@
     </div>
 
     <script src="../js/auth.js"></script>
+    <script src="../backend/server.js"></script>
     <script>
         function togglePassword(inputId, iconId) {
             const passwordInput = document.getElementById(inputId);
@@ -96,34 +97,36 @@
             }
         };
 
-        function handleCredentialResponse(response) {
+        async function handleCredentialResponse(response) {
             try {
-                const credential = response.credential;
-                const payload = JSON.parse(atob(credential.split('.')[1]));
+                const submitBtn = document.querySelector('.submit-btn');
+                const originalText = submitBtn.textContent;
+                submitBtn.textContent = 'Signing in...';
+                submitBtn.disabled = true;
                 
-                const googleUser = {
-                    sub: payload.sub,
-                    name: payload.name,
-                    email: payload.email,
-                    picture: payload.picture
-                };
+                await UserManager.signInWithGoogle(response.credential);
+                showSuccess('Successfully signed in with Google!');
                 
-                if (UserManager.isTempMail(googleUser.email)) {
-                    showError('Temporary email addresses are not allowed. Please use a permanent email address.');
-                    return;
-                }
+                setTimeout(() => {
+                    window.location.href = '../index.html';
+                }, 1500);
                 
-                UserManager.signInWithGoogle(googleUser);
-                window.location.href = '../index.html';
             } catch (error) {
                 console.error('Google sign-in error:', error);
-                showError('Failed to sign in with Google. Please try again.');
+                showError(error.message || 'Failed to sign in with Google. Please try again.');
+                
+                const submitBtn = document.querySelector('.submit-btn');
+                submitBtn.textContent = 'Continue';
+                submitBtn.disabled = false;
             }
         }
 
         function showError(message) {
             const errorDiv = document.getElementById('signin-error');
             errorDiv.textContent = message;
+            errorDiv.style.background = 'rgba(239, 68, 68, 0.1)';
+            errorDiv.style.borderColor = 'rgba(239, 68, 68, 0.3)';
+            errorDiv.style.color = '#ef4444';
             errorDiv.classList.add('show');
             
             setTimeout(() => {
@@ -131,12 +134,21 @@
             }, 5000);
         }
 
+        function showSuccess(message) {
+            const errorDiv = document.getElementById('signin-error');
+            errorDiv.textContent = message;
+            errorDiv.style.background = 'rgba(16, 163, 127, 0.1)';
+            errorDiv.style.borderColor = 'rgba(16, 163, 127, 0.3)';
+            errorDiv.style.color = '#10a37f';
+            errorDiv.classList.add('show');
+        }
+
         function clearError() {
             const errorDiv = document.getElementById('signin-error');
             errorDiv.classList.remove('show');
         }
 
-        document.getElementById('signin-form').addEventListener('submit', (e) => {
+        document.getElementById('signin-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             
             const email = document.getElementById('signin-email').value.trim();
@@ -149,12 +161,12 @@
                 return;
             }
             
-            if (!email.includes('@')) {
+            if (!Utils.validateEmail(email)) {
                 showError('Please enter a valid email address');
                 return;
             }
             
-            if (UserManager.isTempMail(email)) {
+            if (Utils.isTempEmail(email)) {
                 showError('Temporary email addresses are not allowed. Please use a permanent email address.');
                 return;
             }
@@ -165,10 +177,15 @@
             submitBtn.disabled = true;
             
             try {
-                UserManager.signIn(email, password);
-                window.location.href = '../index.html';
+                await UserManager.signIn(email, password);
+                showSuccess('Successfully signed in!');
+                
+                setTimeout(() => {
+                    window.location.href = '../index.html';
+                }, 1500);
+                
             } catch (error) {
-                showError(error.message);
+                showError(error.message || 'Sign in failed. Please try again.');
                 submitBtn.textContent = originalText;
                 submitBtn.disabled = false;
             }

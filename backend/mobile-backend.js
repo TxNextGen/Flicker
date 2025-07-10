@@ -518,7 +518,7 @@ class MobileChatManager {
                 bottom: 80px;
                 left: 16px;
                 right: 16px;
-                background: rgba(40, 40, 40, 0.98);
+                 background: rgba(40, 36, 61, 0.95);
                 backdrop-filter: blur(15px);
                 border-radius: 16px;
                 padding: 16px;
