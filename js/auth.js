@@ -1,5 +1,5 @@
 const CONFIG = {
-    API_BASE_URL: 'https://your-api-domain.com/api',
+    API_BASE_URL: 'https://flickerserver1-cs8h.onrender.com/api',
     GOOGLE_CLIENT_ID: 'YOUR_GOOGLE_CLIENT_ID',
     SESSION_TIMEOUT: 24 * 60 * 60 * 1000, 
     AUTH_TOKEN_KEY: 'auth_token'
@@ -98,12 +98,15 @@ class APIService {
                 'Content-Type': 'application/json',
                 ...(token && { 'Authorization': `Bearer ${token}` }),
                 ...options.headers
-            }
+            },
+            // FIXED: Added mode to handle CORS
+            mode: 'cors'
         };
 
         const config = { ...defaultOptions, ...options };
         
         try {
+            console.log('Making request to:', url); // Debug log
             const response = await fetch(url, config);
             let data;
             const contentType = response.headers.get('content-type');
@@ -125,6 +128,10 @@ class APIService {
             return data;
         } catch (error) {
             console.error('API Error:', error);
+            // FIXED: Better error handling for network issues
+            if (error.name === 'TypeError' && error.message.includes('fetch')) {
+                throw new Error('Network error - please check your connection and try again');
+            }
             throw error;
         }
     }
@@ -342,7 +349,6 @@ class UserManager {
     }
 }
 
-
 function togglePassword(inputId, iconId) {
     const passwordInput = document.getElementById(inputId);
     const toggleIcon = document.getElementById(iconId);
@@ -527,7 +533,6 @@ function handleCredentialResponse(response) {
         });
 }
 
-
 document.addEventListener('DOMContentLoaded', async function() {
     await updateAuthState();
 
@@ -541,7 +546,6 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
     }
     
-
     if (typeof google !== 'undefined' && google.accounts) {
         google.accounts.id.initialize({
             client_id: CONFIG.GOOGLE_CLIENT_ID,
@@ -552,13 +556,11 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 });
 
-
 UserManager.addAuthListener((user) => {
     if (typeof window.refreshQuotes === 'function') {
         window.refreshQuotes();
     }
 });
-
 
 window.UserManager = UserManager;
 window.Utils = Utils;
