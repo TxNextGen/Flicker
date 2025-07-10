@@ -30,19 +30,6 @@ body {
   overflow: hidden;
 }
 
-
-.logo-icon {
-    width: 55px;
-    height: 55px;
-    vertical-align: middle;
-    position: relative;
-    top: -1px;
-    margin-right: -13px;
-}
-
-
-
-
 #sidebar {
   display: flex;
   flex-direction: column;
