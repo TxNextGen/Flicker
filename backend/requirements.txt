@@ -1,4 +1,5 @@
-flask
+Flask
 flask-cors
-google-generativeai
-pillow
+requests
+Pillow
+gunicorn
