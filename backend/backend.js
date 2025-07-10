@@ -821,7 +821,7 @@ try {
 const body = {message: message || "What do you see in this image?"};
 if (tempImage) body.image = tempImage;
 
-const res = await fetch("https://flickerbackend5.onrender.com", {
+const res = await fetch("https://flickerbackend6.onrender.com", {
 method: "POST",
 headers: {"Content-Type": "application/json"},
 body: JSON.stringify(body)

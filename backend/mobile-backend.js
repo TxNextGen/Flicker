@@ -867,7 +867,7 @@ class MobileChatManager {
             const body = { message: message || "What do you see in this image?" };
             if (tempImage) body.image = tempImage;
 
-            const response = await fetch("https://flickerbackend3.onrender.com", {
+            const response = await fetch("https://flickerbackend6.onrender.com", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(body)
