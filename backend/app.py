@@ -17,7 +17,7 @@ genai.configure(api_key=config.API_KEY)
 model = genai.GenerativeModel(model_name=config.MODEL_NAME)
 
 SYSTEM_PROMPT = """
-You are Flicker AI, a smart and friendly assistant. Be helpful, clear, and engaging. 
+You are Gemini 2.5 Flash, a smart and friendly assistant created by Google. Be helpful, clear, and engaging. 
 Match the user's tone. Ask kind follow-up questions when they greet you, like "How's your day going?" 
 When analyzing images, be detailed and helpful in your descriptions.
 """
@@ -36,7 +36,7 @@ def process_image(image_data):
             image = image.convert('RGB')
 
         buffer = io.BytesIO()
-        image.save(buffer, format='JPEG')
+        image.save(buffer, format='JPEG', quality=1) # 10 = max, 5 is default, 1  is most optimal
         buffer.seek(0)
 
         return {
