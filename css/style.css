@@ -1636,12 +1636,13 @@ body.menu-open {
 }
 
 .popup-btn-primary {
-  background: #5d5fef;
+  background: #24225a;
   color: white;
+  border: 1px solid #5d5fef;
 }
 
 .popup-btn-primary:hover {
-  background: #7b68ee;
+  background: #2a2870;
   transform: translateY(-1px);
 }
 
@@ -1727,6 +1728,8 @@ body.menu-open {
   .welcome-popup-content p {
     font-size: 14px;
   }
+
+}
 
 .sidebar-download-btn {
   width: calc(100% - 32px);
