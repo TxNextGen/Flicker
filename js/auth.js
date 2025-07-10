@@ -1,8 +1,12 @@
+
 const CONFIG = {
     API_BASE_URL: 'https://flickerserver1-cs8h.onrender.com/api',
     GOOGLE_CLIENT_ID: 'YOUR_GOOGLE_CLIENT_ID',
     SESSION_TIMEOUT: 24 * 60 * 60 * 1000, 
-    AUTH_TOKEN_KEY: 'auth_token'
+    AUTH_TOKEN_KEY: 'auth_token',
+    USER_KEY: 'user_data',
+    CACHE_DURATION: 2 * 60 * 60 * 1000, 
+    VERIFICATION_COOLDOWN: 5 * 60 * 1000 
 };
 
 const Utils = {
@@ -50,15 +54,93 @@ const Utils = {
     },
 
     getAuthToken() {
-        return localStorage.getItem(CONFIG.AUTH_TOKEN_KEY);
+        try {
+            const token = localStorage.getItem(CONFIG.AUTH_TOKEN_KEY);
+            if (!token) return null;
+            
+      
+            if (token.split('.').length !== 3) {
+                console.warn('Invalid token format detected, clearing...');
+                this.removeAuthToken();
+                return null;
+            }
+            
+            return token;
+        } catch (error) {
+            console.error('Error getting auth token:', error);
+            return null;
+        }
     },
 
     setAuthToken(token) {
-        localStorage.setItem(CONFIG.AUTH_TOKEN_KEY, token);
+        try {
+            if (!token) {
+                console.error('Attempted to set empty token');
+                return;
+            }
+            localStorage.setItem(CONFIG.AUTH_TOKEN_KEY, token);
+            console.log('Auth token set successfully');
+        } catch (error) {
+            console.error('Error setting auth token:', error);
+        }
     },
 
     removeAuthToken() {
-        localStorage.removeItem(CONFIG.AUTH_TOKEN_KEY);
+        try {
+            localStorage.removeItem(CONFIG.AUTH_TOKEN_KEY);
+            localStorage.removeItem(CONFIG.USER_KEY);
+            console.log('Auth token removed');
+        } catch (error) {
+            console.error('Error removing auth token:', error);
+        }
+    },
+
+    getCachedUser() {
+        try {
+            const userData = localStorage.getItem(CONFIG.USER_KEY);
+            if (!userData) return null;
+            
+            const parsed = JSON.parse(userData);
+            if (!parsed.user || !parsed.cacheTime) {
+                localStorage.removeItem(CONFIG.USER_KEY);
+                return null;
+            }
+            
+           
+            const now = new Date().getTime();
+            const cacheTime = parsed.cacheTime;
+            const maxAge = CONFIG.CACHE_DURATION;
+            
+            if (now - cacheTime > maxAge) {
+                console.log('User cache expired, removing...');
+                localStorage.removeItem(CONFIG.USER_KEY);
+                return null;
+            }
+            
+            return parsed.user;
+        } catch (error) {
+            console.error('Error getting cached user:', error);
+            localStorage.removeItem(CONFIG.USER_KEY);
+            return null;
+        }
+    },
+
+    setCachedUser(user) {
+        try {
+            if (!user) {
+                console.error('Attempted to cache empty user');
+                return;
+            }
+            
+            const cacheData = {
+                user: user,
+                cacheTime: new Date().getTime()
+            };
+            localStorage.setItem(CONFIG.USER_KEY, JSON.stringify(cacheData));
+            console.log('User cached successfully');
+        } catch (error) {
+            console.error('Error caching user:', error);
+        }
     },
 
     debounce(func, wait) {
@@ -74,6 +156,7 @@ const Utils = {
     },
 
     showLoading(element, text = 'Loading...') {
+        if (!element) return;
         element.disabled = true;
         element.dataset.originalText = element.textContent;
         element.innerHTML = `
@@ -83,6 +166,7 @@ const Utils = {
     },
 
     hideLoading(element) {
+        if (!element) return;
         element.disabled = false;
         element.textContent = element.dataset.originalText || 'Submit';
     }
@@ -99,16 +183,16 @@ class APIService {
                 ...(token && { 'Authorization': `Bearer ${token}` }),
                 ...options.headers
             },
-      
-            mode: 'cors'
+            mode: 'cors',
+            credentials: 'include'
         };
 
         const config = { ...defaultOptions, ...options };
         
         try {
-            console.log('Making request to:', url); 
             const response = await fetch(url, config);
             let data;
+            
             const contentType = response.headers.get('content-type');
             if (contentType && contentType.includes('application/json')) {
                 data = await response.json();
@@ -118,9 +202,17 @@ class APIService {
             
             if (!response.ok) {
                 if (response.status === 401) {
-                    Utils.removeAuthToken();
-                    UserManager.currentUser = null;
-                    UserManager.notifyAuthListeners(null);
+                    console.log('401 Unauthorized - token may be expired');
+                    if (!options.skipAuthClear) {
+                        Utils.removeAuthToken();
+                        UserManager.currentUser = null;
+                        UserManager.notifyAuthListeners(null);
+                        if (!window.location.pathname.includes('Auth/')) {
+                            setTimeout(() => {
+                                window.location.href = 'Auth/signin.html';
+                            }, 100);
+                        }
+                    }
                 }
                 throw new Error(data.message || `HTTP error! status: ${response.status}`);
             }
@@ -135,8 +227,8 @@ class APIService {
         }
     }
 
-    static async get(endpoint) {
-        return this.request(endpoint, { method: 'GET' });
+    static async get(endpoint, options = {}) {
+        return this.request(endpoint, { method: 'GET', ...options });
     }
 
     static async post(endpoint, data) {
@@ -161,6 +253,9 @@ class APIService {
 class UserManager {
     static currentUser = null;
     static authListeners = new Set();
+    static isVerifying = false;
+    static lastVerification = 0;
+    static initializationPromise = null;
 
     static addAuthListener(callback) {
         this.authListeners.add(callback);
@@ -171,28 +266,129 @@ class UserManager {
     }
 
     static notifyAuthListeners(user) {
-        this.authListeners.forEach(callback => callback(user));
+        this.authListeners.forEach(callback => {
+            try {
+                callback(user);
+            } catch (error) {
+                console.error('Error in auth listener:', error);
+            }
+        });
     }
 
-    static async getCurrentUser() {
-        if (this.currentUser) return this.currentUser;
-        
-        const token = Utils.getAuthToken();
-        if (!token) return null;
-        
+    static async initialize() {
+
+        if (this.initializationPromise) {
+            return this.initializationPromise;
+        }
+
+        this.initializationPromise = this._doInitialize();
+        return this.initializationPromise;
+    }
+
+    static async _doInitialize() {
         try {
+            console.log('Initializing UserManager...');
+            
+    
+            const token = Utils.getAuthToken();
+            if (!token) {
+                console.log('No auth token found');
+                return null;
+            }
+
+ 
+            const cachedUser = Utils.getCachedUser();
+            if (cachedUser) {
+                console.log('Found cached user:', cachedUser.email);
+                this.currentUser = cachedUser;
+                this.notifyAuthListeners(this.currentUser);
+                
+         
+                this.verifyUserSilently();
+                return this.currentUser;
+            }
+
+       
+            console.log('Fetching user from server...');
             const response = await APIService.get('/auth/me');
             this.currentUser = response.user;
+            Utils.setCachedUser(this.currentUser);
+            this.notifyAuthListeners(this.currentUser);
+            console.log('User fetched successfully:', this.currentUser.email);
             return this.currentUser;
+            
         } catch (error) {
-            console.error('Failed to get current user:', error);
-            Utils.removeAuthToken();
+            console.error('Failed to initialize user:', error);
+            this.clearAuth();
             return null;
         }
     }
 
+    static async getCurrentUser() {
+        if (this.currentUser) {
+            return this.currentUser;
+        }
+        
+        if (this.initializationPromise) {
+            return this.initializationPromise;
+        }
+        
+        return this.initialize();
+    }
+
+    static async verifyUserSilently() {
+        if (this.isVerifying) {
+            console.log('Already verifying, skipping...');
+            return;
+        }
+        
+        const now = Date.now();
+        if (now - this.lastVerification < CONFIG.VERIFICATION_COOLDOWN) {
+            console.log('Verification cooldown active, skipping...');
+            return;
+        }
+        
+        this.isVerifying = true;
+        this.lastVerification = now;
+        
+        try {
+            console.log('Performing silent verification...');
+            const response = await APIService.get('/auth/me', { skipAuthClear: true });
+            const serverUser = response.user;
+            
+            if (JSON.stringify(this.currentUser) !== JSON.stringify(serverUser)) {
+                console.log('User data changed, updating...');
+                this.currentUser = serverUser;
+                Utils.setCachedUser(serverUser);
+                this.notifyAuthListeners(serverUser);
+            } else {
+                console.log('User data unchanged');
+            }
+        } catch (error) {
+            console.error('Silent verification failed:', error);
+            if (error.message.includes('401') || error.message.includes('Unauthorized')) {
+                console.log('Authentication failed, clearing auth...');
+                this.clearAuth();
+            }
+        } finally {
+            this.isVerifying = false;
+        }
+    }
+
+    static clearAuth() {
+        console.log('Clearing authentication...');
+        this.currentUser = null;
+        this.initializationPromise = null;
+        Utils.removeAuthToken();
+        this.notifyAuthListeners(null);
+    }
+
     static setCurrentUser(user) {
+        console.log('Setting current user:', user?.email);
         this.currentUser = user;
+        if (user) {
+            Utils.setCachedUser(user);
+        }
         this.notifyAuthListeners(user);
     }
 
@@ -312,15 +508,18 @@ class UserManager {
         } catch (error) {
             console.error('Logout error:', error);
         } finally {
-            this.currentUser = null;
-            this.notifyAuthListeners(null);
-            Utils.removeAuthToken();
+            this.clearAuth();
         }
     }
 
     static async isLoggedIn() {
-        const user = await this.getCurrentUser();
-        return user !== null;
+        try {
+            const user = await this.getCurrentUser();
+            return user !== null;
+        } catch (error) {
+            console.error('Error checking login status:', error);
+            return false;
+        }
     }
 
     static async updateProfile(updateData) {
@@ -337,9 +536,7 @@ class UserManager {
     static async deleteAccount() {
         try {
             await APIService.delete('/auth/account');
-            this.currentUser = null;
-            this.notifyAuthListeners(null);
-            Utils.removeAuthToken();
+            this.clearAuth();
             return { success: true, message: 'Account deleted successfully' };
         } catch (error) {
             console.error('Account deletion error:', error);
@@ -347,6 +544,7 @@ class UserManager {
         }
     }
 }
+
 
 function togglePassword(inputId, iconId) {
     const passwordInput = document.getElementById(inputId);
@@ -395,14 +593,19 @@ function showSuccess(message) {
     showMessage(message, 'success');
 }
 
+
 async function updateAuthState() {
     const authBox = document.getElementById('auth-box');
     if (!authBox) return;
     
     try {
+        console.log('Updating auth state...');
+        
+
         const currentUser = await UserManager.getCurrentUser();
         
         if (currentUser) {
+            console.log('User is logged in:', currentUser.email);
             const firstName = currentUser.name.split(' ')[0];
             const avatarUrl = currentUser.picture || null;
             
@@ -432,10 +635,6 @@ async function updateAuthState() {
                             </div>
                         </div>
                         <hr class="profile-divider">
-                        <button id="settings-btn" class="menu-item">
-                            <span class="menu-icon">⚙️</span>
-                            Settings
-                        </button>
                         <button id="logout-btn" class="menu-item logout-btn">
                             <span class="menu-icon">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -450,6 +649,7 @@ async function updateAuthState() {
             
             setupProfileEvents();
         } else {
+            console.log('No user logged in');
             authBox.innerHTML = `<button id="signin-btn" class="auth-btn">Sign In</button>`;
             
             const signinBtn = document.getElementById('signin-btn');
@@ -462,6 +662,13 @@ async function updateAuthState() {
     } catch (error) {
         console.error('Failed to update auth state:', error);
         authBox.innerHTML = `<button id="signin-btn" class="auth-btn">Sign In</button>`;
+        
+        const signinBtn = document.getElementById('signin-btn');
+        if (signinBtn) {
+            signinBtn.addEventListener('click', () => {
+                window.location.href = 'Auth/signin.html';
+            });
+        }
     }
 }
 
@@ -532,37 +739,68 @@ function handleCredentialResponse(response) {
         });
 }
 
-document.addEventListener('DOMContentLoaded', async function() {
-    await updateAuthState();
 
-    const currentPage = window.location.pathname.split('/').pop();
-    const authPages = ['signin.html', 'signup.html'];
+document.addEventListener('DOMContentLoaded', async function() {
+    console.log('DOM loaded, initializing auth system...');
     
-    if (authPages.includes(currentPage)) {
-        const isLoggedIn = await UserManager.isLoggedIn();
-        if (isLoggedIn) {
-            window.location.href = '../index.html';
+    try {
+
+        await UserManager.initialize();
+        
+     
+        await updateAuthState();
+
+   
+        const currentPage = window.location.pathname.split('/').pop();
+        const authPages = ['signin.html', 'signup.html'];
+        
+        if (authPages.includes(currentPage)) {
+            const isLoggedIn = await UserManager.isLoggedIn();
+            if (isLoggedIn) {
+                console.log('Already logged in, redirecting to home...');
+                window.location.href = '../index.html';
+                return;
+            }
         }
-    }
-    
-    if (typeof google !== 'undefined' && google.accounts) {
-        google.accounts.id.initialize({
-            client_id: CONFIG.GOOGLE_CLIENT_ID,
-            callback: handleCredentialResponse,
-            auto_select: false,
-            cancel_on_tap_outside: false
-        });
+        
+
+        if (typeof google !== 'undefined' && google.accounts) {
+            google.accounts.id.initialize({
+                client_id: CONFIG.GOOGLE_CLIENT_ID,
+                callback: handleCredentialResponse,
+                auto_select: false,
+                cancel_on_tap_outside: false
+            });
+        }
+        
+        console.log('Auth system initialized successfully');
+    } catch (error) {
+        console.error('Error initializing auth system:', error);
     }
 });
 
-UserManager.addAuthListener((user) => {
+
+document.addEventListener('visibilitychange', function() {
+    if (!document.hidden) {
+        console.log('Page visible, refreshing auth state...');
+        setTimeout(updateAuthState, 100);
+    }
+});
+
+
+UserManager.addAuthListener(async (user) => {
+    console.log('Auth state changed:', user ? 'logged in' : 'logged out');
+    await updateAuthState();
+    
     if (typeof window.refreshQuotes === 'function') {
         window.refreshQuotes();
     }
 });
+
 
 window.UserManager = UserManager;
 window.Utils = Utils;
 window.showError = showError;
 window.showSuccess = showSuccess;
 window.togglePassword = togglePassword;
+window.updateAuthState = updateAuthState;
