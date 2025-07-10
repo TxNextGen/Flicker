@@ -11,7 +11,6 @@ const PORT = process.env.PORT || 3000;
 
 app.use(helmet());
 
-// FIXED: Allow specific origins including your local frontend
 app.use(cors({
     origin: [
         'http://127.0.0.1:5501',

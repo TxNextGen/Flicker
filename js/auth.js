@@ -99,14 +99,14 @@ class APIService {
                 ...(token && { 'Authorization': `Bearer ${token}` }),
                 ...options.headers
             },
-            // FIXED: Added mode to handle CORS
+      
             mode: 'cors'
         };
 
         const config = { ...defaultOptions, ...options };
         
         try {
-            console.log('Making request to:', url); // Debug log
+            console.log('Making request to:', url); 
             const response = await fetch(url, config);
             let data;
             const contentType = response.headers.get('content-type');
@@ -128,7 +128,6 @@ class APIService {
             return data;
         } catch (error) {
             console.error('API Error:', error);
-            // FIXED: Better error handling for network issues
             if (error.name === 'TypeError' && error.message.includes('fetch')) {
                 throw new Error('Network error - please check your connection and try again');
             }
