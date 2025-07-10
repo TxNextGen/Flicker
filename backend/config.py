@@ -1,4 +1,4 @@
-API_KEY = "AIzaSyDT2aBkKfb0JVSs9hKXA7NOPiOKEk3fJ-U" #Limited, cause i am not paying money for this. If you get a error dm me.
+API_KEY = "AIzaSyBBUK-RpPUKWgaq03SZ4ke_9S05MKr8XmU" #Limited, cause i am not paying money for this. If you get a error dm me.
 MEMORY_FILE = "memory.json"
 MODEL_NAME = "gemini-2.0-flash" # Changed Version should work now 
 MAX_HISTORY = 10
