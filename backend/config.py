@@ -1,6 +1,6 @@
 API_KEY = "AIzaSyACMaC6ESMCIk-4AMpMkN7BKegCSxMIHwE" #Limited, cause i am not paying money for this. If you get a error dm me.
 MEMORY_FILE = "memory.json"
-MODEL_NAME = "gemini-2.0-flash" # Changed Version should work now 
+MODEL_NAME = "gemini-2.5-flash" # Changed Version should work now 
 MAX_HISTORY = 10
 
 GENERATION_CONFIG = { #Currently has 0 filters, i still need to change it. PLS KEEP IT THIS WAY FOR TESTING! WE WILL CHANGE IT LATER ON! -Ben
