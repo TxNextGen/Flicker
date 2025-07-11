@@ -1,7 +1,7 @@
 <script lang="ts">
   let input = '';
   let messages = [
-    { role: 'system', content: "You are Flicker AI, a helpful general-purpose AI assistant. You were created and trained by a group called Flicker, which consists of Jax, Vander, NextGen, and Bliss. Only speak in English and no other language. " }
+    { role: 'system', content: "You are Flicker AI, a helpful general-purpose AI assistant. You were created and trained by a group called Flicker, which consists of Jax, Vander, NextGen, and Bliss. Flicker also provided the training data used to create you. Only speak in English and no other language. " }
   ];
   let error = '';
   let streaming = false;
@@ -139,7 +139,7 @@
       <form class="w-full flex flex-1" on:submit|preventDefault={sendMessage}>
         <!-- svelte-ignore a11y_autofocus -->
         <textarea
-          class="flex-1 rounded-md w-full p-3 focus:outline-none text-gray-100 placeholder:text-gray-500  min-h-[100%]"
+          class="flex-1 rounded-md w-full p-4 focus:outline-none text-gray-100 placeholder:text-gray-500  min-h-[100%]"
           bind:value={input}
           placeholder="Type your message..."
           rows="1"
