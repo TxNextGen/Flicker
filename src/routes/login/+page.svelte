@@ -32,9 +32,7 @@
       // Store user data and token in localStorage
       localStorage.setItem('flicker_user', JSON.stringify(data.user));
       localStorage.setItem('flicker_token', data.token);
-
-      // Redirect to home page
-      goto('/');
+      document.location = "/";
     } catch (e) {
       error = 'Login failed. Please try again.';
       console.error('Login error:', e);
