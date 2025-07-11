@@ -1,20 +1,17 @@
 import OpenAI from 'openai';
 
-const OPENROUTER_API_KEY = "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"; // replace with your own api key, im not paying for the ai
+const API_KEY = "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"; // replace with your own api key, im not paying for the ai
 
 const openai = new OpenAI({
-  apiKey: OPENROUTER_API_KEY,
-  baseURL: 'https://openrouter.ai/api/v1',
-  defaultHeaders: {
-    'X-Title': 'Flicker AI'
-  }
+  apiKey: API_KEY,
+  baseURL: 'https://api.groq.com/openai/v1/',
 });
 
 export async function POST({ request }) {
   const { messages } = await request.json();
 
   const response = await openai.chat.completions.create({
-    model: 'tencent/hunyuan-a13b-instruct:free',
+    model: 'meta-llama/llama-4-scout-17b-16e-instruct', // highest tokens per minute limit
     messages,
     stream: true
   });
