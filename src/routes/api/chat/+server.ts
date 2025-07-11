@@ -1,6 +1,6 @@
 import OpenAI from 'openai';
 
-const API_KEY = "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"; // replace with your own api key, im not paying for the ai
+const API_KEY = "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"; // replace with your own api key, im not paying for the ai
 
 const openai = new OpenAI({
   apiKey: API_KEY,
