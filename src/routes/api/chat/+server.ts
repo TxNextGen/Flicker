@@ -1,3 +1,4 @@
+import { checkmoderation, testmoderation } from '$lib';
 import OpenAI from 'openai';
 
 const API_KEY = "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"; // replace with your own api key, im not paying for the ai
@@ -6,10 +7,10 @@ const openai = new OpenAI({
   apiKey: API_KEY,
   baseURL: 'https://api.groq.com/openai/v1/',
 });
-
+await testmoderation(API_KEY) // test if we can use the moderation api
 export async function POST({ request }) {
   const { messages } = await request.json();
-
+  await checkmoderation(API_KEY,messages) // call the moderation model
   const response = await openai.chat.completions.create({
     model: 'meta-llama/llama-4-scout-17b-16e-instruct', // highest tokens per minute limit
     messages,
