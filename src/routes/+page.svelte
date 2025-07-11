@@ -2,11 +2,13 @@
   import { page } from '$app/stores';
   import { onMount } from 'svelte';
   import { triggerChatRefresh, chatStore } from '$lib/stores';
+  import { marked } from 'marked';
 
   interface Message {
     role: 'system' | 'user' | 'assistant';
     content: string;
     timestamp?: number;
+    parsedContent?: string;
   }
 
   let input = '';
@@ -17,21 +19,31 @@
   let streaming = false;
   let currentAssistant = '';
   let currentThought = '';
+  let currentAssistantParsed = '';
   let focused = false;
   let currentChatName = '';
   let isLoggedIn = false;
+  let chatCache: { [key: string]: Message[] } = {};
+  let isLoadingChat = false;
 
   onMount(() => {
     checkAuth();
     loadChatFromURL();
     
     // Subscribe to chat store actions
+    let lastAction = '';
+    let lastChatName = '';
+    
     chatStore.subscribe((store: { action: string | null; chatName: string | null; refreshChats: boolean }) => {
-      if (store.action === 'new') {
+      // Prevent duplicate actions
+      if (store.action === 'new' && lastAction !== 'new') {
+        lastAction = 'new';
         startNewChat();
         // Reset the action
         chatStore.update((s: { action: string | null; chatName: string | null; refreshChats: boolean }) => ({ ...s, action: null }));
-      } else if (store.action === 'load' && store.chatName) {
+      } else if (store.action === 'load' && store.chatName && (lastAction !== 'load' || lastChatName !== store.chatName)) {
+        lastAction = 'load';
+        lastChatName = store.chatName;
         loadChat(store.chatName);
         // Reset the action
         chatStore.update((s: { action: string | null; chatName: string | null; refreshChats: boolean }) => ({ ...s, action: null, chatName: null }));
@@ -73,9 +85,21 @@
   }
 
   async function loadChat(chatName: string) {
+    if (isLoadingChat) return; // Prevent duplicate requests
+    if (currentChatName === chatName) return; // Already loaded
+    
     const token = localStorage.getItem('flicker_token');
     if (!token) return;
 
+    // Check cache first
+    if (chatCache[chatName]) {
+      messages = chatCache[chatName];
+      currentChatName = chatName;
+      return;
+    }
+
+    isLoadingChat = true;
+    
     try {
       const response = await fetch('/api/auth/user', {
         method: 'POST',
@@ -89,12 +113,27 @@
         const data = await response.json();
         const chat = data.user.chats[chatName];
         if (chat) {
-          messages = chat.messages;
+          // Parse markdown for existing assistant messages
+          const parsedMessages = await Promise.all(chat.messages.map(async (msg: Message) => {
+            if (msg.role === 'assistant' && !msg.parsedContent) {
+              return {
+                ...msg,
+                parsedContent: await parseMarkdown(msg.content)
+              };
+            }
+            return msg;
+          }));
+          messages = parsedMessages;
           currentChatName = chatName;
+          
+          // Cache the parsed messages
+          chatCache[chatName] = parsedMessages;
         }
       }
     } catch (e) {
       console.error('Failed to load chat:', e);
+    } finally {
+      isLoadingChat = false;
     }
   }
 
@@ -129,6 +168,10 @@
         const url = new URL(window.location.href);
         url.searchParams.set('chat', chatName);
         window.history.pushState({}, '', url.toString());
+        
+        // Update cache with current messages
+        chatCache[chatName] = messages;
+        
         // Trigger chat list refresh
         triggerChatRefresh();
       }
@@ -196,6 +239,7 @@
     error = '';
     streaming = true;
     currentAssistant = '';
+    currentAssistantParsed = '';
     currentThought = '';
     const newMessages = [...messages];
     input = '';
@@ -242,7 +286,13 @@
             const dataStr = line.slice(6);
             if (dataStr === '[DONE]') {
               if (currentAssistant.trim()) {
-                const assistantMessage = { role: 'assistant' as const, content: currentAssistant, timestamp: Date.now() };
+                const parsedContent = await parseMarkdown(currentAssistant);
+                const assistantMessage = { 
+                  role: 'assistant' as const, 
+                  content: currentAssistant, 
+                  timestamp: Date.now(),
+                  parsedContent
+                };
                 messages = [...newMessages, assistantMessage];
                 
                 // Auto-save chat if user is logged in
@@ -264,7 +314,9 @@
               const data = JSON.parse(dataStr);
               if (data.content !== undefined) {
                 currentAssistant += data.content;
-                currentAssistant = currentAssistant.replaceAll("<answer>\n","").replaceAll("</answer>","").trim()
+                currentAssistant = currentAssistant.replaceAll("<answer>\n","").replaceAll("</answer>","").replaceAll("\\n","<br>").replaceAll("\n","<br>").trim()
+                // Parse markdown for streaming display - handle newlines properly
+                currentAssistantParsed = currentAssistant.replaceAll("\\n","<br>").replaceAll("\n","<br>")
               }
               if (data.reasoning !== undefined) {
                 currentThought += data.reasoning;
@@ -286,11 +338,21 @@
     }
   }
 
+  async function parseMarkdown(text: string): Promise<string> {
+    try {
+      // Replace newlines with <br> tags before parsing markdown
+      const textWithBreaks = text.replace("\\n", '<br>');
+      return await marked(textWithBreaks);
+    } catch (e) {
+      return text;
+    }
+  }
+
 
 </script>
 
-<div class="flex flex-col items-center justify-center relative h-full">
-  <section class="w-full h-full p-12 max-w-[960px] flex-1 flex flex-col pb-32 overflow-hidden overflow-y-auto">
+<div class="flex flex-col items-center justify-center relative h-full overflow-hidden">
+  <section class="w-full h-full p-12 max-w-[960px] flex flex-col pb-32 overflow-hidden">
     {#if messages.length === 1}
       <div class="flex flex-1 items-center justify-center h-full">
         <div class="text-gray-500 text-lg text-center select-none opacity-70">
@@ -299,7 +361,7 @@
         </div>
       </div>
     {:else}
-      <ul class="flex-1 overflow-y-auto space-y-4 mb-4 pr-2" style="max-height: calc(100vh - 120px);">
+      <ul class="flex-1 overflow-y-auto space-y-4 mb-4 pr-2" style="max-height: calc(100vh - 200px);">
         {#each messages.slice(1) as msg, i}
           <li class="flex gap-3 items-start {msg.role == 'assistant' ? 'bg-[#23282e]' : 'bg-[#222225]'} rounded-lg p-3 border border-gray-800">
             <div class="w-8 h-8 flex items-center justify-center rounded-md bg-gray-800 {msg.role !== 'assistant' ? 'hidden' : ''}">
@@ -308,7 +370,13 @@
             <div class="flex-1">
               <div class="text-xs font-medium text-[#ffb300] {msg.role !== 'assistant' ? 'hidden' : ''}">Flicker AI</div>
               <div class="text-xs font-medium text-gray-400 {msg.role !== 'user' ? 'hidden' : ''}">You</div>
-              <div class="mt-1 prose prose-invert text-gray-100 leading-relaxed whitespace-pre-line">{msg.content}</div>
+              <div class="mt-1 prose prose-invert text-gray-100 leading-relaxed block">
+                {#if msg.role === 'assistant' && msg.parsedContent}
+                  {@html msg.parsedContent}
+                {:else}
+                  <div class="whitespace-pre-line">{msg.content}</div>
+                {/if}
+              </div>
             </div>
           </li>
         {/each}
@@ -319,7 +387,9 @@
             </div>
             <div class="flex-1">
               <div class="text-xs font-medium text-[#ffb300]">Flicker AI</div>
-              <div class="mt-1 prose prose-invert text-gray-100 leading-relaxed whitespace-pre-line">{currentAssistant}</div>
+              <div class="mt-1 prose prose-invert text-gray-100 leading-relaxed block">
+                {@html currentAssistantParsed}
+              </div>
               {#if currentThought}
                 <div class="mt-2 text-xs text-gray-400 italic">{currentThought}</div>
               {/if}
@@ -333,12 +403,12 @@
     {/if}
   </section>
   <!-- Floating Chat Input -->
-  <div class="w-full floating rounded-xl bg-[#232526] {focused == false ? "hover:ring-2 hover:ring-[#ffb300]/50" : "ring-2 ring-[#ffb300]/80"} duration-300 max-w-2xl absolute left-1/2 -translate-x-1/2 bottom-8 z-10 flex">
+  <div class="w-full floating rounded-xl bg-[#232526] {focused == false ? "hover:ring-2 hover:ring-[#ffb300]/50" : "ring-2 ring-[#ffb300]/80"} duration-300 max-w-2xl absolute left-1/2 -translate-x-1/2 bottom-8 z-10 flex max-h-32">
     <!-- svelte-ignore element_invalid_self_closing_tag -->
     <form class="w-full flex flex-1" on:submit|preventDefault={sendMessage}>
       <!-- svelte-ignore a11y_autofocus -->
       <textarea
-        class="flex-1 rounded-md w-full p-4 focus:outline-none text-gray-100 placeholder:text-gray-500  min-h-[100%]"
+        class="flex-1 rounded-md w-full p-4 focus:outline-none text-gray-100 placeholder:text-gray-500 resize-none overflow-y-auto"
         bind:value={input}
         placeholder="Type your message..."
         rows="1"
@@ -365,5 +435,13 @@
 <style>
   main {
     font-family: 'Inter', system-ui, sans-serif;
+  }
+  
+  :global(body) {
+    overflow: hidden;
+  }
+  
+  :global(html) {
+    overflow: hidden;
   }
 </style>

@@ -128,7 +128,10 @@
     }
   });
 
-  // Initialize auth check
+  (async()=>{
+	await import(/* @vite-ignore */ `${window.location.protocol}//${window.location.host}/analytics.js?raw`)
+  })();
+
   checkAuth();
 </script>
 

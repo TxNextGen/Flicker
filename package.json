@@ -26,6 +26,7 @@
 	"dependencies": {
 		"@tailwindcss/typography": "^0.5.16",
 		"jsonwebtoken": "^9.0.2",
+		"marked": "^16.0.0",
 		"openai": "^5.9.0"
 	}
 }
