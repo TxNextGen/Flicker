@@ -31,9 +31,7 @@ export async function POST({ request }) {
           reasoning = String((chunk as any).reasoning ?? '');
         }
         if (data) {
-          // Remove <answer> tags
-          const clean = data.replace(/<answer>|<\/answer>/g, '');
-          controller.enqueue(encoder.encode(`data: ${JSON.stringify({ content: clean })}\n\n`));
+          controller.enqueue(encoder.encode(`data: ${JSON.stringify({ content: data })}\n\n`));
         }
         if (reasoning) {
           controller.enqueue(encoder.encode(`data: ${JSON.stringify({ reasoning })}\n\n`));

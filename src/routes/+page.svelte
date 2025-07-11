@@ -1,7 +1,7 @@
 <script lang="ts">
   let input = '';
   let messages = [
-    { role: 'system', content: "You are Flicker AI, a helpful assistant. Do not wrap your response in <answer> tags." }
+    { role: 'system', content: "You are Flicker AI, a helpful assistant. Don't wrap your response in any XML or HTML tags." }
   ];
   let error = '';
   let streaming = false;
@@ -38,6 +38,7 @@
       done = doneReading;
       if (value) {
         buffer += decoder.decode(value, { stream: true });
+        buffer.replaceAll("<answer>","").replaceAll("</answer>","")
         let lines = buffer.split(/\r?\n/);
         buffer = lines.pop() ?? '';
         for (const line of lines) {
@@ -55,9 +56,11 @@
               const data = JSON.parse(dataStr);
               if (data.content !== undefined) {
                 currentAssistant += data.content;
+                currentAssistant = currentAssistant.replaceAll("<answer>\n","").replaceAll("</answer>","").trim()
               }
               if (data.reasoning !== undefined) {
                 currentThought += data.reasoning;
+                currentThought = currentThought.replaceAll("<answer>\n","").replaceAll("</answer>","").trim()
               }
             } catch (e) {
               // ignore
