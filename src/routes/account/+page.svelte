@@ -131,46 +131,6 @@
             </div>
           </div>
         </div>
-
-        <!-- Chat History -->
-        <div class="bg-[#23282e] rounded-lg p-6">
-          <h2 class="text-xl font-semibold text-gray-100 mb-4">Chat History</h2>
-          {#if Object.keys(user.chats).length === 0}
-            <p class="text-gray-400 text-center py-8">No saved chats yet. Start a conversation to see your history here.</p>
-          {:else}
-            <div class="space-y-3">
-              {#each Object.entries(user.chats) as [chatId, chat]}
-                <div class="flex items-center justify-between bg-[#1a1c1e] rounded-lg p-4">
-                  <div class="flex-1">
-                    <h3 class="text-gray-100 font-medium">Chat {chatId}</h3>
-                    <p class="text-gray-400 text-sm">
-                      {chat.messages.length} messages • {formatDate(chatId)}
-                    </p>
-                    {#if chat.messages.length > 0}
-                      <p class="text-gray-500 text-sm mt-1 truncate">
-                        {chat.messages[0].content.substring(0, 20)}...
-                      </p>
-                    {/if}
-                  </div>
-                  <div class="flex gap-2">
-                    <button
-                      class="bg-[#ffb300] text-black font-semibold px-3 py-1 rounded text-sm hover:bg-[#e6a100] transition-colors"
-                      on:click={() => goto(`/?chat=${chatId}`)}
-                    >
-                      Open
-                    </button>
-                    <button
-                      class="bg-red-600 text-white font-semibold px-3 py-1 rounded text-sm hover:bg-red-700 transition-colors"
-                      on:click={() => deleteChat(chatId)}
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </div>
-              {/each}
-            </div>
-          {/if}
-        </div>
       {/if}
     </div>
   </div>

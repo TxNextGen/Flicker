@@ -118,7 +118,7 @@
     localStorage.removeItem('flicker_user');
     localStorage.removeItem('flicker_token');
     currentUser = null;
-    goto('/');
+    document.location = "/"
   }
 
   // Subscribe to chat store for refresh
