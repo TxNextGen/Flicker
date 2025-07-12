@@ -62,7 +62,7 @@
 
 <div class="flex flex-col items-center justify-center min-h-screen p-8">
   <div class="w-full max-w-md">
-    <div class="bg-[#232526] border border-gray-800 rounded-xl shadow-lg p-8">
+    <div class="bg-[#1e293b] border border-blue-800 rounded-xl shadow-lg p-8">
       <div class="text-center mb-8">
         <h1 class="text-3xl font-bold text-gray-100 mb-2">Create Account</h1>
         <p class="text-gray-400">Join Flicker AI today</p>
@@ -135,7 +135,7 @@
 
         <button
           type="submit"
-          class="w-full bg-[#ffb300] text-black font-semibold py-3 px-4 rounded-md hover:bg-[#e6a100] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          class="w-full bg-blue-500 text-white font-semibold py-3 px-4 rounded-md hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           disabled={loading}
         >
           {loading ? 'Creating account...' : 'Create Account'}
@@ -145,7 +145,7 @@
       <div class="text-center mt-6">
         <p class="text-gray-400 text-sm">
           Already have an account? 
-          <a href="/login" class="text-[#ffb300] hover:underline">Sign in</a>
+          <a href="/login" class="text-blue-400 hover:underline">Sign in</a>
         </p>
       </div>
     </div>

@@ -50,7 +50,7 @@
 
 <div class="flex flex-col items-center justify-center min-h-screen p-8">
   <div class="w-full max-w-md">
-    <div class="bg-[#232526] border border-gray-800 rounded-xl shadow-lg p-8">
+    <div class="bg-[#1e293b] border border-blue-800 rounded-xl shadow-lg p-8">
       <div class="text-center mb-8">
         <h1 class="text-3xl font-bold text-gray-100 mb-2">Welcome Back</h1>
         <p class="text-gray-400">Sign in to your Flicker AI account</p>
@@ -66,7 +66,7 @@
             type="text"
             bind:value={username}
             on:keydown={handleKey}
-            class="w-full px-4 py-3 bg-[#23282e] border border-gray-700 rounded-md text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#ffb300] focus:border-transparent"
+            class="w-full px-4 py-3 bg-[#0f172a] border border-blue-700 rounded-md text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
             placeholder="Enter your username or email"
             disabled={loading}
           />
@@ -81,7 +81,7 @@
             type="password"
             bind:value={password}
             on:keydown={handleKey}
-            class="w-full px-4 py-3 bg-[#23282e] border border-gray-700 rounded-md text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#ffb300] focus:border-transparent"
+            class="w-full px-4 py-3 bg-[#0f172a] border border-blue-700 rounded-md text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
             placeholder="Enter your password"
             disabled={loading}
           />
@@ -93,7 +93,7 @@
 
         <button
           type="submit"
-          class="w-full bg-[#ffb300] text-black font-semibold py-3 px-4 rounded-md hover:bg-[#e6a100] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          class="w-full bg-blue-500 text-white font-semibold py-3 px-4 rounded-md hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           disabled={loading}
         >
           {loading ? 'Signing in...' : 'Sign In'}
@@ -103,7 +103,7 @@
       <div class="text-center mt-6">
         <p class="text-gray-400 text-sm">
           Don't have an account? 
-          <a href="/signup" class="text-[#ffb300] hover:underline">Sign up</a>
+          <a href="/signup" class="text-blue-400 hover:underline">Sign up</a>
         </p>
       </div>
     </div>
