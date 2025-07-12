@@ -9,6 +9,7 @@
         "jsonwebtoken": "^9.0.2",
         "marked": "^16.0.0",
         "openai": "^5.9.0",
+        "wrangler": "^4.24.3",
       },
       "devDependencies": {
         "@sveltejs/adapter-auto": "^6.0.0",
