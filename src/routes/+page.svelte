@@ -363,12 +363,12 @@ Ask anything, and it will do it's best to help!
 {:else}
 <ul class="flex-1 overflow-y-auto space-y-4 mb-4 pr-2" style="max-height: calc(100vh - 200px);">
 {#each messages.slice(1) as msg, i}
-<li class="flex gap-3 items-start {msg.role == 'assistant' ? 'bg-[#1e3a8a]' : 'bg-[#1e293b]'} rounded-lg p-3 border border-blue-800">
-<div class="w-8 h-8 flex items-center justify-center rounded-md bg-gray-800 {msg.role !== 'assistant' ? 'hidden' : ''}">
-<img src="/logo.webp" alt="AI" class="w-6 h-6" />
+<li class="flex gap-3 items-start {msg.role == 'assistant' ? 'bg-[#4f46e5]' : 'bg-[]'} rounded-lg p-3 border border-[#4f46e5]">
+<div class="w-8 h-8 flex items-center justify-center {msg.role !== 'assistant' ? 'hidden' : ''}">
+<img src="/flicker2.png" alt="AI" class="w-6 h-6 rounded-md" />
 </div>
 <div class="flex-1">
-<div class="text-xs font-medium text-[#ffb300] {msg.role !== 'assistant' ? 'hidden' : ''}">Flicker AI</div>
+<div class="text-xs font-medium text-[white] {msg.role !== 'assistant' ? 'hidden' : ''}">Flicker AI</div>
 <div class="text-xs font-medium text-gray-400 {msg.role !== 'user' ? 'hidden' : ''}">You</div>
 <div class="mt-1 prose prose-invert text-gray-100 leading-relaxed block">
 {#if msg.role === 'assistant' && msg.parsedContent}
@@ -381,12 +381,12 @@ Ask anything, and it will do it's best to help!
 </li>
 {/each}
 {#if streaming}
-<li class="flex gap-3 items-start bg-[#1e3a8a] rounded-lg p-3 border border-blue-800">
+<li class="flex gap-3 items-start bg-[#4f46e5] rounded-lg p-3 border border-[#4f46e5]">
 <div class="w-8 h-8 flex items-center justify-center rounded-md bg-gray-800">
-<img src="/logo.webp" alt="AI" class="w-6 h-6" />
+<img src="/flicker2.png" alt="AI" class="w-6 h-6" />
 </div>
 <div class="flex-1">
-<div class="text-xs font-medium text-[#ffb300]">Flicker AI</div>
+<div class="text-xs font-medium text-[white]">Flicker AI</div>
 <div class="mt-1 prose prose-invert text-gray-100 leading-relaxed block">
 {@html currentAssistantParsed}
 </div>
@@ -424,7 +424,7 @@ on:blur={()=>{focused = false}}
 <div class="p-4">
 <button
 type="submit"
-class="bg-[#6b46c1] text-white font-medium px-4 py-2 rounded-md hover:bg-[#7c3aed] transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed border border-[#7c3aed]"
+ class="w-full bg-[#4f46e5] text-white font-semibold py-3 px-4 rounded-md hover:bg-[#4338ca] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
 disabled={streaming || !input.trim()}
 >
 Send
