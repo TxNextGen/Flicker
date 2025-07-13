@@ -151,7 +151,7 @@
   checkAuth();
 </script>
 
-<div class="flex min-h-screen bg-[#1a1a2e]">
+<div class="flex min-h-screen bg-[#0f0f23]">
   <!-- Sidebar -->
   <aside class="bg-[#0f0f23] border-r border-[#1e1e3a] flex flex-col py-4 px-3 transition-all duration-300 ease-in-out {sidebarCollapsed ? 'w-16' : 'w-80'}">
     <div class="flex items-center justify-between w-full mb-6">

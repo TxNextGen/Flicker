@@ -403,8 +403,8 @@
     {/if}
   </section>
   <!-- Floating Chat Input -->
-  <div class="w-full floating rounded-xl bg-[e6e6ff] border-2 transition-all duration-300 ease-in-out max-w-2xl absolute left-1/2 -translate-x-1/2 bottom-8 z-10 flex max-h-32"
-     class:border-[#3b3b3b]={!focused}
+ <div class="w-full floating rounded-xl bg-[e6e6ff] border-2 transition-all duration-300 ease-in-out max-w-2xl absolute left-1/2 -translate-x-1/2 bottom-8 z-10 flex max-h-32"
+     class:border-[#545454]={!focused}
      class:hover:border-[#534582]={!focused}
      class:border-[#846DCF]={focused}>
     <!-- svelte-ignore element_invalid_self_closing_tag -->
