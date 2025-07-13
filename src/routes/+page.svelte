@@ -363,7 +363,7 @@
     {:else}
       <ul class="flex-1 overflow-y-auto space-y-4 mb-4 pr-2" style="max-height: calc(100vh - 200px);">
         {#each messages.slice(1) as msg, i}
-          <li class="flex gap-3 items-start {msg.role == 'assistant' ? 'bg-[#23282e]' : 'bg-[#222225]'} rounded-lg p-3 border border-gray-800">
+          <li class="flex gap-3 items-start {msg.role == 'assistant' ? 'bg-[#1e3a8a]' : 'bg-[#1e293b]'} rounded-lg p-3 border border-blue-800">
             <div class="w-8 h-8 flex items-center justify-center rounded-md bg-gray-800 {msg.role !== 'assistant' ? 'hidden' : ''}">
               <img src="/logo.webp" alt="AI" class="w-6 h-6" />
             </div>
@@ -381,7 +381,7 @@
           </li>
         {/each}
         {#if streaming}
-          <li class="flex gap-3 items-start bg-[#23282e] rounded-lg p-3 border border-gray-800">
+          <li class="flex gap-3 items-start bg-[#1e3a8a] rounded-lg p-3 border border-blue-800">
             <div class="w-8 h-8 flex items-center justify-center rounded-md bg-gray-800">
               <img src="/logo.webp" alt="AI" class="w-6 h-6" />
             </div>
@@ -403,12 +403,15 @@
     {/if}
   </section>
   <!-- Floating Chat Input -->
-  <div class="w-full floating rounded-xl bg-[#232526] {focused == false ? "hover:ring-2 hover:ring-[#ffb300]/50" : "ring-2 ring-[#ffb300]/80"} duration-300 max-w-2xl absolute left-1/2 -translate-x-1/2 bottom-8 z-10 flex max-h-32">
+  <div class="w-full floating rounded-xl bg-[e6e6ff] border-2 transition-all duration-300 ease-in-out max-w-2xl absolute left-1/2 -translate-x-1/2 bottom-8 z-10 flex max-h-32"
+     class:border-[#3b3b3b]={!focused}
+     class:hover:border-[#534582]={!focused}
+     class:border-[#846DCF]={focused}>
     <!-- svelte-ignore element_invalid_self_closing_tag -->
     <form class="w-full flex flex-1" on:submit|preventDefault={sendMessage}>
       <!-- svelte-ignore a11y_autofocus -->
       <textarea
-        class="flex-1 rounded-md w-full p-4 focus:outline-none text-gray-100 placeholder:text-gray-500 resize-none overflow-y-auto"
+        class="flex-1 rounded-md w-full p-4 focus:outline-none text-gray-100 placeholder:text-gray-400 resize-none overflow-y-auto bg-transparent"
         bind:value={input}
         placeholder="Type your message..."
         rows="1"
@@ -418,15 +421,15 @@
       />
       
     </form>
-    <div class="p-4">
-      <button
-        type="submit"
-        class="bg-[#ffb300] text-black font-semibold px-5 py-2 rounded-md shadow-none hover:bg-[#e6a100] transition-colors"
-        disabled={streaming || !input.trim()}
-      >
-        Send
-      </button>
-    </div>
+   <div class="p-4">
+  <button
+    type="submit"
+    class="bg-[#6b46c1] text-white font-medium px-4 py-2 rounded-md hover:bg-[#7c3aed] transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed border border-[#7c3aed]"
+    disabled={streaming || !input.trim()}
+  >
+    Send
+  </button>
+</div>
   </div>
 
 
