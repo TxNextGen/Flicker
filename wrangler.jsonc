@@ -8,4 +8,9 @@
     "binding": "ASSETS",
     "directory": ".svelte-kit/cloudflare",
   },
+  "observability": {
+    "logs":{
+      "enabled":true
+    }
+  }
 }
