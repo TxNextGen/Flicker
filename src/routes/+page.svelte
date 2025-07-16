@@ -404,7 +404,6 @@
   </section>
   <!-- Floating Chat Input -->
   <div class="w-full floating rounded-xl bg-[#1e293b] {focused == false ? "hover:ring-2 hover:ring-blue-400/50" : "ring-2 ring-blue-400/80"} duration-300 max-w-2xl absolute left-1/2 -translate-x-1/2 bottom-8 z-10 flex max-h-32">
-    <!-- svelte-ignore element_invalid_self_closing_tag -->
     <form class="w-full flex flex-1" on:submit|preventDefault={sendMessage}>
       <!-- svelte-ignore a11y_autofocus -->
       <textarea
@@ -416,17 +415,16 @@
         on:focus={()=>{focused = true}}
         on:blur={()=>{focused = false}}
       />
-      
-    </form>
-    <div class="p-4">
-              <button
+      <div class="p-4">
+        <button
           type="submit"
           class="bg-blue-500 text-white font-semibold px-5 py-2 rounded-md shadow-none hover:bg-blue-600 transition-colors"
           disabled={streaming || !input.trim()}
         >
           Send
         </button>
-    </div>
+      </div>
+    </form>
   </div>
 
 
