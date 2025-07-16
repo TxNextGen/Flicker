@@ -6,7 +6,10 @@
 
   interface Message {
     role: "system" | "user" | "assistant";
-    content: string;
+    content: string | Array<
+      | { type: "text"; text: string }
+      | { type: "image_url"; image_url: { url: string }; viewing_url?: string }
+    >;
     timestamp?: number;
     parsedContent?: string;
   }
@@ -29,6 +32,12 @@
   let isLoggedIn = false;
   let chatCache: { [key: string]: Message[] } = {};
   let isLoadingChat = false;
+  let imagePreviewUrl = "";
+  let uploading = false;
+  let imageAttached = false;
+  let modelOptimizedUrl = "";
+  let viewingOptimizedUrl = "";
+  let imageUploadConfirmation = false;
 
   onMount(() => {
     checkAuth();
@@ -212,9 +221,15 @@
     }
   }
 
-  function generateChatName(firstMessage: string): string {
+  function generateChatName(firstMessage: string | Array<{ type: "text"; text: string } | { type: "image_url"; image_url: { url: string } }>): string {
+    let base = "";
+    if (typeof firstMessage === "string") {
+      base = firstMessage;
+    } else if (Array.isArray(firstMessage)) {
+      base = firstMessage.filter(p => p.type === "text").map(p => (p as { type: "text"; text: string }).text).join(" ");
+    }
     // Take first 30 characters of the first user message
-    const truncated = firstMessage.substring(0, 30).trim();
+    const truncated = base.substring(0, 30).trim();
     // Remove any special characters that might cause issues
     const cleanName = truncated.replace(/[^\w\s-]/g, "");
     // If empty after cleaning, use a default name
@@ -264,29 +279,63 @@
   async function sendMessage() {
     if (!input.trim()) return;
 
-    const userMessage = {
-      role: "user" as const,
-      content: input,
-      timestamp: Date.now(),
-    };
-    messages = [...messages, userMessage];
-    error = "";
-    streaming = true;
+    // Clear streaming state immediately
     currentAssistant = "";
     currentAssistantParsed = "";
     currentThought = "";
+
+    let userMessage;
+    if (imageAttached && modelOptimizedUrl && viewingOptimizedUrl) {
+      const contentArr = [
+        { type: "text" as const, text: input },
+        { type: "image_url" as const, image_url: { url: modelOptimizedUrl }, viewing_url: viewingOptimizedUrl }
+      ];
+      userMessage = {
+        role: "user" as const,
+        content: contentArr,
+        timestamp: Date.now(),
+        parsedContent: await parseMarkdown(contentArr)
+      };
+    } else {
+      userMessage = {
+        role: "user" as const,
+        content: input,
+        timestamp: Date.now(),
+        parsedContent: await parseMarkdown(input)
+      };
+    }
+    messages = [...messages, userMessage];
+    error = "";
+    streaming = true;
     const newMessages = [...messages];
     input = "";
+    modelOptimizedUrl = "";
+    viewingOptimizedUrl = "";
+    imageAttached = false;
 
     // POST to /api/chat and handle streaming SSE manually
     const res = await fetch("/api/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        messages: newMessages.map((msg) => ({
-          role: msg.role,
-          content: msg.content,
-        })),
+        messages: newMessages.map((msg) => {
+          if (Array.isArray(msg.content)) {
+            // If multimodal, only send modelOptimized url to the model
+            return {
+              role: msg.role,
+              content: msg.content.map(part =>
+                part.type === "image_url"
+                  ? { type: "image_url", image_url: { url: part.image_url.url } }
+                  : part
+              ),
+            };
+          } else {
+            return {
+              role: msg.role,
+              content: msg.content,
+            };
+          }
+        }),
       }),
     });
 
@@ -382,14 +431,73 @@
     }
   }
 
-  async function parseMarkdown(text: string): Promise<string> {
-    try {
+  async function parseMarkdown(content: string | Array<{ type: "text"; text: string } | { type: "image_url"; image_url: { url: string }; viewing_url?: string }>): Promise<string> {
+    if (typeof content === "string") {
       // Replace newlines with <br> tags before parsing markdown
-      const textWithBreaks = text.replace("\\n", "<br>");
+      const textWithBreaks = content.replace("\n", "<br>");
       return await marked(textWithBreaks);
-    } catch (e) {
-      return text;
+    } else if (Array.isArray(content)) {
+      let html = "";
+      for (const part of content) {
+        if (part.type === "text") {
+          html += await marked(part.text.replace("\n", "<br>"));
+        } else if (part.type === "image_url") {
+          const imgSrc = part.viewing_url || part.image_url.url;
+          html += `<img src='${imgSrc}' alt='User uploaded image' class='max-w-xs my-2 rounded shadow' />`;
+        }
+      }
+      return html;
     }
+    return "";
+  }
+
+  async function handleImageUpload(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (!input.files || input.files.length === 0) return;
+    const file = input.files[0];
+    if (!['image/png', 'image/jpeg', 'image/webp'].includes(file.type)) {
+      error = "Only PNG, JPG, and WEBP images are allowed.";
+      return;
+    }
+    uploading = true;
+    error = "";
+    const formData = new FormData();
+    formData.append('image', file);
+    try {
+      const res = await fetch('/api/chat/upload', {
+        method: 'POST',
+        body: formData
+      });
+      if (!res.ok) {
+        error = `Image upload failed: ${res.status}`;
+        uploading = false;
+        return;
+      }
+      const data = await res.json();
+      modelOptimizedUrl = data.modelOptimized || '';
+      viewingOptimizedUrl = data.viewingOptimized || '';
+      imageAttached = !!modelOptimizedUrl && !!viewingOptimizedUrl;
+      if (imageAttached) {
+        imageUploadConfirmation = true;
+        setTimeout(() => { imageUploadConfirmation = false; }, 2000);
+      }
+    } catch (e) {
+      error = 'Image upload failed.';
+    } finally {
+      uploading = false;
+    }
+  }
+
+  function removeImage() {
+    modelOptimizedUrl = "";
+    viewingOptimizedUrl = "";
+    imageAttached = false;
+    imageUploadConfirmation = false;
+  }
+
+  // Helper to determine if the last message is an assistant
+  function shouldHideLastAssistant() {
+    return streaming && messages.length > 1 && messages[messages.length-1]?.role === 'assistant';
   }
 </script>
 
@@ -411,7 +519,7 @@
         class="flex-1 overflow-y-auto space-y-4 mb-4 pr-2"
         style="max-height: calc(100vh - 200px);"
       >
-        {#each messages.slice(1) as msg, i}
+        {#each messages.slice(1, shouldHideLastAssistant() ? messages.length-1 : undefined) as msg, i}
           <li
             class="flex gap-3 items-start {msg.role == 'assistant'
               ? 'bg-[#4f46e5]'
@@ -444,7 +552,7 @@
               <div
                 class="mt-1 prose prose-invert text-gray-100 leading-relaxed block"
               >
-                {#if msg.role === "assistant" && msg.parsedContent}
+                {#if msg.parsedContent}
                   {@html msg.parsedContent}
                 {:else}
                   <div class="whitespace-pre-line">{msg.content}</div>
@@ -453,7 +561,7 @@
             </div>
           </li>
         {/each}
-        {#if streaming}
+        {#if streaming && currentAssistantParsed}
           <li
             class="flex gap-3 items-start bg-[#4f46e5] rounded-lg p-3 border border-[#4f46e5]"
           >
@@ -485,12 +593,12 @@
   </section>
   <!-- Floating Chat Input -->
   <div
-    class="w-full floating rounded-xl bg-[e6e6ff] border-2 transition-all duration-300 ease-in-out max-w-2xl absolute left-1/2 -translate-x-1/2 bottom-8 z-10 flex max-h-32"
+    class="w-full floating rounded-xl bg-[e6e6ff] border-2 transition-all duration-300 ease-in-out max-w-2xl absolute left-1/2 -translate-x-1/2 bottom-8 z-10 flex flex-col max-h-48"
     class:border-[#545454]={!focused}
     class:hover:border-[#534582]={!focused}
     class:border-[#846DCF]={focused}
   >
-    <!-- svelte-ignore element_invalid_self_closing_tag -->
+    <!-- Image preview and indicator removed -->
     <form class="w-full flex flex-1" on:submit|preventDefault={sendMessage}>
       <!-- svelte-ignore a11y_autofocus -->
       <textarea
@@ -506,17 +614,31 @@
           focused = false;
         }}
       />
+      <div class="p-4 flex gap-2 items-center">
+        <label class="cursor-pointer flex items-center">
+          <input type="file" accept="image/png,image/jpeg,image/webp" class="hidden" on:change={handleImageUpload} />
+          <span title="Attach Image" class="hover:bg-[#4338ca] rounded-md p-2 transition-colors">
+            <!-- Paperclip SVG icon with white stroke -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#fff" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79V17a5 5 0 01-5 5h-4a5 5 0 01-5-5V7a5 5 0 015-5h4a5 5 0 015 5v7a3 3 0 01-3 3h-4a3 3 0 01-3-3V7" />
+            </svg>
+          </span>
+        </label>
+        <button
+          type="submit"
+          class="w-full bg-[#4f46e5] text-white font-semibold py-3 px-4 rounded-md hover:bg-[#4338ca] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled={streaming || uploading || (imageAttached ? !input.trim() : !input.trim())}
+        >
+          Send
+        </button>
+      </div>
     </form>
-    <div class="p-4">
-      <button
-        type="submit"
-        class="w-full bg-[#4f46e5] text-white font-semibold py-3 px-4 rounded-md hover:bg-[#4338ca] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-        disabled={streaming || !input.trim()}
-      >
-        Send
-      </button>
-    </div>
   </div>
+  {#if imageUploadConfirmation}
+    <div class="flex justify-center mt-2">
+      <span class="bg-green-100 text-green-800 px-4 py-2 rounded shadow text-sm font-semibold">Image uploaded!</span>
+    </div>
+  {/if}
 </div>
 
 <style>

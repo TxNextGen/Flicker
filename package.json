@@ -30,6 +30,7 @@
     "marked": "^16.0.0",
     "openai": "^5.9.0",
     "prettier-plugin-svelte": "^3.4.0",
+    "sharp": "^0.34.3",
     "wrangler": "^4.24.3"
   }
 }
