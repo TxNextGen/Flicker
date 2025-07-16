@@ -106,7 +106,7 @@
 
 <div class="flex flex-col items-center justify-center min-h-screen p-8">
   <div class="w-full max-w-4xl">
-    <div class="bg-[#1e293b] border border-blue-800 rounded-xl shadow-lg p-8">
+    <div class="bg-[e6e6ff] border border-[#846DCF] rounded-xl shadow-lg p-8">
       <div class="text-center mb-8">
         <h1 class="text-3xl font-bold text-gray-100 mb-2">Account Settings</h1>
         <p class="text-gray-400">Manage your Flicker AI account</p>
@@ -118,7 +118,7 @@
         <div class="text-red-400 text-center mb-4">{error}</div>
       {:else if user}
         <!-- User Information -->
-        <div class="bg-[#0f172a] rounded-lg p-6 mb-8">
+        <div class="bg-[e6e6ff] border border-[#846DCF] rounded-lg p-6 mb-8">
           <h2 class="text-xl font-semibold text-gray-100 mb-4">Profile Information</h2>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -133,7 +133,7 @@
         </div>
 
         <!-- Chat History -->
-        <div class="bg-[#0f172a] rounded-lg p-6">
+        <div class="bg-[e6e6ff] border border-[#846DCF] rounded-lg p-6">
           <h2 class="text-xl font-semibold text-gray-100 mb-4">Chat History</h2>
           {#if Object.keys(user.chats).length === 0}
             <p class="text-gray-400 text-center py-8">No saved chats yet. Start a conversation to see your history here.</p>
@@ -174,4 +174,4 @@
       {/if}
     </div>
   </div>
-</div> 
+</div>

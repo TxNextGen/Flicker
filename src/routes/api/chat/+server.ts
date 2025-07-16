@@ -1,7 +1,7 @@
 import { checkmoderation, testmoderation } from '$lib';
 import OpenAI from 'openai';
 
-const API_KEY = "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"; // replace with your own api key, im not paying for the ai
+const API_KEY = "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"; // replace with your own api key, im not paying for the ai
 
 const openai = new OpenAI({
   apiKey: API_KEY,
