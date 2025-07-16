@@ -1,4 +1,8 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 @plugin '@tailwindcss/typography';
-.prose p {display:block;}
-.prose p * {margin-bottom:5px;}
+.prose p {
+  display: block;
+}
+.prose p * {
+  margin-bottom: 5px;
+}

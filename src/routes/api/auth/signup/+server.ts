@@ -1,24 +1,30 @@
-import { json } from '@sveltejs/kit';
-import { getDB, setDB } from '$lib';
-import type { UserSchema } from '$lib';
-import { generateToken } from '$lib/jwt';
+import { json } from "@sveltejs/kit";
+import { getDB, setDB } from "$lib";
+import type { UserSchema } from "$lib";
+import { generateToken } from "$lib/jwt";
 
 export async function POST({ request }) {
   try {
     const { username, email, password } = await request.json();
 
     if (!username || !email || !password) {
-      return json({ error: 'Username, email, and password are required' }, { status: 400 });
+      return json(
+        { error: "Username, email, and password are required" },
+        { status: 400 },
+      );
     }
 
     if (password.length < 6) {
-      return json({ error: 'Password must be at least 6 characters long' }, { status: 400 });
+      return json(
+        { error: "Password must be at least 6 characters long" },
+        { status: 400 },
+      );
     }
 
     // Check if user already exists
     const existingUser = await getDB(username);
     if (existingUser) {
-      return json({ error: 'Username already exists' }, { status: 409 });
+      return json({ error: "Username already exists" }, { status: 409 });
     }
 
     // Create new user
@@ -26,7 +32,7 @@ export async function POST({ request }) {
       username,
       email,
       password,
-      chats: {}
+      chats: {},
     };
 
     // Save user to database
@@ -35,19 +41,22 @@ export async function POST({ request }) {
     // Generate JWT token
     const token = generateToken({
       username: newUser.username,
-      email: newUser.email
+      email: newUser.email,
     });
 
     // Return user data and token (without password)
-    return json({
-      user: {
-        username: newUser.username,
-        email: newUser.email
+    return json(
+      {
+        user: {
+          username: newUser.username,
+          email: newUser.email,
+        },
+        token,
       },
-      token
-    }, { status: 201 });
+      { status: 201 },
+    );
   } catch (error) {
-    console.error('Signup error:', error);
-    return json({ error: 'Signup failed' }, { status: 500 });
+    console.error("Signup error:", error);
+    return json({ error: "Signup failed" }, { status: 500 });
   }
-} 
+}

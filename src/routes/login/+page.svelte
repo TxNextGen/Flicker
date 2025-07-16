@@ -1,48 +1,48 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
 
-  let username = '';
-  let password = '';
-  let error = '';
+  let username = "";
+  let password = "";
+  let error = "";
   let loading = false;
 
   async function handleLogin() {
     if (!username.trim() || !password.trim()) {
-      error = 'Please fill in all fields';
+      error = "Please fill in all fields";
       return;
     }
 
     loading = true;
-    error = '';
+    error = "";
 
     try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        error = data.error || 'Login failed';
+        error = data.error || "Login failed";
         return;
       }
 
       // Store user data and token in localStorage
-      localStorage.setItem('flicker_user', JSON.stringify(data.user));
-      localStorage.setItem('flicker_token', data.token);
+      localStorage.setItem("flicker_user", JSON.stringify(data.user));
+      localStorage.setItem("flicker_token", data.token);
       document.location = "/";
     } catch (e) {
-      error = 'Login failed. Please try again.';
-      console.error('Login error:', e);
+      error = "Login failed. Please try again.";
+      console.error("Login error:", e);
     } finally {
       loading = false;
     }
   }
 
   function handleKey(e: KeyboardEvent) {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       handleLogin();
     }
   }
@@ -58,7 +58,10 @@
 
       <form class="space-y-6" on:submit|preventDefault={handleLogin}>
         <div>
-          <label for="username" class="block text-sm font-medium text-gray-300 mb-2">
+          <label
+            for="username"
+            class="block text-sm font-medium text-gray-300 mb-2"
+          >
             Username or Email
           </label>
           <input
@@ -73,7 +76,10 @@
         </div>
 
         <div>
-          <label for="password" class="block text-sm font-medium text-gray-300 mb-2">
+          <label
+            for="password"
+            class="block text-sm font-medium text-gray-300 mb-2"
+          >
             Password
           </label>
           <input
@@ -96,13 +102,13 @@
           class="w-full bg-[#4f46e5] text-white font-semibold py-3 px-4 rounded-md hover:bg-[#4338ca] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           disabled={loading}
         >
-          {loading ? 'Signing in...' : 'Sign In'}
+          {loading ? "Signing in..." : "Sign In"}
         </button>
       </form>
 
       <div class="text-center mt-6">
         <p class="text-gray-400 text-sm">
-          Don't have an account? 
+          Don't have an account?
           <a href="/signup" class="text-[#846DCF] hover:underline">Sign up</a>
         </p>
       </div>

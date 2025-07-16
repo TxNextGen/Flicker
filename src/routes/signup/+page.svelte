@@ -1,60 +1,65 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
 
-  let username = '';
-  let email = '';
-  let password = '';
-  let confirmPassword = '';
-  let error = '';
+  let username = "";
+  let email = "";
+  let password = "";
+  let confirmPassword = "";
+  let error = "";
   let loading = false;
 
   async function handleSignup() {
-    if (!username.trim() || !email.trim() || !password.trim() || !confirmPassword.trim()) {
-      error = 'Please fill in all fields';
+    if (
+      !username.trim() ||
+      !email.trim() ||
+      !password.trim() ||
+      !confirmPassword.trim()
+    ) {
+      error = "Please fill in all fields";
       return;
     }
 
     if (password !== confirmPassword) {
-      error = 'Passwords do not match';
+      error = "Passwords do not match";
       return;
     }
 
     if (password.length < 6) {
-      error = 'Password must be at least 6 characters long';
+      error = "Password must be at least 6 characters long";
       return;
     }
 
     loading = true;
-    error = '';
+    error = "";
 
     try {
-      const response = await fetch('/api/auth/signup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, email, password })
+      const response = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, email, password }),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        error = data.error || 'Signup failed';
+        error = data.error || "Signup failed";
         return;
       }
 
       // Store user data and token in localStorage
-      localStorage.setItem('flicker_user', JSON.stringify(data.user));
-      localStorage.setItem('flicker_token', data.token);
+      localStorage.setItem("flicker_user", JSON.stringify(data.user));
+      localStorage.setItem("flicker_token", data.token);
       document.location = "/";
     } catch (e) {
-      error = 'Signup failed. Please try again.';
-      console.error('Signup error:', e);
+      error = "Signup failed. Please try again.";
+      console.error("Signup error:", e);
     } finally {
       loading = false;
     }
   }
 
   function handleKey(e: KeyboardEvent) {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       handleSignup();
     }
   }
@@ -70,7 +75,10 @@
 
       <form class="space-y-6" on:submit|preventDefault={handleSignup}>
         <div>
-          <label for="username" class="block text-sm font-medium text-gray-300 mb-2">
+          <label
+            for="username"
+            class="block text-sm font-medium text-gray-300 mb-2"
+          >
             Username
           </label>
           <input
@@ -85,7 +93,10 @@
         </div>
 
         <div>
-          <label for="email" class="block text-sm font-medium text-gray-300 mb-2">
+          <label
+            for="email"
+            class="block text-sm font-medium text-gray-300 mb-2"
+          >
             Email
           </label>
           <input
@@ -100,7 +111,10 @@
         </div>
 
         <div>
-          <label for="password" class="block text-sm font-medium text-gray-300 mb-2">
+          <label
+            for="password"
+            class="block text-sm font-medium text-gray-300 mb-2"
+          >
             Password
           </label>
           <input
@@ -115,7 +129,10 @@
         </div>
 
         <div>
-          <label for="confirmPassword" class="block text-sm font-medium text-gray-300 mb-2">
+          <label
+            for="confirmPassword"
+            class="block text-sm font-medium text-gray-300 mb-2"
+          >
             Confirm Password
           </label>
           <input
@@ -138,13 +155,13 @@
           class="w-full bg-[#4f46e5] text-white font-semibold py-3 px-4 rounded-md hover:bg-[#4338ca] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           disabled={loading}
         >
-          {loading ? 'Creating account...' : 'Create Account'}
+          {loading ? "Creating account..." : "Create Account"}
         </button>
       </form>
 
       <div class="text-center mt-6">
         <p class="text-gray-400 text-sm">
-          Already have an account? 
+          Already have an account?
           <a href="/login" class="text-[#846DCF] hover:underline">Sign in</a>
         </p>
       </div>
