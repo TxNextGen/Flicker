@@ -39,6 +39,29 @@
   let viewingOptimizedUrl = "";
   let imageUploadConfirmation = false;
 
+  let examplePrompts = [
+    {
+      title: "Write a story",
+      icon: "📝",
+      prompt: "Write a short story about a robot learning to paint"
+    },
+    {
+      title: "Explain something",
+      icon: "🤔",
+      prompt: "Explain quantum computing in simple terms"
+    },
+    {
+      title: "Help with code",
+      icon: "💻",
+      prompt: "Help me debug this JavaScript function"
+    },
+    {
+      title: "Creative writing",
+      icon: "✨",
+      prompt: "Write a poem about the ocean"
+    }
+  ];
+
   onMount(() => {
     checkAuth();
     loadChatFromURL();
@@ -495,6 +518,15 @@
     imageUploadConfirmation = false;
   }
 
+  function fillWithExample(prompt: string) {
+    input = prompt;
+    // Focus the textarea
+    const textarea = document.querySelector('textarea');
+    if (textarea) {
+      textarea.focus();
+    }
+  }
+
   // Helper to determine if the last message is an assistant
   function shouldHideLastAssistant() {
     return streaming && messages.length > 1 && messages[messages.length-1]?.role === 'assistant';
@@ -509,9 +541,26 @@
   >
     {#if messages.length === 1}
       <div class="flex flex-1 items-center justify-center h-full">
-        <div class="text-gray-500 text-lg text-center select-none opacity-70">
-          Welcome to Flicker AI.<br />
-          Ask anything, and it will do it's best to help!
+        <div class="text-center max-w-4xl px-8">
+          <h1 class="text-4xl font-bold text-gray-100 mb-4">Welcome to Flicker AI</h1>
+          <p class="text-gray-400 text-xl mb-8">Ask anything, and I'll do my best to help!</p>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            {#each examplePrompts as example}
+              <button
+                class="flex items-center gap-4 bg-[#1e293b] hover:bg-[#334155] rounded-lg border border-gray-700 transition-colors text-left p-6 w-full"
+                on:click={() => fillWithExample(example.prompt)}
+              >
+                <span class="text-3xl">{example.icon}</span>
+                <div class="flex-1">
+                  <div class="text-gray-100 font-medium text-lg mb-1">{example.title}</div>
+                  <div class="text-gray-400 text-sm">{example.prompt}</div>
+                </div>
+              </button>
+            {/each}
+          </div>
+
+          <p class="text-gray-500 text-sm">Or start typing your own message below</p>
         </div>
       </div>
     {:else}
