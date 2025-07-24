@@ -42,26 +42,42 @@
   let examplePrompts = [
     {
       title: "Write a story",
-      icon: "📝",
+      icon: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <polyline points="14,2 14,8 20,8"/>
+        <line x1="16" y1="13" x2="8" y2="13"/>
+        <line x1="16" y1="17" x2="8" y2="17"/>
+        <polyline points="10,9 9,9 8,9"/>
+      </svg>`,
       prompt: "Write a short story about a robot learning to paint"
     },
     {
       title: "Explain something",
-      icon: "🤔",
+      icon: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8">
+        <circle cx="12" cy="12" r="10"/>
+        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+        <path d="m12 17 .01 0"/>
+      </svg>`,
       prompt: "Explain quantum computing in simple terms"
     },
     {
       title: "Help with code",
-      icon: "💻",
+      icon: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8">
+        <polyline points="16 18 22 12 16 6"/>
+        <polyline points="8 6 2 12 8 18"/>
+      </svg>`,
       prompt: "Help me debug this JavaScript function"
     },
     {
       title: "Creative writing",
-      icon: "✨",
+      icon: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8">
+        <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+        <path d="m15 5 4 4"/>
+      </svg>`,
       prompt: "Write a poem about the ocean"
     }
   ];
-
+  
   onMount(() => {
     checkAuth();
     loadChatFromURL();
@@ -533,6 +549,10 @@
   }
 </script>
 
+<svelte:head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</svelte:head>
+
 <div
   class="flex flex-col items-center justify-center relative h-full overflow-hidden"
 >
@@ -542,25 +562,32 @@
     {#if messages.length === 1}
       <div class="flex flex-1 items-center justify-center h-full">
         <div class="text-center max-w-4xl px-8">
-          <h1 class="text-4xl font-bold text-gray-100 mb-4">Welcome to Flicker AI</h1>
-          <p class="text-gray-400 text-xl mb-8">Ask anything, and I'll do my best to help!</p>
+          <h1 class="text-4xl font-bold text-white mb-4">Welcome to Flicker AI</h1>
+          <p class="text-white text-xl mb-8">Ask anything, and I'll do my best to help!</p>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             {#each examplePrompts as example}
               <button
-                class="flex items-center gap-4 bg-[#1e293b] hover:bg-[#334155] rounded-lg border border-gray-700 transition-colors text-left p-6 w-full"
+                class="example-card flex items-center gap-4 bg-[e6e6ff] hover:bg-[d1d1ff] rounded-xl border border-gray-300 hover:border-gray-400 transition-all duration-300 ease-out text-left p-6 w-full group transform hover:scale-[1.02] hover:shadow-2xl hover:shadow-blue-500/20"
                 on:click={() => fillWithExample(example.prompt)}
               >
-                <span class="text-3xl">{example.icon}</span>
+                <div class="text-white group-hover:text-gray-100 transition-colors duration-300 transform group-hover:scale-110">
+                  {@html example.icon}
+                </div>
                 <div class="flex-1">
-                  <div class="text-gray-100 font-medium text-lg mb-1">{example.title}</div>
-                  <div class="text-gray-400 text-sm">{example.prompt}</div>
+                  <div class="text-white font-semibold text-lg mb-2 group-hover:text-gray-100 transition-colors duration-300">{example.title}</div>
+                  <div class="text-white text-sm group-hover:text-gray-200 transition-colors duration-300">{example.prompt}</div>
+                </div>
+                <div class="text-white group-hover:text-gray-200 transition-all duration-300 transform group-hover:translate-x-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" fill="currentColor" class="w-4 h-4">
+                    <path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/>
+                  </svg>
                 </div>
               </button>
             {/each}
           </div>
 
-          <p class="text-gray-500 text-sm">Or start typing your own message below</p>
+          <p class="text-white text-sm">Or start typing your own message below</p>
         </div>
       </div>
     {:else}
@@ -667,19 +694,23 @@
         <label class="cursor-pointer flex items-center">
           <input type="file" accept="image/png,image/jpeg,image/webp" class="hidden" on:change={handleImageUpload} />
           <span title="Attach Image" class="hover:bg-[#4338ca] rounded-md p-2 transition-colors">
-            <!-- Paperclip SVG icon with white stroke -->
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#fff" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79V17a5 5 0 01-5 5h-4a5 5 0 01-5-5V7a5 5 0 015-5h4a5 5 0 015 5v7a3 3 0 01-3 3h-4a3 3 0 01-3-3V7" />
-            </svg>
+           <!-- Lucide Paperclip SVG icon -->
+     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5">
+       <path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/>
+        </svg>
           </span>
         </label>
         <button
-          type="submit"
-          class="w-full bg-[#4f46e5] text-white font-semibold py-3 px-4 rounded-md hover:bg-[#4338ca] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          disabled={streaming || uploading || (imageAttached ? !input.trim() : !input.trim())}
-        >
-          Send
-        </button>
+  type="submit"
+  class="bg-[#4f46e5] text-white font-semibold p-2 rounded-md hover:bg-[#4338ca] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+  disabled={streaming || uploading || (imageAttached ? !input.trim() : !input.trim())}
+>
+  <!-- Lucide Arrow Up SVG icon -->
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5">
+    <path d="m5 12 7-7 7 7"/>
+    <path d="M12 19V5"/>
+  </svg>
+</button>
       </div>
     </form>
   </div>
@@ -701,5 +732,37 @@
 
   :global(html) {
     overflow: hidden;
+  }
+
+  .example-card {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .example-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    transition: left 0.6s ease-in-out;
+  }
+
+  .example-card:hover::before {
+    left: 100%;
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% { 
+      box-shadow: 0 0 20px rgba(74, 0, 211, 0.582);
+    }
+    50% { 
+      box-shadow: 0 0 30px rgba(94, 0, 218, 0.2);
+    }
+  }
+
+  .example-card:hover {
+    animation: pulse-glow 2s infinite;
   }
 </style>

@@ -160,6 +160,10 @@
   checkAuth();
 </script>
 
+<svelte:head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</svelte:head>
+
 <div class="flex min-h-screen bg-[#0f0f23]">
   <!-- Sidebar -->
   <aside
@@ -207,47 +211,49 @@
       </button>
     </div>
 
-    <!-- New Chat Button -->
-    {#if !sidebarCollapsed}
-      <button
-        class="w-full bg-transparent border border-[#4a5568] text-gray-200 font-medium py-3 px-4 rounded-lg hover:bg-[#1e1e3a] transition-colors mb-6 flex items-center justify-center gap-2"
-        on:click={() => triggerChatAction("new")}
-      >
-        <svg
-          class="w-4 h-4"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
+    <!-- New Chat Button - Only show when user is logged in -->
+    {#if currentUser && !loading}
+      {#if !sidebarCollapsed}
+        <button
+          class="w-full bg-transparent border border-[#4a5568] text-gray-200 font-medium py-3 px-4 rounded-lg hover:bg-[#1e1e3a] transition-colors mb-6 flex items-center justify-center gap-2"
+          on:click={() => triggerChatAction("new")}
         >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M12 4v16m8-8H4"
-          ></path>
-        </svg>
-        New Chat
-      </button>
-    {:else}
-      <button
-        class="w-full bg-transparent border border-[#4a5568] text-gray-200 font-medium p-3 rounded-lg hover:bg-[#1e1e3a] transition-colors mb-6 flex items-center justify-center"
-        on:click={() => triggerChatAction("new")}
-        title="New Chat"
-      >
-        <svg
-          class="w-4 h-4"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
+          <svg
+            class="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 4v16m8-8H4"
+            ></path>
+          </svg>
+          New Chat
+        </button>
+      {:else}
+        <button
+          class="w-full bg-transparent border border-[#4a5568] text-gray-200 font-medium p-3 rounded-lg hover:bg-[#1e1e3a] transition-colors mb-6 flex items-center justify-center"
+          on:click={() => triggerChatAction("new")}
+          title="New Chat"
         >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M12 4v16m8-8H4"
-          ></path>
-        </svg>
-      </button>
+          <svg
+            class="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 4v16m8-8H4"
+            ></path>
+          </svg>
+        </button>
+      {/if}
     {/if}
 
     <!-- Chat List -->
@@ -312,7 +318,7 @@
           {:else}
             <p class="text-gray-500 text-sm text-center py-4">No chats yet</p>
           {/if}
-        {:else}
+        {:else if !loading}
           <div class="text-center py-8">
             <p class="text-gray-500 text-sm mb-4">Sign in to save chats</p>
           </div>
@@ -404,7 +410,7 @@
               ></path>
             </svg>
           </button>
-        {:else}
+        {:else if !loading}
           <button
             class="w-10 h-10 bg-[#4f46e5] text-white rounded-full flex items-center justify-center hover:bg-[#4338ca] transition-colors"
             on:click={() => goto("/login")}
