@@ -551,6 +551,9 @@
 
 <svelte:head>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 </svelte:head>
 
 <div
@@ -562,7 +565,11 @@
     {#if messages.length === 1}
       <div class="flex flex-1 items-center justify-center h-full">
         <div class="text-center max-w-4xl px-8">
-          <h1 class="text-4xl font-bold text-white mb-4">Welcome to Flicker AI</h1>
+<h1 class="text-4xl font-bold text-white mb-4 flex items-center justify-center gap-2">
+ Welcome to 
+ <img src="/logo.webp" alt="Flicker Logo" class="text-4xl inline-block" style="height: 1em; width: auto;" />
+ <span class="-ml-2">licker AI</span>
+</h1>
           <p class="text-white text-xl mb-8">Ask anything, and I'll do my best to help!</p>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
@@ -723,15 +730,21 @@
 
 <style>
   main {
-    font-family: "Inter", system-ui, sans-serif;
+    font-family: "Raleway", sans-serif;
   }
 
   :global(body) {
+    font-family: "Raleway", sans-serif;
     overflow: hidden;
   }
 
   :global(html) {
+    font-family: "Raleway", sans-serif;
     overflow: hidden;
+  }
+
+  :global(*) {
+    font-family: "Raleway", sans-serif;
   }
 
   .example-card {

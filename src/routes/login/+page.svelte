@@ -1,6 +1,6 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
-
+  
   let username = "";
   let password = "";
   let error = "";
@@ -45,6 +45,10 @@
     if (e.key === "Enter") {
       handleLogin();
     }
+  }
+
+  function handleBack() {
+    goto("/");
   }
 </script>
 
@@ -111,6 +115,16 @@
           Don't have an account?
           <a href="/signup" class="text-[#846DCF] hover:underline">Sign up</a>
         </p>
+      </div>
+
+      <!-- Back Button -->
+      <div class="text-center mt-4">
+        <button
+          on:click={handleBack}
+          class="text-gray-400 hover:text-gray-300 text-sm transition-colors"
+        >
+          ← Go Back
+        </button>
       </div>
     </div>
   </div>

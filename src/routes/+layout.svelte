@@ -1,6 +1,7 @@
 <script lang="ts">
   import "../app.css";
   import { goto } from "$app/navigation";
+  import { page } from "$app/stores";
   import {
     chatStore,
     triggerChatRefresh,
@@ -22,8 +23,15 @@
   let userChats: { [key: string]: Chat } = {};
   let loading = true;
   let sidebarCollapsed = false;
+  
 
-  // Load sidebar state from localStorage
+  let showDeletePopup = false;
+  let showRenamePopup = false;
+  let chatToDelete = "";
+  let chatToRename = "";
+  let newChatName = "";
+
+
   onMount(() => {
     const savedState = localStorage.getItem("flicker_sidebar_collapsed");
     if (savedState) {
@@ -79,8 +87,34 @@
     }
   }
 
-  async function deleteChat(chatName: string) {
-    if (!currentUser) return;
+  
+  function getCurrentChatName(): string {
+    if (typeof window !== 'undefined') {
+      const urlParts = window.location.pathname.split('/');
+      if (urlParts[1] === 'chat' && urlParts[2]) {
+        return decodeURIComponent(urlParts[2]);
+      }
+    }
+    return '';
+  }
+
+
+  function isCurrentlyInChat(): boolean {
+    if (typeof window !== 'undefined') {
+      return window.location.pathname.startsWith('/chat/');
+    }
+    return false;
+  }
+
+
+  function showDeleteConfirmation(chatName: string) {
+    chatToDelete = chatName;
+    showDeletePopup = true;
+  }
+
+
+  async function confirmDelete() {
+    if (!currentUser || !chatToDelete) return;
 
     const token = localStorage.getItem("flicker_token");
     if (!token) return;
@@ -92,28 +126,40 @@
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ action: "delete", chatName }),
+        body: JSON.stringify({ action: "delete", chatName: chatToDelete }),
       });
 
       if (response.ok) {
-        const data = await response.json();
-        userChats = data.chats;
-        triggerChatRefresh();
+      
+        window.location.reload();
       }
     } catch (e) {
       console.error("Failed to delete chat:", e);
     }
+    
+    showDeletePopup = false;
+    chatToDelete = "";
   }
 
-  function editChatName(chatName: string) {
-    const newName = prompt("Enter new chat name:", chatName);
-    if (newName && newName !== chatName) {
-      renameChat(chatName, newName);
+ 
+  function cancelDelete() {
+    showDeletePopup = false;
+    chatToDelete = "";
+  }
+
+
+  function showRenameDialog(chatName: string) {
+    chatToRename = chatName;
+    newChatName = chatName;
+    showRenamePopup = true;
+  }
+
+
+  async function confirmRename() {
+    if (!currentUser || !chatToRename || !newChatName || newChatName === chatToRename) {
+      cancelRename();
+      return;
     }
-  }
-
-  async function renameChat(oldName: string, newName: string) {
-    if (!currentUser) return;
 
     const token = localStorage.getItem("flicker_token");
     if (!token) return;
@@ -125,7 +171,7 @@
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ action: "rename", chatName: oldName, newName }),
+        body: JSON.stringify({ action: "rename", chatName: chatToRename, newName: newChatName }),
       });
 
       if (response.ok) {
@@ -135,6 +181,20 @@
     } catch (e) {
       console.error("Failed to rename chat:", e);
     }
+    
+    cancelRename();
+  }
+
+  
+  function cancelRename() {
+    showRenamePopup = false;
+    chatToRename = "";
+    newChatName = "";
+  }
+
+  
+  function handleNewChat() {
+    triggerChatAction("new");
   }
 
   async function logout() {
@@ -144,7 +204,7 @@
     document.location = "/";
   }
 
-  // Subscribe to chat store for refresh
+
   chatStore.subscribe((store) => {
     if (store.refreshChats && currentUser) {
       loadUserChats();
@@ -165,7 +225,61 @@
 </svelte:head>
 
 <div class="flex min-h-screen bg-[#0f0f23]">
-  <!-- Sidebar -->
+ 
+  {#if showDeletePopup}
+    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-[#1e1e3a] border border-[#4a5568] rounded-lg p-6 max-w-md w-full mx-4">
+        <h3 class="text-white text-lg font-semibold mb-4">Delete Chat</h3>
+        <p class="text-gray-300 mb-6">Are you sure you want to delete "{chatToDelete}"? This action cannot be undone.</p>
+        <div class="flex justify-end space-x-3">
+          <button
+            class="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition-colors"
+            on:click={cancelDelete}
+          >
+            Cancel
+          </button>
+          <button
+            class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+            on:click={confirmDelete}
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  {/if}
+
+ 
+  {#if showRenamePopup}
+    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-[#1e1e3a] border border-[#4a5568] rounded-lg p-6 max-w-md w-full mx-4">
+        <h3 class="text-white text-lg font-semibold mb-4">Rename Chat</h3>
+        <input
+          type="text"
+          bind:value={newChatName}
+          class="w-full px-3 py-2 bg-[#0f0f23] border border-[#4a5568] rounded text-white focus:outline-none focus:border-[#846DCF] mb-6"
+          placeholder="Enter new chat name"
+          on:keydown={(e) => e.key === 'Enter' && confirmRename()}
+        />
+        <div class="flex justify-end space-x-3">
+          <button
+            class="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition-colors"
+            on:click={cancelRename}
+          >
+            Cancel
+          </button>
+          <button
+            class="px-4 py-2 bg-[#846DCF] text-white rounded hover:bg-[#6b5bb3] transition-colors"
+            on:click={confirmRename}
+          >
+            Rename
+          </button>
+        </div>
+      </div>
+    </div>
+  {/if}
+
+ 
   <aside
     class="bg-[#0f0f23] border-r border-[#1e1e3a] flex flex-col py-4 px-3 transition-all duration-300 ease-in-out {sidebarCollapsed
       ? 'w-16'
@@ -174,11 +288,15 @@
     <div class="flex items-center justify-between w-full mb-6">
       <div class="flex items-center {sidebarCollapsed ? 'justify-center' : ''}">
         <h1
-          class="text-xl font-semibold text-white {sidebarCollapsed
+          class="text-2xl font-semibold text-white flex items-center {sidebarCollapsed
             ? 'hidden'
             : ''}"
         >
-          Flicker
+          <img 
+            src="/logo.webp" 
+            alt="Logo" 
+            class="inline-block w-[1.5rem] h-[1.5rem] mr-0"
+          />licker
         </h1>
       </div>
       <button
@@ -211,12 +329,12 @@
       </button>
     </div>
 
-    <!-- New Chat Button - Only show when user is logged in -->
+  
     {#if currentUser && !loading}
       {#if !sidebarCollapsed}
         <button
           class="w-full bg-transparent border border-[#4a5568] text-gray-200 font-medium py-3 px-4 rounded-lg hover:bg-[#1e1e3a] transition-colors mb-6 flex items-center justify-center gap-2"
-          on:click={() => triggerChatAction("new")}
+          on:click={handleNewChat}
         >
           <svg
             class="w-4 h-4"
@@ -236,7 +354,7 @@
       {:else}
         <button
           class="w-full bg-transparent border border-[#4a5568] text-gray-200 font-medium p-3 rounded-lg hover:bg-[#1e1e3a] transition-colors mb-6 flex items-center justify-center"
-          on:click={() => triggerChatAction("new")}
+          on:click={handleNewChat}
           title="New Chat"
         >
           <svg
@@ -275,7 +393,7 @@
                   >
                     <button
                       class="text-gray-400 hover:text-blue-400 text-xs p-2"
-                      on:click|stopPropagation={() => editChatName(chatName)}
+                      on:click|stopPropagation={() => showRenameDialog(chatName)}
                       title="Rename"
                     >
                       <svg
@@ -294,7 +412,7 @@
                     </button>
                     <button
                       class="text-gray-400 hover:text-red-400 text-xs p-2"
-                      on:click|stopPropagation={() => deleteChat(chatName)}
+                      on:click|stopPropagation={() => showDeleteConfirmation(chatName)}
                       title="Delete"
                     >
                       <svg
@@ -326,7 +444,7 @@
       </div>
     {/if}
 
-    <!-- Account buttons at bottom -->
+
     {#if !sidebarCollapsed}
       <div class="mt-auto pt-4 border-t border-[#1e1e3a]">
         {#if loading}
@@ -367,7 +485,7 @@
         {/if}
       </div>
     {:else}
-      <!-- Collapsed sidebar account section -->
+
       <div
         class="mt-auto pt-4 border-t border-[#1e1e3a] flex flex-col items-center space-y-2"
       >
@@ -435,7 +553,7 @@
     {/if}
   </aside>
 
-  <!-- Main Content Area -->
+
   <main class="flex-1 bg-[#0f0f23]">
     <slot />
   </main>
