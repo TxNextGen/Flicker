@@ -130,7 +130,6 @@
       });
 
       if (response.ok) {
-      
         window.location.reload();
       }
     } catch (e) {
@@ -224,22 +223,22 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 </svelte:head>
 
-<div class="flex min-h-screen bg-[#0f0f23]">
- 
+<div class="flex min-h-screen bg-gradient-to-br from-gray-900 via-purple-950 to-violet-950">
+  <!-- Delete Confirmation Modal -->
   {#if showDeletePopup}
-    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div class="bg-[#1e1e3a] border border-[#4a5568] rounded-lg p-6 max-w-md w-full mx-4">
-        <h3 class="text-white text-lg font-semibold mb-4">Delete Chat</h3>
-        <p class="text-gray-300 mb-6">Are you sure you want to delete "{chatToDelete}"? This action cannot be undone.</p>
+    <div class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
+              <div class="bg-gradient-to-br from-gray-800/90 to-purple-950/90 backdrop-blur-md border border-purple-500/30 rounded-xl p-6 max-w-md w-full mx-4 shadow-2xl">
+        <h3 class="text-white text-xl font-semibold mb-4">Delete Chat</h3>
+        <p class="text-gray-300 mb-6">Are you sure you want to delete <span class="text-purple-300 font-medium">"{chatToDelete}"</span>? This action cannot be undone.</p>
         <div class="flex justify-end space-x-3">
           <button
-            class="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition-colors"
+            class="px-6 py-2 bg-gray-600/80 text-white rounded-lg hover:bg-gray-500/80 transition-all duration-200 backdrop-blur-sm"
             on:click={cancelDelete}
           >
             Cancel
           </button>
           <button
-            class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+            class="px-6 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg hover:from-red-600 hover:to-red-700 transition-all duration-200 shadow-lg"
             on:click={confirmDelete}
           >
             Delete
@@ -249,27 +248,27 @@
     </div>
   {/if}
 
- 
+  <!-- Rename Modal -->
   {#if showRenamePopup}
-    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div class="bg-[#1e1e3a] border border-[#4a5568] rounded-lg p-6 max-w-md w-full mx-4">
-        <h3 class="text-white text-lg font-semibold mb-4">Rename Chat</h3>
+    <div class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
+      <div class="bg-gradient-to-br from-gray-800/90 to-purple-950/90 backdrop-blur-md border border-purple-500/30 rounded-xl p-6 max-w-md w-full mx-4 shadow-2xl">
+        <h3 class="text-white text-xl font-semibold mb-4">Rename Chat</h3>
         <input
           type="text"
           bind:value={newChatName}
-          class="w-full px-3 py-2 bg-[#0f0f23] border border-[#4a5568] rounded text-white focus:outline-none focus:border-[#846DCF] mb-6"
+          class="w-full px-4 py-3 bg-gray-900/50 border border-purple-500/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-400/60 focus:ring-2 focus:ring-purple-400/20 transition-all duration-200 backdrop-blur-sm mb-6"
           placeholder="Enter new chat name"
           on:keydown={(e) => e.key === 'Enter' && confirmRename()}
         />
         <div class="flex justify-end space-x-3">
           <button
-            class="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition-colors"
+            class="px-6 py-2 bg-gray-600/80 text-white rounded-lg hover:bg-gray-500/80 transition-all duration-200 backdrop-blur-sm"
             on:click={cancelRename}
           >
             Cancel
           </button>
           <button
-            class="px-4 py-2 bg-[#846DCF] text-white rounded hover:bg-[#6b5bb3] transition-colors"
+            class="px-6 py-2 bg-gradient-to-r from-purple-500 to-violet-600 text-white rounded-lg hover:from-purple-600 hover:to-violet-700 transition-all duration-200 shadow-lg"
             on:click={confirmRename}
           >
             Rename
@@ -279,33 +278,34 @@
     </div>
   {/if}
 
- 
+  <!-- Sidebar -->
   <aside
-    class="bg-[#0f0f23] border-r border-[#1e1e3a] flex flex-col py-4 px-3 transition-all duration-300 ease-in-out {sidebarCollapsed
-      ? 'w-16'
+    class="bg-gradient-to-b from-gray-900/95 to-purple-950/95 backdrop-blur-md border-r border-purple-500/20 flex flex-col py-6 px-4 transition-all duration-300 ease-in-out shadow-2xl {sidebarCollapsed
+      ? 'w-18'
       : 'w-80'}"
   >
-    <div class="flex items-center justify-between w-full mb-6">
+    <!-- Header -->
+    <div class="flex items-center justify-between w-full mb-8">
       <div class="flex items-center {sidebarCollapsed ? 'justify-center' : ''}">
         <h1
-          class="text-2xl font-semibold text-white flex items-center {sidebarCollapsed
+          class="text-2xl  font-bold bg-gradient-to-r from-purple-400 to-violet-300 bg-clip-text text-transparent flex items-center {sidebarCollapsed
             ? 'hidden'
             : ''}"
         >
           <img 
             src="/logo.webp" 
             alt="Logo" 
-            class="inline-block w-[1.5rem] h-[1.5rem] mr-0"
+            class="inline-block w-7 h-7 ml-3 -mt-1  drop-shadow-lg"
           />licker
         </h1>
       </div>
       <button
-        class="text-gray-400 hover:text-white transition-colors w-10 h-10 rounded-md hover:bg-[#1e1e3a] flex items-center justify-center"
+        class="text-gray-400 hover:text-purple-300 transition-all duration-200 w-10 h-10 rounded-lg hover:bg-purple-500/20 flex items-center justify-center backdrop-blur-sm"
         on:click={toggleSidebar}
         title="{sidebarCollapsed ? 'Expand' : 'Collapse'} sidebar"
       >
         <svg
-          class="w-5 h-5"
+          class="w-5 h-5 transition-transform duration-200"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -329,11 +329,11 @@
       </button>
     </div>
 
-  
+    <!-- New Chat Button -->
     {#if currentUser && !loading}
       {#if !sidebarCollapsed}
         <button
-          class="w-full bg-transparent border border-[#4a5568] text-gray-200 font-medium py-3 px-4 rounded-lg hover:bg-[#1e1e3a] transition-colors mb-6 flex items-center justify-center gap-2"
+          class="w-full bg-gradient-to-r from-purple-500/20 to-violet-500/20 border border-purple-500/30 text-gray-200 font-medium py-3 px-4 rounded-xl hover:from-purple-500/30 hover:to-violet-500/30 hover:border-purple-400/50 transition-all duration-200 mb-6 flex items-center justify-center gap-2 backdrop-blur-sm shadow-lg"
           on:click={handleNewChat}
         >
           <svg
@@ -353,7 +353,7 @@
         </button>
       {:else}
         <button
-          class="w-full bg-transparent border border-[#4a5568] text-gray-200 font-medium p-3 rounded-lg hover:bg-[#1e1e3a] transition-colors mb-6 flex items-center justify-center"
+          class="w-full bg-gradient-to-r from-purple-500/20 to-violet-500/20 border border-purple-500/30 text-gray-200 font-medium p-3 rounded-xl hover:from-purple-500/30 hover:to-violet-500/30 hover:border-purple-400/50 transition-all duration-200 mb-6 flex items-center justify-center backdrop-blur-sm shadow-lg"
           on:click={handleNewChat}
           title="New Chat"
         >
@@ -376,28 +376,28 @@
 
     <!-- Chat List -->
     {#if !sidebarCollapsed}
-      <div class="flex-1 overflow-y-auto">
+      <div class="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-purple-500/30 scrollbar-track-transparent">
         {#if currentUser}
           {#if userChats && Object.keys(userChats).length > 0}
-            <div class="space-y-1">
+            <div class="space-y-2">
               {#each Object.entries(userChats) as [chatName, chat]}
                 <div class="group relative">
                   <button
-                    class="w-full text-left px-3 py-4 rounded-md text-sm text-gray-300 hover:bg-[#1e1e3a] transition-colors truncate"
+                    class="w-full text-left px-4 py-3 rounded-lg text-sm text-gray-300 hover:bg-purple-500/20 hover:text-purple-200 transition-all duration-200 truncate backdrop-blur-sm border border-transparent hover:border-purple-500/30"
                     on:click={() => triggerChatAction("load", chatName)}
                   >
                     {chatName}
                   </button>
                   <div
-                    class="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1"
+                    class="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-all duration-200 flex gap-1"
                   >
                     <button
-                      class="text-gray-400 hover:text-blue-400 text-xs p-2"
+                      class="text-gray-400 hover:text-purple-300 p-2 rounded-md hover:bg-purple-500/20 transition-all duration-200"
                       on:click|stopPropagation={() => showRenameDialog(chatName)}
                       title="Rename"
                     >
                       <svg
-                        class="w-5 h-5"
+                        class="w-4 h-4"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -411,12 +411,12 @@
                       </svg>
                     </button>
                     <button
-                      class="text-gray-400 hover:text-red-400 text-xs p-2"
+                      class="text-gray-400 hover:text-red-400 p-2 rounded-md hover:bg-red-500/20 transition-all duration-200"
                       on:click|stopPropagation={() => showDeleteConfirmation(chatName)}
                       title="Delete"
                     >
                       <svg
-                        class="w-5 h-5"
+                        class="w-4 h-4"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -434,49 +434,51 @@
               {/each}
             </div>
           {:else}
-            <p class="text-gray-500 text-sm text-center py-4">No chats yet</p>
+            <p class="text-gray-500 text-sm text-center py-8">No chats yet</p>
           {/if}
         {:else if !loading}
           <div class="text-center py-8">
-            <p class="text-gray-500 text-sm mb-4">Sign in to save chats</p>
+            <p class="text-gray-400 text-sm mb-4">Sign in to save chats</p>
           </div>
         {/if}
       </div>
     {/if}
 
-
+    <!-- User Section -->
     {#if !sidebarCollapsed}
-      <div class="mt-auto pt-4 border-t border-[#1e1e3a]">
+      <div class="mt-auto pt-6 border-t border-purple-500/20">
         {#if loading}
-          <div class="text-gray-400 text-sm text-center py-2">Loading...</div>
-        {:else if currentUser}
-          <div class="text-gray-300 text-sm mb-3 px-2">
-            Welcome, {currentUser.username}
+          <div class="text-gray-400 text-sm text-center py-4">
+            <div class="animate-pulse">Loading...</div>
           </div>
-          <div class="space-y-2">
+        {:else if currentUser}
+          <div class="text-gray-300 text-sm mb-4 px-2 font-medium">
+            Welcome, <span class="text-purple-300">{currentUser.username}</span>
+          </div>
+          <div class="space-y-3">
             <button
-              class="w-full bg-[#4f46e5] text-white font-medium py-2 px-3 rounded-md hover:bg-[#4338ca] transition-colors text-sm"
+              class="w-full bg-gradient-to-r from-purple-500 to-violet-600 text-white font-medium py-3 px-4 rounded-lg hover:from-purple-600 hover:to-violet-700 transition-all duration-200 text-sm shadow-lg"
               on:click={() => goto("/account")}
             >
               Account
             </button>
             <button
-              class="w-full bg-transparent border border-[#4f46e5] text-[#4f46e5] font-medium py-2 px-3 rounded-md hover:bg-[#4f46e5] hover:text-white transition-colors text-sm"
+              class="w-full bg-transparent border border-purple-500/50 text-purple-300 font-medium py-3 px-4 rounded-lg hover:bg-purple-500/20 hover:border-purple-400/70 transition-all duration-200 text-sm backdrop-blur-sm"
               on:click={logout}
             >
               Logout
             </button>
           </div>
         {:else}
-          <div class="space-y-2">
+          <div class="space-y-3">
             <button
-              class="w-full bg-[#4f46e5] text-white font-medium py-2 px-3 rounded-md hover:bg-[#4338ca] transition-colors text-sm"
+              class="w-full bg-gradient-to-r from-purple-500 to-violet-600 text-white font-medium py-3 px-4 rounded-lg hover:from-purple-600 hover:to-violet-700 transition-all duration-200 text-sm shadow-lg"
               on:click={() => goto("/login")}
             >
               Sign In
             </button>
             <button
-              class="w-full bg-transparent border border-[#4f46e5] text-[#4f46e5] font-medium py-2 px-3 rounded-md hover:bg-[#4f46e5] hover:text-white transition-colors text-sm"
+              class="w-full bg-transparent border border-purple-500/50 text-purple-300 font-medium py-3 px-4 rounded-lg hover:bg-purple-500/20 hover:border-purple-400/70 transition-all duration-200 text-sm backdrop-blur-sm"
               on:click={() => goto("/signup")}
             >
               Sign Up
@@ -485,13 +487,13 @@
         {/if}
       </div>
     {:else}
-
+      <!-- Collapsed User Section -->
       <div
-        class="mt-auto pt-4 border-t border-[#1e1e3a] flex flex-col items-center space-y-2"
+        class="mt-auto pt-4 border-t border-purple-500/20 flex flex-col items-center space-y-3"
       >
         {#if currentUser}
           <button
-            class="w-10 h-10 bg-[#4f46e5] text-white rounded-full flex items-center justify-center hover:bg-[#4338ca] transition-colors"
+            class="w-12 h-12 bg-gradient-to-r from-purple-500 to-violet-600 text-white rounded-full flex items-center justify-center hover:from-purple-600 hover:to-violet-700 transition-all duration-200 shadow-lg"
             on:click={() => goto("/account")}
             title="Account"
           >
@@ -510,7 +512,7 @@
             </svg>
           </button>
           <button
-            class="w-10 h-10 bg-transparent border border-[#4f46e5] text-[#4f46e5] rounded-full flex items-center justify-center hover:bg-[#4f46e5] hover:text-white transition-colors"
+            class="w-12 h-12 bg-transparent border border-purple-500/50 text-purple-300 rounded-full flex items-center justify-center hover:bg-purple-500/20 hover:border-purple-400/70 transition-all duration-200 backdrop-blur-sm"
             on:click={logout}
             title="Logout"
           >
@@ -530,7 +532,7 @@
           </button>
         {:else if !loading}
           <button
-            class="w-10 h-10 bg-[#4f46e5] text-white rounded-full flex items-center justify-center hover:bg-[#4338ca] transition-colors"
+            class="w-12 h-12 bg-gradient-to-r from-purple-500 to-violet-600 text-white rounded-full flex items-center justify-center hover:from-purple-600 hover:to-violet-700 transition-all duration-200 shadow-lg"
             on:click={() => goto("/login")}
             title="Sign In"
           >
@@ -553,8 +555,8 @@
     {/if}
   </aside>
 
-
-  <main class="flex-1 bg-[#0f0f23]">
+  <!-- Main Content -->
+  <main class="flex-1 bg-gradient-to-br from-gray-900/50 via-purple-950/30 to-violet-950/50 backdrop-blur-sm">
     <slot />
   </main>
 </div>
@@ -562,5 +564,36 @@
 <style>
   main {
     font-family: "Inter", system-ui, sans-serif;
+  }
+  
+  /* Custom scrollbar */
+  .scrollbar-thin {
+    scrollbar-width: thin;
+  }
+  
+  .scrollbar-thumb-purple-500\/30::-webkit-scrollbar-thumb {
+    background-color: rgba(168, 85, 247, 0.3);
+    border-radius: 6px;
+  }
+  
+  .scrollbar-track-transparent::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background-color: rgba(168, 85, 247, 0.3);
+    border-radius: 6px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(168, 85, 247, 0.5);
   }
 </style>
