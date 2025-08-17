@@ -34,16 +34,38 @@ export const POST = async ({ request }) => {
       await checkmoderation(API_KEY, messages);
     } catch (moderationError) {
       console.warn("Moderation check failed:", moderationError);
-      // Continue without moderation - don't block the main request
     }
+
+    // Check if any message contains images
+    const hasImages = messages.some(msg => 
+      Array.isArray(msg.content) && 
+      msg.content.some(item => item.type === 'image_url')
+    );
+
+    // Use vision model if images are present
+    const modelToUse = hasImages ? "meta-llama/llama-4-scout-17b-16e-instruct" : "llama3-70b-8192";
 
     // Convert messages to the format expected by the model
     const formattedMessages = messages.map((msg: Message) => {
       if (Array.isArray(msg.content)) {
-        // Multimodal message (text + image)
+        // Multimodal message - ensure proper formatting
+        const formattedContent = msg.content.map(item => {
+          if (item.type === 'image_url') {
+            return {
+              type: 'image_url',
+              image_url: {
+                url: item.image_url?.url,
+                // Add detail parameter if needed
+                detail: "high"
+              }
+            };
+          }
+          return item;
+        });
+        
         return {
           role: msg.role,
-          content: msg.content,
+          content: formattedContent,
         };
       } else {
         // Text-only message
@@ -54,8 +76,11 @@ export const POST = async ({ request }) => {
       }
     });
 
+    console.log("Using model:", modelToUse);
+    console.log("Formatted messages:", JSON.stringify(formattedMessages, null, 2));
+
     const response = await openai.chat.completions.create({
-      model: "llama3-70b-8192",
+      model: modelToUse,
       messages: formattedMessages as any,
       stream: true,
       max_tokens: 4096,
@@ -136,7 +161,7 @@ export const POST = async ({ request }) => {
         errorMessage = "Rate limit exceeded";
       } else if (error.message.includes("400")) {
         statusCode = 400;
-        errorMessage = "Bad request format";
+        errorMessage = "Bad request format - " + error.message;
       }
     }
     

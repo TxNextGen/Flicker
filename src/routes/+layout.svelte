@@ -291,12 +291,8 @@
           class="text-2xl  font-bold bg-gradient-to-r from-purple-400 to-violet-300 bg-clip-text text-transparent flex items-center {sidebarCollapsed
             ? 'hidden'
             : ''}"
-        >
-          <img 
-            src="/logo.webp" 
-            alt="Logo" 
-            class="inline-block w-7 h-7 ml-3 -mt-1  drop-shadow-lg"
-          />licker
+          >
+          Flicker
         </h1>
       </div>
       <button
