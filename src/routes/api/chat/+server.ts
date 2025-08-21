@@ -1,7 +1,13 @@
 import { checkmoderation, testmoderation } from "$lib";
 import OpenAI from "openai";
 
-const API_KEY = "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";
+
+const API_KEY = process.env.GROQ_API_KEY;
+
+
+if (!API_KEY) {
+  throw new Error("GROQ_API_KEY environment variable is not set");
+}
 
 const openai = new OpenAI({
   apiKey: API_KEY,
@@ -19,12 +25,9 @@ interface UserUsage {
   firstUsage: string;
 }
 
-
 const userUsageMap = new Map<string, UserUsage>();
 
-
 const DAILY_USAGE_LIMIT = 40;
-
 
 const ADVANCED_FEATURES = {
   maxTokensBonus: 1000, 
@@ -40,7 +43,6 @@ function getUserId(request: Request): string {
              request.headers.get('x-real-ip') || 
              'unknown';
   
-
   const authHeader = request.headers.get('authorization');
   if (authHeader) {
     return `auth_${authHeader.slice(0, 20)}`; 
@@ -55,7 +57,6 @@ function checkDailyUsage(userId: string): { allowed: boolean; remaining: number;
   
   let userUsage = userUsageMap.get(userId);
   
-
   if (!userUsage) {
     userUsage = {
       count: 0,
@@ -79,7 +80,6 @@ function checkDailyUsage(userId: string): { allowed: boolean; remaining: number;
   const allowed = userUsage.count < DAILY_USAGE_LIMIT;
   const remaining = Math.max(0, DAILY_USAGE_LIMIT - userUsage.count);
   
-
   const nextReset = new Date(new Date(userUsage.lastReset).getTime() + (24 * 60 * 60 * 1000));
   
   return {
@@ -102,13 +102,11 @@ function determineAdvancedSettings(messages: Message[], hasImages: boolean) {
   const content = typeof lastMessage.content === 'string' ? lastMessage.content : 
     Array.isArray(lastMessage.content) ? lastMessage.content.map(item => item.text || '').join(' ') : '';
   
-  
   const isCodingRequest = /\b(code|function|class|component|algorithm|programming|debug|fix|build|create.*app|javascript|typescript|python|react|svelte|css|html|api|database|sql)\b/i.test(content);
   const isComplexQuery = content.length > 200 || /\b(analyze|explain|compare|detailed|comprehensive|step.*by.*step)\b/i.test(content);
   const isCreativeRequest = /\b(write|story|poem|creative|generate|design|brainstorm)\b/i.test(content);
   const isMathRequest = /\b(calculate|math|formula|equation|solve|statistics|data)\b/i.test(content);
   
- 
   let modelToUse = "llama-3.1-8b-instant"; 
   
   if (hasImages && ADVANCED_FEATURES.enableVisionModel) {
@@ -117,7 +115,6 @@ function determineAdvancedSettings(messages: Message[], hasImages: boolean) {
     modelToUse = "llama-3.3-70b-versatile"; 
   }
   
-
   let maxTokens = 500; 
   if (isCodingRequest && ADVANCED_FEATURES.enableCodeOptimization) {
     maxTokens = 2500 + ADVANCED_FEATURES.maxTokensBonus;
@@ -127,7 +124,6 @@ function determineAdvancedSettings(messages: Message[], hasImages: boolean) {
     maxTokens = 800;
   }
   
-
   let temperature = 0.2; 
   if (isCreativeRequest) {
     temperature = 0.8;
@@ -137,7 +133,6 @@ function determineAdvancedSettings(messages: Message[], hasImages: boolean) {
     temperature = 0.3;
   }
   
- 
   temperature = Math.max(ADVANCED_FEATURES.temperatureRange.min, 
                         Math.min(ADVANCED_FEATURES.temperatureRange.max, temperature));
   
@@ -157,7 +152,6 @@ export const POST = async ({ request }) => {
     const userId = getUserId(request);
     const usageStatus = checkDailyUsage(userId);
     
-
     if (!usageStatus.allowed) {
       return new Response(
         JSON.stringify({ 
@@ -193,10 +187,8 @@ export const POST = async ({ request }) => {
       );
     }
 
-
     incrementUsage(userId);
     const updatedUsage = checkDailyUsage(userId);
-
 
     try {
       await testmoderation(API_KEY);
@@ -210,9 +202,7 @@ export const POST = async ({ request }) => {
       msg.content.some(item => item.type === 'image_url')
     );
 
-    
     const settings = determineAdvancedSettings(messages, hasImages);
-
 
     const formattedMessages = messages.map((msg: Message) => {
       if (Array.isArray(msg.content)) {
@@ -249,6 +239,7 @@ export const POST = async ({ request }) => {
     console.log("Using model:", settings.model);
     console.log("Advanced settings:", settings);
     console.log("User usage remaining:", updatedUsage.remaining);
+    
     const response = await openai.chat.completions.create({
       model: settings.model,
       messages: formattedMessages as any,
@@ -372,7 +363,6 @@ export const POST = async ({ request }) => {
     );
   }
 };
-
 
 export const GET = async ({ request }) => {
   const userId = getUserId(request);
