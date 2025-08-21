@@ -8,6 +8,17 @@
   let error = "";
   let loading = false;
 
+  // Password requirement checks
+  $: pwChecks = {
+    length: password.length >= 8,
+    uppercase: /[A-Z]/.test(password),
+    lowercase: /[a-z]/.test(password),
+    number: /\d/.test(password),
+    special: /[^A-Za-z0-9]/.test(password),
+  };
+
+  $: passwordValid = Object.values(pwChecks).every(Boolean);
+
   async function handleSignup() {
     if (
       !username.trim() ||
@@ -19,13 +30,20 @@
       return;
     }
 
+    // basic email format check
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(email)) {
+      error = "Please enter a valid email address";
+      return;
+    }
+
     if (password !== confirmPassword) {
       error = "Passwords do not match";
       return;
     }
 
-    if (password.length < 6) {
-      error = "Password must be at least 6 characters long";
+    if (!passwordValid) {
+      error = "Password must be at least 8 characters and include upper and lower case letters, a number, and a special character";
       return;
     }
 
@@ -46,10 +64,11 @@
         return;
       }
 
-      // Store user data and token in localStorage
-      localStorage.setItem("flicker_user", JSON.stringify(data.user));
-      localStorage.setItem("flicker_token", data.token);
-      document.location = "/";
+  // Store user data and token in localStorage (consider secure cookie in production)
+  localStorage.setItem("flicker_user", JSON.stringify(data.user));
+  localStorage.setItem("flicker_token", data.token);
+  // use svelte navigation instead of document.location for SPA navigation
+  goto("/");
     } catch (e) {
       error = "Signup failed. Please try again.";
       console.error("Signup error:", e);
