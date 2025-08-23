@@ -171,13 +171,13 @@
                   </div>
                   <div class="flex gap-2">
                     <button
-                      class="bg-blue-500 text-white font-semibold px-3 py-1 rounded text-sm hover:bg-blue-600 transition-colors"
+                      class="from-purple-500/20 to-violet-500/20 hover:from-purple-500/30 hover:to-violet-500/30 border-purple-500/30 hover:border-purple-500/50"
                       on:click={() => goto(`/?chat=${chatId}`)}
                     >
                       Open
                     </button>
                     <button
-                      class="bg-red-600 text-white font-semibold px-3 py-1 rounded text-sm hover:bg-red-700 transition-colors"
+                      class="from-purple-500/20 to-violet-500/20 hover:from-purple-500/30 hover:to-violet-500/30 border-purple-500/30 hover:border-purple-500/50"
                       on:click={() => deleteChat(chatId)}
                     >
                       Delete
