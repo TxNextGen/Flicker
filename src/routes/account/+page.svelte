@@ -5,7 +5,7 @@
     username: string;
     email: string;
     chats: {
-      [id: string]: { messages: Array<{ role: string; content: string }> };
+      [id: string]: { messages: Array<{ role: string; content: string; timestamp?: number }>; lastUpdated?: number };
     };
   }
 
@@ -98,8 +98,13 @@
     }
   }
 
-  function formatDate(timestamp: string) {
-    return new Date(timestamp).toLocaleDateString();
+  function formatDate(timestamp: number | string | undefined) {
+    if (timestamp === undefined || timestamp === null) return "Unknown date";
+    // accept numeric timestamps or ISO strings
+    const t = typeof timestamp === "number" ? timestamp : Number(timestamp);
+    const d = new Date(Number.isFinite(t) ? t : timestamp);
+    if (isNaN(d.getTime())) return "Invalid date";
+    return d.toLocaleDateString();
   }
 
   // Load user data on component mount
@@ -156,7 +161,7 @@
                   <div class="flex-1">
                     <h3 class="text-gray-100 font-medium">Chat {chatId}</h3>
                     <p class="text-gray-400 text-sm">
-                      {chat.messages.length} messages • {formatDate(chatId)}
+                      {chat.messages.length} messages • {formatDate(chat.lastUpdated)}
                     </p>
                     {#if chat.messages.length > 0}
                       <p class="text-gray-500 text-sm mt-1 truncate">
